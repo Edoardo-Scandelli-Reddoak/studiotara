@@ -1,0 +1,70 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-blue-primary: #092d74;
+  --color-blue-secondary: #1155da;
+  --color-blue-accent: #0f45b1;
+  --color-blue-border: #0a2f78;
+  --color-red-primary: #d2072a;
+  --color-gray-light: #f4f4f4;
+  --color-gray-text: #4a4a4a;
+  --color-blog-blue: #6d92da;
+  --color-blog-gray: #939393;
+  --font-sans: "Open Sauce One", ui-sans-serif, system-ui, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: #ffffff;
+  color: #000000;
+  font-family: var(--font-sans);
+}
+
+/* Open Sauce One font - using system fonts as fallback until custom font is loaded */
+@font-face {
+  font-family: "Open Sauce One";
+  src: local("Open Sauce One");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Open Sauce One";
+  src: local("Open Sauce One Bold");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Open Sauce One";
+  src: local("Open Sauce One Medium");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Article content styles */
+.prose-studiotara h2 {
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -1.2px;
+  color: #000;
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+}
+
+.prose-studiotara p {
+  font-size: 16px;
+  line-height: 1.75;
+  color: rgba(0, 0, 0, 0.8);
+  margin-bottom: 1rem;
+}
+
+.prose-studiotara p:last-child {
+  margin-bottom: 0;
+}
