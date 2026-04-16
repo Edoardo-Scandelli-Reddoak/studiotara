@@ -5,24 +5,42 @@ import Image from "next/image";
 import type { ApiPropertyDetail } from "@/lib/api";
 import { formatPrezzo } from "@/lib/api";
 
-function buildBrochureFeatures(property: ApiPropertyDetail): string {
-  const items: string[] = [];
-  if (property.locali) items.push(`${property.locali} ${property.locali === 1 ? 'locale' : 'locali'}`);
-  if (property.camere) items.push(`${property.camere} ${property.camere === 1 ? 'camera' : 'camere'} da letto`);
-  if (property.bagni) items.push(`${property.bagni} ${property.bagni === 1 ? 'bagno' : 'bagni'}`);
-  if (property.piano) items.push(`Piano: ${property.piano}`);
-  if (property.ascensore) items.push('Ascensore');
-  if (property.garage) items.push('Garage');
-  if (property.riscaldamento) items.push(`Riscaldamento: ${property.riscaldamento}`);
-  if (property.classe_energetica) items.push(`Classe energetica: ${property.classe_energetica}`);
-  if (property.zona) items.push(`Zona: ${property.zona}`);
-  return items.map(f => `<li>${f}</li>`).join('');
+function buildBrochureRows(property: ApiPropertyDetail, ref: string, prezzoFormatted: string): string {
+  const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+  const rows: { label: string; value: string | number }[] = [
+    { label: 'Riferimento',     value: ref },
+    { label: 'Tipologia',       value: cap(property.tipologia) },
+    { label: 'Contratto',       value: property.contratto === 'vendita' ? 'Vendita' : 'Affitto' },
+    { label: 'Prezzo',          value: prezzoFormatted },
+    ...(property.mq             ? [{ label: 'Superficie',       value: `${property.mq} m²` }]       : []),
+    ...(property.locali         ? [{ label: 'Locali',           value: property.locali }]            : []),
+    ...(property.camere         ? [{ label: 'Camere da letto',  value: property.camere }]            : []),
+    ...(property.bagni          ? [{ label: 'Bagni',            value: property.bagni }]             : []),
+    ...(property.piano          ? [{ label: 'Piano',            value: property.piano }]             : []),
+    { label: 'Ascensore',       value: property.ascensore ? 'Sì' : 'No' },
+    { label: 'Garage',          value: property.garage    ? 'Sì' : 'No' },
+    ...(property.riscaldamento  ? [{ label: 'Riscaldamento',    value: property.riscaldamento }]     : []),
+    ...(property.classe_energetica ? [{ label: 'Classe energetica', value: property.classe_energetica }] : []),
+    ...(property.indirizzo      ? [{ label: 'Indirizzo',        value: property.indirizzo }]         : []),
+    ...(property.comune         ? [{ label: 'Comune',           value: property.comune }]            : []),
+    ...(property.provincia      ? [{ label: 'Provincia',        value: property.provincia }]         : []),
+    ...(property.zona           ? [{ label: 'Zona',             value: property.zona }]              : []),
+  ];
+  return rows.map((r, i) =>
+    `<tr style="background:${i % 2 === 0 ? '#ffffff' : '#f5f3f0'}">
+      <td style="padding:6px 10px;font-size:12px;border-bottom:1px solid #eee;color:#888;width:42%">${r.label}</td>
+      <td style="padding:6px 10px;font-size:12px;border-bottom:1px solid #eee;font-weight:500;text-align:right">${r.value}</td>
+    </tr>`
+  ).join('');
 }
 
 export default function PropertyGallery({ property }: { property: ApiPropertyDetail }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [videoOpen, setVideoOpen] = useState(false);
   const [generating, setGenerating] = useState(false);
+
+  const hasVideo = !!property.video_url;
 
   const galleryImages = property.images
     .filter(img => !img.is_planimetria && img.file_url)
@@ -42,66 +60,40 @@ export default function PropertyGallery({ property }: { property: ApiPropertyDet
     setGenerating(true);
     try {
       const html2pdf = (await import("html2pdf.js")).default;
-      const features = buildBrochureFeatures(property);
+      const tableRows = buildBrochureRows(property, ref, prezzoFormatted);
 
       const html = `
-<div id="brochure-content" style="font-family: 'Helvetica Neue', Arial, sans-serif; color: #1a1a1a; line-height: 1.6; padding: 0;">
-  <style>
-    .header { background: linear-gradient(135deg, #092d74, #1155da); color: white; padding: 36px 32px; border-radius: 10px; margin-bottom: 24px; }
-    .header h1 { font-size: 24px; letter-spacing: -0.5px; margin: 0 0 4px 0; }
-    .header .address { font-size: 14px; opacity: 0.85; margin: 0; }
-    .header .price { font-size: 28px; font-weight: 700; margin: 14px 0 0 0; }
-    .header .badge { display: inline-block; background: ${property.contratto === 'vendita' ? '#1152d2' : '#d2072a'}; color: white; padding: 3px 10px; border-radius: 4px; font-size: 12px; margin-bottom: 10px; }
-    .stats { display: flex; gap: 24px; margin: 20px 0; padding: 16px 0; border-top: 1px solid #e0e0e0; border-bottom: 1px solid #e0e0e0; }
-    .stat { text-align: center; }
-    .stat .value { font-size: 22px; font-weight: 600; margin: 0; }
-    .stat .label { font-size: 10px; text-transform: uppercase; color: #888; letter-spacing: 1px; margin: 2px 0 0 0; }
-    h2 { font-size: 18px; letter-spacing: -0.3px; margin: 22px 0 8px; color: #092d74; }
-    .description p { font-size: 13px; color: #444; margin: 0 0 8px 0; }
-    .features { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 20px; list-style: none; padding: 0; margin: 0; }
-    .features li { font-size: 12px; color: #444; padding-left: 14px; position: relative; }
-    .features li::before { content: "\\2022"; color: #092d74; position: absolute; left: 0; font-weight: bold; }
-    .info-table { width: 100%; border-collapse: collapse; margin-top: 8px; }
-    .info-table tr:nth-child(even) { background: #f5f3f0; }
-    .info-table td { padding: 6px 10px; font-size: 12px; border-bottom: 1px solid #eee; }
-    .info-table td:first-child { color: #888; width: 40%; }
-    .info-table td:last-child { font-weight: 500; text-align: right; }
-    .footer { margin-top: 28px; padding-top: 14px; border-top: 2px solid #092d74; text-align: center; color: #888; font-size: 11px; }
-    .footer strong { color: #092d74; }
-  </style>
+<div id="brochure-content" style="font-family:'Helvetica Neue',Arial,sans-serif;color:#1a1a1a;line-height:1.6;padding:0">
 
-  <div class="header">
-    <span class="badge">${property.contratto === 'vendita' ? 'In vendita' : 'In affitto'}</span>
-    <h1>${property.titolo}</h1>
-    <p class="address">${property.indirizzo || [property.comune, property.provincia].filter(Boolean).join(', ')}</p>
-    <p class="price">${prezzoFormatted}</p>
+  <div style="background:linear-gradient(135deg,#092d74,#1155da);color:white;padding:36px 32px;border-radius:10px;margin-bottom:24px">
+    <span style="display:inline-block;background:${property.contratto === 'vendita' ? '#1152d2' : '#d2072a'};color:white;padding:3px 10px;border-radius:4px;font-size:12px;margin-bottom:10px">
+      ${property.contratto === 'vendita' ? 'In vendita' : 'In affitto'}
+    </span>
+    <div style="font-size:24px;letter-spacing:-0.5px;font-weight:600;margin:0 0 4px 0">${property.titolo}</div>
+    <div style="font-size:14px;opacity:0.85">${property.indirizzo || [property.comune, property.provincia].filter(Boolean).join(', ')}</div>
+    <div style="font-size:28px;font-weight:700;margin:14px 0 0 0">${prezzoFormatted}</div>
   </div>
 
-  <div class="stats">
-    ${property.mq ? `<div class="stat"><p class="value">${property.mq}</p><p class="label">m&sup2;</p></div>` : ''}
-    ${property.locali ? `<div class="stat"><p class="value">${property.locali}</p><p class="label">Locali</p></div>` : ''}
-    ${property.camere ? `<div class="stat"><p class="value">${property.camere}</p><p class="label">Camere</p></div>` : ''}
-    ${property.bagni ? `<div class="stat"><p class="value">${property.bagni}</p><p class="label">Bagni</p></div>` : ''}
-    ${property.piano ? `<div class="stat"><p class="value">${property.piano}</p><p class="label">Piano</p></div>` : ''}
+  <div style="display:flex;gap:24px;margin:20px 0;padding:16px 0;border-top:1px solid #e0e0e0;border-bottom:1px solid #e0e0e0">
+    ${property.mq     ? `<div style="text-align:center"><div style="font-size:22px;font-weight:600">${property.mq}</div><div style="font-size:10px;text-transform:uppercase;color:#888;letter-spacing:1px;margin-top:2px">m²</div></div>` : ''}
+    ${property.locali ? `<div style="text-align:center"><div style="font-size:22px;font-weight:600">${property.locali}</div><div style="font-size:10px;text-transform:uppercase;color:#888;letter-spacing:1px;margin-top:2px">Locali</div></div>` : ''}
+    ${property.camere ? `<div style="text-align:center"><div style="font-size:22px;font-weight:600">${property.camere}</div><div style="font-size:10px;text-transform:uppercase;color:#888;letter-spacing:1px;margin-top:2px">Camere</div></div>` : ''}
+    ${property.bagni  ? `<div style="text-align:center"><div style="font-size:22px;font-weight:600">${property.bagni}</div><div style="font-size:10px;text-transform:uppercase;color:#888;letter-spacing:1px;margin-top:2px">Bagni</div></div>` : ''}
+    ${property.piano  ? `<div style="text-align:center"><div style="font-size:22px;font-weight:600">${property.piano}</div><div style="font-size:10px;text-transform:uppercase;color:#888;letter-spacing:1px;margin-top:2px">Piano</div></div>` : ''}
   </div>
 
-  <h2>Descrizione</h2>
-  <div class="description">${property.descrizione.split('\n\n').map((p: string) => `<p>${p}</p>`).join('')}</div>
+  ${property.descrizione ? `
+  <div style="font-size:18px;letter-spacing:-0.3px;margin:22px 0 8px;color:#092d74;font-weight:600">Descrizione</div>
+  <div>${property.descrizione.split('\n\n').map((p: string) => `<p style="font-size:13px;color:#444;margin:0 0 8px 0">${p}</p>`).join('')}</div>
+  ` : ''}
 
-  ${features ? `<h2>Caratteristiche</h2><ul class="features">${features}</ul>` : ''}
-
-  <h2>Dettagli</h2>
-  <table class="info-table">
-    <tr><td>Riferimento</td><td>${ref}</td></tr>
-    <tr><td>Tipologia</td><td>${property.tipologia}</td></tr>
-    <tr><td>Comune</td><td>${property.comune}${property.provincia ? ` (${property.provincia})` : ''}</td></tr>
-    ${property.mq ? `<tr><td>Superficie</td><td>${property.mq} mq</td></tr>` : ''}
-    ${property.classe_energetica ? `<tr><td>Classe energetica</td><td>${property.classe_energetica}</td></tr>` : ''}
-    ${property.riscaldamento ? `<tr><td>Riscaldamento</td><td>${property.riscaldamento}</td></tr>` : ''}
+  <div style="font-size:18px;letter-spacing:-0.3px;margin:22px 0 8px;color:#092d74;font-weight:600">Tutti i dettagli</div>
+  <table style="width:100%;border-collapse:collapse">
+    ${tableRows}
   </table>
 
-  <div class="footer">
-    <strong>STUDIO TARA</strong> — Agenzia Immobiliare<br>
+  <div style="margin-top:28px;padding-top:14px;border-top:2px solid #092d74;text-align:center;color:#888;font-size:11px">
+    <strong style="color:#092d74">STUDIO TARA</strong> — Agenzia Immobiliare<br>
     Viale Lomellina, 23 — 20090 Buccinasco (MI)<br>
     Tel: 339 3333333 — info@studiotara.it — www.studiotara.it
   </div>
@@ -201,9 +193,8 @@ export default function PropertyGallery({ property }: { property: ApiPropertyDet
 
       {/* Tabs */}
       <div className="flex gap-2 mt-3">
-        <button
-          className="px-4 py-2 rounded-[6px] text-[14px] font-medium bg-blue-primary text-white flex items-center gap-1.5"
-        >
+        {/* Foto */}
+        <button className="px-4 py-2 rounded-[6px] text-[14px] font-medium bg-blue-primary text-white flex items-center gap-1.5">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <rect width="18" height="18" x="3" y="3" rx="2" ry="2" />
             <circle cx="9" cy="9" r="2" />
@@ -211,6 +202,25 @@ export default function PropertyGallery({ property }: { property: ApiPropertyDet
           </svg>
           Foto ({images.length})
         </button>
+
+        {/* Video */}
+        <button
+          onClick={() => hasVideo && setVideoOpen(true)}
+          disabled={!hasVideo}
+          title={!hasVideo ? "Video non disponibile" : "Guarda il video"}
+          className={`px-4 py-2 rounded-[6px] text-[14px] font-medium flex items-center gap-1.5 transition-all ${
+            hasVideo
+              ? "bg-[#f5f3f0] text-black/70 hover:bg-[#eae8e5] cursor-pointer"
+              : "bg-[#f5f3f0] text-black/30 cursor-not-allowed"
+          }`}
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <polygon points="5 3 19 12 5 21 5 3" />
+          </svg>
+          Video
+        </button>
+
+        {/* Brochure */}
         <button
           onClick={downloadBrochure}
           disabled={generating}
@@ -234,6 +244,35 @@ export default function PropertyGallery({ property }: { property: ApiPropertyDet
           {generating ? "Generando..." : "Brochure"}
         </button>
       </div>
+
+      {/* Video modal */}
+      {videoOpen && hasVideo && (
+        <div
+          className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4"
+          onClick={() => setVideoOpen(false)}
+        >
+          <button
+            onClick={() => setVideoOpen(false)}
+            className="absolute top-6 right-6 w-[40px] h-[40px] bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center cursor-pointer z-10"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+          <div
+            className="relative w-full max-w-[900px] aspect-video"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <iframe
+              src={property.video_url!}
+              className="w-full h-full rounded-[12px]"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
+          </div>
+        </div>
+      )}
 
       {/* Lightbox */}
       {lightboxOpen && images.length > 0 && (

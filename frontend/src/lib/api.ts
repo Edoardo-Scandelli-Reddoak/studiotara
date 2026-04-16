@@ -1,5 +1,10 @@
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8000';
 
+const FETCH_OPTIONS: RequestInit =
+  process.env.NODE_ENV === 'development'
+    ? { cache: 'no-store' }
+    : { next: { revalidate: 3600 } };
+
 export interface ApiPropertyImage {
   id: number;
   file_url: string | null;
@@ -61,6 +66,7 @@ export interface ApiPropertyDetail {
   in_carosello: boolean;
   data_creazione: string;
   data_aggiornamento: string;
+  video_url: string | null;
   images: ApiPropertyImage[];
 }
 
@@ -72,6 +78,12 @@ const TIPOLOGIE_RESIDENZIALI = new Set([
 
 export function isResidenziale(tipologia: string): boolean {
   return TIPOLOGIE_RESIDENZIALI.has(tipologia.toLowerCase());
+}
+
+export function formatTitolo(titolo: string): string {
+  return titolo
+    .toLowerCase()
+    .replace(/\b\p{L}/gu, (c) => c.toUpperCase());
 }
 
 export function formatPrezzo(prezzo: string | null): string {
@@ -98,7 +110,7 @@ export async function getProperties(): Promise<ApiPropertyList[]> {
 
   try {
     while (url) {
-      const res = await fetch(url, { next: { revalidate: 3600 } });
+      const res = await fetch(url, FETCH_OPTIONS);
       if (!res.ok) break;
       const data: PaginatedResponse = await res.json();
       all.push(...data.results);
@@ -113,9 +125,62 @@ export async function getProperties(): Promise<ApiPropertyList[]> {
 
 export async function getProperty(id: number): Promise<ApiPropertyDetail | null> {
   try {
-    const res = await fetch(`${API_BASE}/api/properties/${id}/`, {
-      next: { revalidate: 3600 },
-    });
+    const res = await fetch(`${API_BASE}/api/properties/${id}/`, FETCH_OPTIONS);
+    if (!res.ok) return null;
+    return res.json();
+  } catch {
+    return null;
+  }
+}
+
+export interface ApiBlogArticleList {
+  id: number;
+  titolo: string;
+  slug: string;
+  excerpt: string;
+  immagine_url: string | null;
+  data_pubblicazione: string | null;
+}
+
+export interface ApiBlogArticleDetail {
+  id: number;
+  titolo: string;
+  slug: string;
+  contenuto: string;
+  excerpt: string;
+  immagine_url: string | null;
+  data_pubblicazione: string | null;
+}
+
+interface PaginatedBlogResponse {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: ApiBlogArticleList[];
+}
+
+export async function getBlogArticles(): Promise<ApiBlogArticleList[]> {
+  const all: ApiBlogArticleList[] = [];
+  let url: string | null = `${API_BASE}/api/blog/articles/`;
+
+  try {
+    while (url) {
+      const res = await fetch(url, FETCH_OPTIONS);
+      if (!res.ok) break;
+      const data: PaginatedBlogResponse = await res.json();
+      all.push(...data.results);
+      url = data.next;
+    }
+  } catch {
+    // return what we collected so far
+  }
+
+  return all;
+}
+
+export async function getBlogArticle(slug: string): Promise<ApiBlogArticleDetail | null> {
+  try {
+    const res = await fetch(`${API_BASE}/api/blog/articles/${slug}/`, FETCH_OPTIONS);
     if (!res.ok) return null;
     return res.json();
   } catch {

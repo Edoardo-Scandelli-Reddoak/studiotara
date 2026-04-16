@@ -2,9 +2,31 @@ import Image from "next/image";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { articles } from "@/data/articles";
+import Pagination from "@/components/Pagination";
+import { getBlogArticles, ApiBlogArticleList } from "@/lib/api";
 
-export default function Blog() {
+const ARTICLES_PER_PAGE = 15;
+
+function formatDate(dateStr: string | null): string {
+  if (!dateStr) return '';
+  const d = new Date(dateStr);
+  return d.toLocaleDateString('it-IT', { day: 'numeric', month: 'long', year: 'numeric' });
+}
+
+export default async function Blog({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string }>;
+}) {
+  const { page: pageParam } = await searchParams;
+  const currentPage = Math.max(1, parseInt(pageParam ?? '1', 10));
+
+  const allArticles: ApiBlogArticleList[] = await getBlogArticles();
+  const totalPages = Math.ceil(allArticles.length / ARTICLES_PER_PAGE);
+  const safePage = Math.min(currentPage, totalPages || 1);
+  const start = (safePage - 1) * ARTICLES_PER_PAGE;
+  const articles = allArticles.slice(start, start + ARTICLES_PER_PAGE);
+
   return (
     <>
       <Navbar />
@@ -69,24 +91,39 @@ export default function Blog() {
                 className="group bg-[#f5f3f0] rounded-[16px] md:rounded-[18px] lg:rounded-[20px] shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] overflow-hidden hover:-translate-y-1 hover:shadow-[0px_8px_30px_0px_rgba(0,0,0,0.15)] transition-all duration-300 flex flex-col"
               >
                 {/* Image */}
-                <div className="w-full h-[180px] md:h-[190px] lg:h-[198px] overflow-hidden">
-                  <Image
-                    src={article.image}
-                    alt={article.title}
-                    width={408}
-                    height={198}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
+                <div className="w-full h-[180px] md:h-[190px] lg:h-[198px] overflow-hidden bg-[#e8e6e3]">
+                  {article.immagine_url ? (
+                    <img
+                      src={article.immagine_url}
+                      alt={article.titolo}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <img
+                        src="/images/logo.svg"
+                        alt=""
+                        className="w-16 h-16 opacity-20"
+                      />
+                    </div>
+                  )}
                 </div>
 
                 {/* Content */}
                 <div className="p-5 lg:p-[19px] flex flex-col flex-1">
+                  {article.data_pubblicazione && (
+                    <p className="text-[12px] text-black/40 mb-2">
+                      {formatDate(article.data_pubblicazione)}
+                    </p>
+                  )}
                   <h2 className="text-[18px] md:text-[20px] lg:text-[22px] font-medium text-black tracking-[-0.8px] lg:tracking-[-1.32px] leading-tight">
-                    {article.title}
+                    {article.titolo}
                   </h2>
-                  <p className="text-[14px] md:text-[15px] lg:text-[16px] text-black/80 tracking-[-0.5px] lg:tracking-[-1.08px] mt-3 leading-relaxed line-clamp-4">
-                    {article.excerpt}
-                  </p>
+                  {article.excerpt && (
+                    <p className="text-[14px] md:text-[15px] lg:text-[16px] text-black/80 tracking-[-0.5px] lg:tracking-[-1.08px] mt-3 leading-relaxed line-clamp-4">
+                      {article.excerpt}
+                    </p>
+                  )}
                   <p className="text-[15px] md:text-[16px] text-red-primary underline mt-auto pt-4 tracking-[-0.5px] lg:tracking-[-1.08px]">
                     Leggi di più
                   </p>
@@ -94,6 +131,12 @@ export default function Blog() {
               </Link>
             ))}
           </div>
+          <Pagination
+            currentPage={safePage}
+            totalPages={totalPages}
+            baseHref="/blog"
+            anchor="articoli"
+          />
         </section>
 
         {/* ===== TESTIMONIALS ===== */}

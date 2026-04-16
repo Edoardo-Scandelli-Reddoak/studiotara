@@ -190,16 +190,24 @@ class Command(BaseCommand):
         categoria_id = (info.findtext('categorie_id') or '').strip()
         tipologia = CATEGORIA_MAP.get(categoria_id, categoria_id or '')
 
-        # Contratto ricavato dal seo_title ("Affitto, ..." / "Vendita, ...")
         seo_title = (info.findtext('seo_title') or '').strip()
-        contratto = 'affitto' if 'affitto' in seo_title.lower() else 'vendita'
+
+        # Parsing info_inserite (figlio di <annuncio>, non di <info>)
+        ii = self._parse_ii(annuncio)
+
+        # Contratto: usa info_inserite ID 9 (vendita) / ID 10 (affitto) come fonte primaria
+        # Il seo_title usa forme come "Affittasi" che non contengono "affitto" → inaffidabile
+        if self._ii_int(ii, 10) == 1:
+            contratto = 'affitto'
+        elif self._ii_int(ii, 9) == 1:
+            contratto = 'vendita'
+        else:
+            # Fallback sul titolo (copre anche "affittasi", "affittansi", ecc.)
+            contratto = 'affitto' if 'affit' in seo_title.lower() else 'vendita'
 
         titolo = seo_title if seo_title else (
             f"{tipologia.capitalize()} a {(info.findtext('comune') or '').strip()}".strip()
         )
-
-        # Parsing info_inserite (figlio di <annuncio>, non di <info>)
-        ii = self._parse_ii(annuncio)
 
         # ID 1 = bagni, ID 2 = camere, ID 4 = soggiorno
         bagni = self._ii_positive_int(ii, 1)

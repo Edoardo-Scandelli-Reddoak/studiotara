@@ -7,24 +7,8 @@ import PropertyGallery from "@/components/PropertyGallery";
 import ScrollToTop from "@/components/ScrollToTop";
 import ContactModal from "@/components/ContactModal";
 import SearchRequestModal from "@/components/SearchRequestModal";
-import { getProperty, formatPrezzo } from "@/lib/api";
+import { getProperty, formatPrezzo, formatTitolo } from "@/lib/api";
 import type { ApiPropertyDetail } from "@/lib/api";
-
-function buildFeatures(property: ApiPropertyDetail): string[] {
-  const items: string[] = [];
-  if (property.mq) items.push(`${property.mq} m²`);
-  if (property.locali) items.push(`${property.locali} ${property.locali === 1 ? 'locale' : 'locali'}`);
-  if (property.camere) items.push(`${property.camere} ${property.camere === 1 ? 'camera' : 'camere'} da letto`);
-  if (property.bagni) items.push(`${property.bagni} ${property.bagni === 1 ? 'bagno' : 'bagni'}`);
-  if (property.piano) items.push(`Piano: ${property.piano}`);
-  if (property.ascensore) items.push('Ascensore');
-  if (property.garage) items.push('Garage');
-  if (property.riscaldamento) items.push(`Riscaldamento: ${property.riscaldamento}`);
-  if (property.classe_energetica) items.push(`Classe energetica: ${property.classe_energetica}`);
-  if (property.zona) items.push(`Zona: ${property.zona}`);
-  if (property.comune) items.push(property.provincia ? `${property.comune} (${property.provincia})` : property.comune);
-  return items;
-}
 
 function getMapSrc(property: ApiPropertyDetail): string {
   if (property.latitudine && property.longitudine) {
@@ -47,7 +31,6 @@ export default async function PropertyPage({
 
   const ref = property.codice_agenzia || property.gestionale_id;
   const prezzoFormatted = formatPrezzo(property.prezzo);
-  const features = buildFeatures(property);
 
   return (
     <>
@@ -98,7 +81,7 @@ export default async function PropertyPage({
             <div className="flex items-start justify-between gap-4 mt-4">
               <div>
                 <h1 className="text-[26px] md:text-[28px] lg:text-[30px] tracking-[-1.2px] md:tracking-[-1.5px] text-black leading-tight">
-                  {property.titolo}
+                  {formatTitolo(property.titolo)}
                 </h1>
                 <p className="text-[15px] md:text-[16px] text-black/60 mt-1">
                   {property.comune}{property.provincia ? `, ${property.provincia}` : ''}
@@ -137,22 +120,47 @@ export default async function PropertyPage({
               propertyRef={ref}
             />
 
-            {/* Caratteristiche */}
-            {features.length > 0 && (
-              <>
-                <h2 className="text-[24px] md:text-[28px] lg:text-[30px] tracking-[-1.2px] md:tracking-[-1.5px] text-black mt-10 md:mt-12">
-                  Caratteristiche
-                </h2>
-                <ul className="grid grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-3 mt-4">
-                  {features.map((feature, i) => (
-                    <li key={i} className="text-[15px] md:text-[16px] text-black/80 flex items-center gap-2">
-                      <span className="w-[6px] h-[6px] rounded-full bg-blue-primary shrink-0" />
-                      {feature}
-                    </li>
-                  ))}
-                </ul>
-              </>
-            )}
+            {/* Tutti i dettagli */}
+            {(() => {
+              const rows: { label: string; value: string | number }[] = [
+                { label: 'Riferimento',       value: ref },
+                { label: 'Tipologia',         value: property.tipologia.charAt(0).toUpperCase() + property.tipologia.slice(1) },
+                { label: 'Contratto',         value: property.contratto === 'vendita' ? 'Vendita' : 'Affitto' },
+                { label: 'Prezzo',            value: prezzoFormatted },
+                ...(property.mq        ? [{ label: 'Superficie',        value: `${property.mq} m²` }]        : []),
+                ...(property.locali    ? [{ label: 'Locali',            value: property.locali }]             : []),
+                ...(property.camere    ? [{ label: 'Camere da letto',   value: property.camere }]             : []),
+                ...(property.bagni     ? [{ label: 'Bagni',             value: property.bagni }]              : []),
+                ...(property.piano     ? [{ label: 'Piano',             value: property.piano }]              : []),
+                { label: 'Ascensore',         value: property.ascensore ? 'Sì' : 'No' },
+                { label: 'Garage',            value: property.garage    ? 'Sì' : 'No' },
+                ...(property.riscaldamento    ? [{ label: 'Riscaldamento',      value: property.riscaldamento }]    : []),
+                ...(property.classe_energetica ? [{ label: 'Classe energetica', value: property.classe_energetica }] : []),
+                ...(property.indirizzo ? [{ label: 'Indirizzo',         value: property.indirizzo }]          : []),
+                ...(property.comune    ? [{ label: 'Comune',            value: property.comune }]             : []),
+                ...(property.provincia ? [{ label: 'Provincia',         value: property.provincia }]          : []),
+                ...(property.zona      ? [{ label: 'Zona',              value: property.zona }]               : []),
+              ];
+              return (
+                <>
+                  <h2 className="text-[24px] md:text-[28px] lg:text-[30px] tracking-[-1.2px] md:tracking-[-1.5px] text-black mt-10 md:mt-12">
+                    Tutti i dettagli
+                  </h2>
+                  <div className="mt-4 rounded-[12px] overflow-hidden border border-black/10">
+                    <table className="w-full text-[14px] md:text-[15px]">
+                      <tbody>
+                        {rows.map((row, i) => (
+                          <tr key={row.label} className={`border-b border-black/8 last:border-b-0 ${i % 2 === 0 ? 'bg-white' : 'bg-[#f5f3f0]'}`}>
+                            <td className="px-4 md:px-5 py-[11px] text-black/50 font-medium w-[42%]">{row.label}</td>
+                            <td className="px-4 md:px-5 py-[11px] text-black">{row.value}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </>
+              );
+            })()}
 
             {/* Map */}
             <h2 className="text-[24px] md:text-[28px] lg:text-[30px] tracking-[-1.2px] md:tracking-[-1.5px] text-black mt-10 md:mt-12">
@@ -183,10 +191,15 @@ export default async function PropertyPage({
 
                 {/* Body */}
                 <div className="bg-white px-5 md:px-6 py-5 md:py-6">
-                  {/* Price */}
-                  <p className="text-[28px] md:text-[30px] lg:text-[32px] font-semibold text-blue-primary tracking-[-1.5px]">
-                    {prezzoFormatted}
-                  </p>
+                  {/* Price + contratto */}
+                  <div className="flex items-baseline gap-3 flex-wrap">
+                    <p className="text-[28px] md:text-[30px] lg:text-[32px] font-semibold text-blue-primary tracking-[-1.5px]">
+                      {prezzoFormatted}
+                    </p>
+                    <span className="text-[14px] text-blue-primary">
+                      {property.contratto === 'vendita' ? 'In vendita' : 'In affitto'}
+                    </span>
+                  </div>
 
                   {/* Stats grid */}
                   <div className="grid grid-cols-3 sm:grid-cols-5 gap-2 mt-5 pt-5 border-t border-black/8">

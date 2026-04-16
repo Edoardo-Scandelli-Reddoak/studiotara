@@ -2,23 +2,40 @@ import Image from "next/image";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { getProperties, isResidenziale, formatPrezzo } from "@/lib/api";
+import Pagination from "@/components/Pagination";
+import PropertySearchForm from "@/components/PropertySearchForm";
+import { getProperties, isResidenziale, formatPrezzo, formatTitolo } from "@/lib/api";
 
-const tipologie = [
-  "Appartamento",
-  "Attico",
-  "Villa",
-  "Villetta",
-  "Monolocale",
-  "Bilocale",
-  "Trilocale",
-  "Quadrilocale",
-  "Casale / Rustico",
-];
+const PROPERTIES_PER_PAGE = 15;
 
-export default async function CercoResidenziale() {
+export default async function CercoResidenziale({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string; contratto?: string; comune?: string; prezzo_min?: string; prezzo_max?: string }>;
+}) {
+  const { page: pageParam, contratto, comune, prezzo_min, prezzo_max } = await searchParams;
+  const currentPage = Math.max(1, parseInt(pageParam ?? '1', 10));
+
   const allProperties = await getProperties();
-  const residenziali = allProperties.filter((p) => isResidenziale(p.tipologia));
+  const allResidenziali = allProperties.filter((p) => {
+    if (!isResidenziale(p.tipologia)) return false;
+    if (contratto && p.contratto !== contratto) return false;
+    if (comune && p.comune.toLowerCase() !== comune.toLowerCase()) return false;
+    if (prezzo_min) {
+      const min = parseFloat(prezzo_min);
+      if (!isNaN(min) && min > 0 && (!p.prezzo || parseFloat(p.prezzo) < min)) return false;
+    }
+    if (prezzo_max) {
+      const max = parseFloat(prezzo_max);
+      if (!isNaN(max) && p.prezzo && parseFloat(p.prezzo) > max) return false;
+    }
+    return true;
+  });
+
+  const totalPages = Math.ceil(allResidenziali.length / PROPERTIES_PER_PAGE);
+  const safePage = Math.min(currentPage, totalPages || 1);
+  const start = (safePage - 1) * PROPERTIES_PER_PAGE;
+  const residenziali = allResidenziali.slice(start, start + PROPERTIES_PER_PAGE);
 
   return (
     <>
@@ -65,54 +82,10 @@ export default async function CercoResidenziale() {
           <h2 className="text-[22px] md:text-[26px] lg:text-[30px] tracking-[-1px] md:tracking-[-1.5px] text-black text-center">
             Cerca subito l&apos;immobile che fa <strong>per te!</strong>
           </h2>
-          <form className="flex flex-col gap-4 md:gap-5 mt-5 md:mt-6 max-w-[604px] mx-auto">
-            <div className="flex flex-col md:flex-row gap-4 md:gap-5">
-              <div className="flex-1 flex flex-col gap-1">
-                <label className="text-[13px] text-black/60 font-medium ml-1">Tipologia</label>
-                <select
-                  className="h-[42px] md:h-[47px] border-[2.5px] md:border-[3px] border-blue-primary rounded-[6px] px-3 text-[14px] outline-none bg-white focus:border-blue-secondary focus:shadow-[0_0_0_3px_rgba(17,85,218,0.15)] transition-all appearance-none cursor-pointer"
-                  defaultValue=""
-                >
-                  <option value="" disabled>Seleziona tipologia...</option>
-                  {tipologie.map((t) => (
-                    <option key={t} value={t}>{t}</option>
-                  ))}
-                </select>
-              </div>
-              <div className="flex-1 flex flex-col gap-1">
-                <label className="text-[13px] text-black/60 font-medium ml-1">Zona</label>
-                <input
-                  type="text"
-                  placeholder="Es. Buccinasco"
-                  className="h-[42px] md:h-[47px] border-[2.5px] md:border-[3px] border-blue-primary rounded-[6px] px-3 text-[14px] outline-none focus:border-blue-secondary focus:shadow-[0_0_0_3px_rgba(17,85,218,0.15)] transition-all"
-                />
-              </div>
-            </div>
-            <div className="flex flex-col md:flex-row gap-4 md:gap-5">
-              <div className="flex-1 flex flex-col gap-1">
-                <label className="text-[13px] text-black/60 font-medium ml-1">Prezzo min</label>
-                <input
-                  type="text"
-                  placeholder="Es. 100.000"
-                  className="h-[42px] md:h-[47px] border-[2.5px] md:border-[3px] border-blue-primary rounded-[6px] px-3 text-[14px] outline-none focus:border-blue-secondary focus:shadow-[0_0_0_3px_rgba(17,85,218,0.15)] transition-all"
-                />
-              </div>
-              <div className="flex-1 flex flex-col gap-1">
-                <label className="text-[13px] text-black/60 font-medium ml-1">Prezzo max</label>
-                <input
-                  type="text"
-                  placeholder="Es. 500.000"
-                  className="h-[42px] md:h-[47px] border-[2.5px] md:border-[3px] border-blue-primary rounded-[6px] px-3 text-[14px] outline-none focus:border-blue-secondary focus:shadow-[0_0_0_3px_rgba(17,85,218,0.15)] transition-all"
-                />
-              </div>
-            </div>
-            <button
-              type="submit"
-              className="w-full bg-red-primary text-white text-[16px] md:text-[17px] font-medium py-[11px] rounded-[6px] hover:scale-[1.02] hover:shadow-lg transition-all duration-300 cursor-pointer"
-            >
-              Cerca ora
-            </button>
-          </form>
+          <PropertySearchForm
+            mode="residenziale"
+            initial={{ contratto, comune, prezzo_min, prezzo_max }}
+          />
         </section>
 
         {/* ===== PROPERTY GRID ===== */}
@@ -162,7 +135,7 @@ export default async function CercoResidenziale() {
                   {/* Title & location */}
                   <div className="flex flex-col gap-[6px]">
                     <h3 className="text-[18px] md:text-[20px] lg:text-[22px] font-medium text-black tracking-[-0.8px] lg:tracking-[-1.32px] leading-tight">
-                      {property.titolo}
+                      {formatTitolo(property.titolo)}
                     </h3>
                     <p className="text-[14px] md:text-[15px] lg:text-[16px] text-black/70 tracking-[-0.5px] lg:tracking-[-0.96px]">
                       {property.comune}{property.provincia ? `, ${property.provincia}` : ''}
@@ -239,6 +212,12 @@ export default async function CercoResidenziale() {
               ))}
             </div>
           )}
+          <Pagination
+            currentPage={safePage}
+            totalPages={totalPages}
+            baseHref="/cerco-residenziale"
+            anchor="immobili"
+          />
         </section>
 
         {/* ===== CTA VENDI ===== */}
