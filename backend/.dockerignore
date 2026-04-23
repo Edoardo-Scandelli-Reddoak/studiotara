@@ -3,6 +3,6 @@ __pycache__/
 *.pyc
 .env
 db.sqlite3
-media/
+# media/ temporarily included for volume seeding
 staticfiles/
 .git/

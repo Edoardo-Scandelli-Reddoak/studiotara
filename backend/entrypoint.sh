@@ -1,6 +1,15 @@
 #!/bin/sh
 set -e
 
+# Seed media volume se vuoto (primo deploy)
+if [ -d /app/media_seed ] && [ "$(ls -A /app/media_seed 2>/dev/null)" ]; then
+    if [ ! "$(ls -A /app/media/properties 2>/dev/null)" ]; then
+        echo "Copiando media seed nel volume..."
+        cp -r /app/media_seed/* /app/media/
+        echo "Media copiati."
+    fi
+fi
+
 echo "Eseguendo migrate..."
 python manage.py migrate --noinput
 

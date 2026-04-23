@@ -18,8 +18,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-# Directory media (sovrascritta da Railway Volume in produzione)
-RUN mkdir -p /app/media
+# Seed media (copiato nel volume al primo avvio)
+RUN mkdir -p /app/media_seed
+RUN if [ -d /app/media ]; then cp -r /app/media/* /app/media_seed/ 2>/dev/null || true; fi
 
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
