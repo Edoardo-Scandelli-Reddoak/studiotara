@@ -4,7 +4,7 @@ from django.utils.text import slugify
 
 class Article(models.Model):
     titolo = models.CharField(max_length=255, verbose_name='Titolo')
-    slug = models.SlugField(unique=True, blank=True, verbose_name='Slug URL')
+    slug = models.SlugField(max_length=255, unique=True, blank=True, verbose_name='Slug URL')
     contenuto = models.TextField(verbose_name='Contenuto')
     excerpt = models.TextField(blank=True, verbose_name='Riassunto')
     immagine = models.ImageField(upload_to='blog/', null=True, blank=True, verbose_name='Immagine copertina')
