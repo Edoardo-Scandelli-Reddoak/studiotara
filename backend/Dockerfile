@@ -21,8 +21,6 @@ COPY . .
 # Directory media (sovrascritta da Railway Volume in produzione)
 RUN mkdir -p /app/media
 
-EXPOSE 8000
-
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
