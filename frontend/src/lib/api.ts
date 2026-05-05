@@ -32,6 +32,7 @@ export interface ApiPropertyList {
   classe_energetica: string;
   in_vetrina: boolean;
   in_carosello: boolean;
+  visualizzazioni: number;
   immagine_principale: string | null;
 }
 
@@ -64,10 +65,19 @@ export interface ApiPropertyDetail {
   classe_energetica: string;
   in_vetrina: boolean;
   in_carosello: boolean;
+  visualizzazioni: number;
   data_creazione: string;
   data_aggiornamento: string;
   video_url: string | null;
   images: ApiPropertyImage[];
+}
+
+export async function incrementPropertyViews(id: number): Promise<void> {
+  try {
+    await fetch(`${API_BASE}/api/properties/${id}/view/`, { method: 'POST' });
+  } catch {
+    // silent fail
+  }
 }
 
 // Tipologie residenziali (tutto il resto è commerciale)
@@ -176,6 +186,25 @@ export async function getBlogArticles(): Promise<ApiBlogArticleList[]> {
   }
 
   return all;
+}
+
+export interface ApiGoogleReview {
+  id: number;
+  author_name: string;
+  profile_photo_url: string;
+  rating: number;
+  text: string;
+  time: string;
+}
+
+export async function getGoogleReviews(): Promise<ApiGoogleReview[]> {
+  try {
+    const res = await fetch(`${API_BASE}/api/reviews/`, FETCH_OPTIONS);
+    if (!res.ok) return [];
+    return res.json();
+  } catch {
+    return [];
+  }
 }
 
 export async function getBlogArticle(slug: string): Promise<ApiBlogArticleDetail | null> {

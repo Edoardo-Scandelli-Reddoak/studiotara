@@ -26,7 +26,7 @@ class PropertyListSerializer(serializers.ModelSerializer):
             'prezzo', 'mq', 'comune', 'provincia', 'zona',
             'locali', 'bagni', 'camere', 'piano',
             'ascensore', 'garage', 'classe_energetica',
-            'in_vetrina', 'in_carosello',
+            'in_vetrina', 'in_carosello', 'visualizzazioni',
             'immagine_principale',
         ]
 

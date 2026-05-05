@@ -44,6 +44,12 @@ class Property(models.Model):
     riscaldamento = models.CharField(max_length=100, blank=True, verbose_name='Riscaldamento')
     classe_energetica = models.CharField(max_length=10, blank=True, verbose_name='Classe energetica')
 
+    # Media
+    video_url = models.URLField(blank=True, verbose_name='URL Video (YouTube embed)')
+
+    # Statistiche
+    visualizzazioni = models.PositiveIntegerField(default=0, verbose_name='Visualizzazioni')
+
     # Flag
     in_vetrina = models.BooleanField(default=False, verbose_name='In vetrina')
     in_carosello = models.BooleanField(default=False, verbose_name='In carosello')

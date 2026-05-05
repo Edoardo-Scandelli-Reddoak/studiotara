@@ -20,7 +20,7 @@ function buildBrochureRows(property: ApiPropertyDetail, ref: string, prezzoForma
     { label: 'Ascensore',       value: property.ascensore ? 'Sì' : 'No' },
     { label: 'Garage',          value: property.garage    ? 'Sì' : 'No' },
     ...(property.riscaldamento  ? [{ label: 'Riscaldamento',    value: property.riscaldamento }]     : []),
-    ...(property.classe_energetica ? [{ label: 'Classe energetica', value: property.classe_energetica }] : []),
+    { label: 'Classe energetica', value: property.classe_energetica || 'In fase di definizione' },
     ...(property.indirizzo      ? [{ label: 'Indirizzo',        value: property.indirizzo }]         : []),
     ...(property.comune         ? [{ label: 'Comune',           value: property.comune }]            : []),
     ...(property.provincia      ? [{ label: 'Provincia',        value: property.provincia }]         : []),
@@ -38,9 +38,16 @@ export default function PropertyGallery({ property }: { property: ApiPropertyDet
   const [currentIndex, setCurrentIndex] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [videoOpen, setVideoOpen] = useState(false);
+  const [planimetriaOpen, setPlanimetriaOpen] = useState(false);
+  const [planimetriaIndex, setPlanimetriaIndex] = useState(0);
   const [generating, setGenerating] = useState(false);
 
   const hasVideo = !!property.video_url;
+
+  const planimetrieUrls = property.images
+    .filter(img => img.is_planimetria && img.file_url)
+    .map(img => img.file_url as string);
+  const hasPlanimetria = planimetrieUrls.length > 0;
 
   const galleryImages = property.images
     .filter(img => !img.is_planimetria && img.file_url)
@@ -62,24 +69,30 @@ export default function PropertyGallery({ property }: { property: ApiPropertyDet
       const html2pdf = (await import("html2pdf.js")).default;
       const tableRows = buildBrochureRows(property, ref, prezzoFormatted);
 
+      const mainImage = images.length > 0 ? images[0] : '';
+
       const html = `
 <div id="brochure-content" style="font-family:'Helvetica Neue',Arial,sans-serif;color:#1a1a1a;line-height:1.6;padding:0">
 
-  <div style="background:linear-gradient(135deg,#092d74,#1155da);color:white;padding:36px 32px;border-radius:10px;margin-bottom:24px">
+  <div style="background:linear-gradient(135deg,#092d74,#1155da);color:white;padding:28px 28px 28px 28px;border-radius:10px;margin-bottom:16px">
     <span style="display:inline-block;background:${property.contratto === 'vendita' ? '#1152d2' : '#d2072a'};color:white;padding:3px 10px;border-radius:4px;font-size:12px;margin-bottom:10px">
       ${property.contratto === 'vendita' ? 'In vendita' : 'In affitto'}
     </span>
-    <div style="font-size:24px;letter-spacing:-0.5px;font-weight:600;margin:0 0 4px 0">${property.titolo}</div>
-    <div style="font-size:14px;opacity:0.85">${property.indirizzo || [property.comune, property.provincia].filter(Boolean).join(', ')}</div>
-    <div style="font-size:28px;font-weight:700;margin:14px 0 0 0">${prezzoFormatted}</div>
+    <div style="font-size:22px;letter-spacing:-0.5px;font-weight:600;margin:0 0 4px 0">${property.titolo}</div>
+    <div style="font-size:13px;opacity:0.8">${property.indirizzo || [property.comune, property.provincia].filter(Boolean).join(', ')}</div>
+    <div style="font-size:26px;font-weight:700;margin:12px 0 0 0">${prezzoFormatted}</div>
   </div>
 
-  <div style="display:flex;gap:24px;margin:20px 0;padding:16px 0;border-top:1px solid #e0e0e0;border-bottom:1px solid #e0e0e0">
-    ${property.mq     ? `<div style="text-align:center"><div style="font-size:22px;font-weight:600">${property.mq}</div><div style="font-size:10px;text-transform:uppercase;color:#888;letter-spacing:1px;margin-top:2px">m²</div></div>` : ''}
-    ${property.locali ? `<div style="text-align:center"><div style="font-size:22px;font-weight:600">${property.locali}</div><div style="font-size:10px;text-transform:uppercase;color:#888;letter-spacing:1px;margin-top:2px">Locali</div></div>` : ''}
-    ${property.camere ? `<div style="text-align:center"><div style="font-size:22px;font-weight:600">${property.camere}</div><div style="font-size:10px;text-transform:uppercase;color:#888;letter-spacing:1px;margin-top:2px">Camere</div></div>` : ''}
-    ${property.bagni  ? `<div style="text-align:center"><div style="font-size:22px;font-weight:600">${property.bagni}</div><div style="font-size:10px;text-transform:uppercase;color:#888;letter-spacing:1px;margin-top:2px">Bagni</div></div>` : ''}
-    ${property.piano  ? `<div style="text-align:center"><div style="font-size:22px;font-weight:600">${property.piano}</div><div style="font-size:10px;text-transform:uppercase;color:#888;letter-spacing:1px;margin-top:2px">Piano</div></div>` : ''}
+  <div style="display:flex;gap:0;margin-bottom:24px;border-radius:10px;overflow:hidden;border:1px solid #e0ddd8">
+    ${mainImage ? `<img src="${mainImage}" crossorigin="anonymous" style="width:50%;min-height:170px;max-height:190px;object-fit:cover;display:block" />` : ''}
+    <div style="width:${mainImage ? '50%' : '100%'};background:#f5f3f0;display:flex;flex-wrap:wrap;align-content:center;padding:20px 16px">
+      <div style="width:33.33%;text-align:center;padding:10px 0"><div style="font-size:24px;font-weight:700;color:#092d74;line-height:1">${property.mq ?? '—'}</div><div style="font-size:10px;text-transform:uppercase;color:#555;letter-spacing:0.8px;margin-top:5px;font-weight:600">m²</div></div>
+      <div style="width:33.33%;text-align:center;padding:10px 0"><div style="font-size:24px;font-weight:700;color:#092d74;line-height:1">${property.locali ?? '—'}</div><div style="font-size:10px;text-transform:uppercase;color:#555;letter-spacing:0.8px;margin-top:5px;font-weight:600">Locali</div></div>
+      <div style="width:33.33%;text-align:center;padding:10px 0"><div style="font-size:24px;font-weight:700;color:#092d74;line-height:1">${property.camere ?? '—'}</div><div style="font-size:10px;text-transform:uppercase;color:#555;letter-spacing:0.8px;margin-top:5px;font-weight:600">Camere</div></div>
+      <div style="width:33.33%;text-align:center;padding:10px 0"><div style="font-size:24px;font-weight:700;color:#092d74;line-height:1">${property.bagni ?? '—'}</div><div style="font-size:10px;text-transform:uppercase;color:#555;letter-spacing:0.8px;margin-top:5px;font-weight:600">Bagni</div></div>
+      <div style="width:33.33%;text-align:center;padding:10px 0"><div style="font-size:24px;font-weight:700;color:#092d74;line-height:1">${property.piano || '—'}</div><div style="font-size:10px;text-transform:uppercase;color:#555;letter-spacing:0.8px;margin-top:5px;font-weight:600">Piano</div></div>
+      <div style="width:33.33%;text-align:center;padding:10px 0"><div style="font-size:24px;font-weight:700;color:#092d74;line-height:1">${property.classe_energetica || 'N/D'}</div><div style="font-size:10px;text-transform:uppercase;color:#555;letter-spacing:0.8px;margin-top:5px;font-weight:600">Classe energ.</div></div>
+    </div>
   </div>
 
   ${property.descrizione ? `
@@ -220,6 +233,25 @@ export default function PropertyGallery({ property }: { property: ApiPropertyDet
           Video
         </button>
 
+        {/* Planimetria */}
+        <button
+          onClick={() => hasPlanimetria && (setPlanimetriaIndex(0), setPlanimetriaOpen(true))}
+          disabled={!hasPlanimetria}
+          title={!hasPlanimetria ? "Planimetria non disponibile" : "Visualizza planimetria"}
+          className={`px-4 py-2 rounded-[6px] text-[14px] font-medium flex items-center gap-1.5 transition-all ${
+            hasPlanimetria
+              ? "bg-[#f5f3f0] text-black/70 hover:bg-[#eae8e5] cursor-pointer"
+              : "bg-[#f5f3f0] text-black/30 cursor-not-allowed"
+          }`}
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="2" />
+            <line x1="3" y1="12" x2="21" y2="12" />
+            <line x1="12" y1="3" x2="12" y2="21" />
+          </svg>
+          Planimetria
+        </button>
+
         {/* Brochure */}
         <button
           onClick={downloadBrochure}
@@ -269,6 +301,55 @@ export default function PropertyGallery({ property }: { property: ApiPropertyDet
               className="w-full h-full rounded-[12px]"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Planimetria modal */}
+      {planimetriaOpen && hasPlanimetria && (
+        <div
+          className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4"
+          onClick={() => setPlanimetriaOpen(false)}
+        >
+          <button
+            onClick={() => setPlanimetriaOpen(false)}
+            className="absolute top-6 right-6 w-[40px] h-[40px] bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center cursor-pointer z-10"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+
+          {planimetrieUrls.length > 1 && (
+            <>
+              <button
+                onClick={(e) => { e.stopPropagation(); setPlanimetriaIndex((i) => (i === 0 ? planimetrieUrls.length - 1 : i - 1)); }}
+                className="absolute left-4 top-1/2 -translate-y-1/2 w-[40px] h-[40px] bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center cursor-pointer z-10"
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6" /></svg>
+              </button>
+              <button
+                onClick={(e) => { e.stopPropagation(); setPlanimetriaIndex((i) => (i === planimetrieUrls.length - 1 ? 0 : i + 1)); }}
+                className="absolute right-4 top-1/2 -translate-y-1/2 w-[40px] h-[40px] bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center cursor-pointer z-10"
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6" /></svg>
+              </button>
+            </>
+          )}
+
+          <div className="relative flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
+            {planimetrieUrls.length > 1 && (
+              <div className="absolute top-4 left-1/2 -translate-x-1/2 bg-black/60 text-white text-[13px] px-3 py-1 rounded-full z-10">
+                {planimetriaIndex + 1} / {planimetrieUrls.length}
+              </div>
+            )}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={planimetrieUrls[planimetriaIndex]}
+              alt={`Planimetria ${planimetriaIndex + 1}`}
+              className="max-w-[90vw] max-h-[85vh] object-contain rounded-[12px]"
             />
           </div>
         </div>

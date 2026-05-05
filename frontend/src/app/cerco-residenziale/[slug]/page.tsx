@@ -6,7 +6,10 @@ import Footer from "@/components/Footer";
 import PropertyGallery from "@/components/PropertyGallery";
 import ScrollToTop from "@/components/ScrollToTop";
 import ContactModal from "@/components/ContactModal";
+import AppointmentModal from "@/components/AppointmentModal";
+import SellModal from "@/components/SellModal";
 import SearchRequestModal from "@/components/SearchRequestModal";
+import ViewCounter from "@/components/ViewCounter";
 import { getProperty, formatPrezzo, formatTitolo } from "@/lib/api";
 import type { ApiPropertyDetail } from "@/lib/api";
 
@@ -54,12 +57,10 @@ export default async function PropertyPage({
           <p className="text-[18px] md:text-[22px] lg:text-[26px] text-white tracking-[-1px] md:tracking-[-1.5px] text-center sm:text-left">
             Vuoi <strong>vendere</strong> il tuo immobile? Comincia subito!
           </p>
-          <Link
-            href="/vendi-immobile"
-            className="shrink-0 bg-red-primary text-white text-[15px] md:text-[16px] font-medium px-8 md:px-10 py-[10px] md:py-[11px] rounded-[6px] hover:scale-105 hover:shadow-lg transition-all duration-300"
-          >
-            Comincia subito!
-          </Link>
+          <SellModal
+            triggerText="Vendi adesso!"
+            triggerClassName="shrink-0 bg-red-primary text-white text-[15px] md:text-[16px] font-medium px-8 md:px-10 py-[10px] md:py-[11px] rounded-[6px] hover:scale-105 hover:shadow-lg transition-all duration-300 cursor-pointer"
+          />
         </div>
 
         {/* ===== TWO COLUMN LAYOUT ===== */}
@@ -78,7 +79,7 @@ export default async function PropertyPage({
             </Link>
 
             {/* Title + badge row */}
-            <div className="flex items-start justify-between gap-4 mt-4">
+            <div className="flex items-stretch justify-between gap-4 mt-4">
               <div>
                 <h1 className="text-[26px] md:text-[28px] lg:text-[30px] tracking-[-1.2px] md:tracking-[-1.5px] text-black leading-tight">
                   {formatTitolo(property.titolo)}
@@ -87,12 +88,15 @@ export default async function PropertyPage({
                   {property.comune}{property.provincia ? `, ${property.provincia}` : ''}
                 </p>
               </div>
-              <div
-                className={`shrink-0 px-[10px] py-[5px] rounded-[4px] text-[14px] text-white tracking-[-0.5px] mt-1 ${
-                  property.contratto === "vendita" ? "bg-[#1152d2]" : "bg-red-primary"
-                }`}
-              >
-                {property.contratto === "vendita" ? "In vendita" : "In affitto"}
+              <div className="shrink-0 flex flex-col items-end justify-between">
+                <div
+                  className={`px-[10px] py-[5px] rounded-[4px] text-[14px] text-white tracking-[-0.5px] ${
+                    property.contratto === "vendita" ? "bg-[#1152d2]" : "bg-red-primary"
+                  }`}
+                >
+                  {property.contratto === "vendita" ? "In vendita" : "In affitto"}
+                </div>
+                <ViewCounter propertyId={property.id} initialViews={property.visualizzazioni} />
               </div>
             </div>
 
@@ -135,7 +139,7 @@ export default async function PropertyPage({
                 { label: 'Ascensore',         value: property.ascensore ? 'Sì' : 'No' },
                 { label: 'Garage',            value: property.garage    ? 'Sì' : 'No' },
                 ...(property.riscaldamento    ? [{ label: 'Riscaldamento',      value: property.riscaldamento }]    : []),
-                ...(property.classe_energetica ? [{ label: 'Classe energetica', value: property.classe_energetica }] : []),
+                { label: 'Classe energetica', value: property.classe_energetica || 'In fase di definizione' },
                 ...(property.indirizzo ? [{ label: 'Indirizzo',         value: property.indirizzo }]          : []),
                 ...(property.comune    ? [{ label: 'Comune',            value: property.comune }]             : []),
                 ...(property.provincia ? [{ label: 'Provincia',         value: property.provincia }]          : []),
@@ -252,56 +256,39 @@ export default async function PropertyPage({
                     </div>
                   </div>
 
-                  {/* Boolean features */}
-                  {(property.ascensore || property.garage) && (
-                    <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t border-black/8">
-                      {property.ascensore && (
-                        <span className="text-[12px] bg-blue-primary/10 text-blue-primary font-medium px-2.5 py-1 rounded-[4px]">
-                          Ascensore
-                        </span>
-                      )}
-                      {property.garage && (
-                        <span className="text-[12px] bg-blue-primary/10 text-blue-primary font-medium px-2.5 py-1 rounded-[4px]">
-                          Garage
-                        </span>
-                      )}
-                    </div>
-                  )}
+                  {/* Tags: Classe energetica, Ascensore, Garage */}
+                  <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t border-black/8">
+                    <span className="text-[12px] bg-green-600/10 text-green-700 font-medium px-2.5 py-1 rounded-[4px]">
+                      Classe {property.classe_energetica || 'In definizione'}
+                    </span>
+                    {property.ascensore && (
+                      <span className="text-[12px] bg-blue-primary/10 text-blue-primary font-medium px-2.5 py-1 rounded-[4px]">
+                        Ascensore
+                      </span>
+                    )}
+                    {property.garage && (
+                      <span className="text-[12px] bg-blue-primary/10 text-blue-primary font-medium px-2.5 py-1 rounded-[4px]">
+                        Garage
+                      </span>
+                    )}
+                  </div>
                 </div>
               </div>
 
               {/* Contattaci */}
-              <div className="flex flex-col gap-5">
+              <div className="flex flex-col gap-4">
                 <h3 className="text-[24px] md:text-[28px] lg:text-[30px] tracking-[-1.2px] md:tracking-[-1.5px] text-black">
                   Contattaci subito
                 </h3>
 
-                <div className="flex gap-5 items-center">
-                  <div className="w-[44px] md:w-[48px] lg:w-[52px] h-[42px] md:h-[45px] lg:h-[49px] rounded-[8px] bg-red-primary flex items-center justify-center shrink-0">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
-                    </svg>
-                  </div>
-                  <a href="tel:3393333333" className="text-[16px] md:text-[17px] text-black hover:text-blue-primary transition-colors">
-                    339 3333333
-                  </a>
-                </div>
-
-                <div className="flex gap-5 items-center">
-                  <div className="w-[44px] md:w-[48px] lg:w-[52px] h-[42px] md:h-[45px] lg:h-[49px] rounded-[8px] bg-red-primary flex items-center justify-center shrink-0">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <rect width="20" height="16" x="2" y="4" rx="2" />
-                      <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
-                    </svg>
-                  </div>
-                  <a href="mailto:info@studiotara.it" className="text-[16px] md:text-[17px] text-black hover:text-blue-primary transition-colors">
-                    info@studiotara.it
-                  </a>
-                </div>
-
+                <AppointmentModal
+                  triggerText="Fissa appuntamento"
+                  triggerClassName="block w-full text-center bg-red-primary text-white text-[16px] md:text-[17px] font-semibold py-[13px] rounded-[8px] hover:scale-[1.02] hover:shadow-lg transition-all duration-300 cursor-pointer"
+                  propertyRef={ref}
+                />
                 <ContactModal
                   triggerText="Richiedi informazioni"
-                  triggerClassName="block w-full text-center bg-red-primary text-white text-[16px] md:text-[17px] font-medium py-[11px] rounded-[6px] hover:scale-[1.02] hover:shadow-lg transition-all duration-300 mt-2 cursor-pointer"
+                  triggerClassName="block w-full text-center border-2 border-blue-primary text-blue-primary text-[15px] md:text-[16px] font-medium py-[11px] rounded-[8px] hover:bg-blue-primary/5 transition-all duration-300 cursor-pointer"
                   propertyRef={ref}
                 />
               </div>

@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import ReviewsCarousel from "@/components/ReviewsCarousel";
 
 const servizi = [
   {
@@ -274,60 +275,17 @@ export default function ChiSiamo() {
           </div>
         </section>
 
-        {/* ===== TESTIMONIALS ===== */}
+        {/* ===== TESTIMONIALS (Google Reviews) ===== */}
         <section className="text-center mt-[80px] md:mt-[120px] lg:mt-[160px] px-4">
           <h2 className="text-[26px] md:text-[30px] lg:text-[32px] tracking-[-1.5px] md:tracking-[-2px] text-black">
             Cosa dicono i nostri <strong>clienti</strong>
           </h2>
-          <p className="text-[15px] md:text-[16px] text-black mt-2 lg:mt-3 tracking-[-0.5px] lg:tracking-[-1.2px]">
+          <p className="text-[15px] md:text-[16px] text-black/70 mt-2 tracking-[-0.5px]">
             Trent&apos;anni di fiducia, raccontati da chi ci ha scelto.
           </p>
         </section>
 
-        <section className="flex flex-col md:flex-row gap-5 md:gap-6 mt-8 w-full">
-          <div className="flex-1 rounded-[18px] md:rounded-[20px] lg:rounded-[24px] border border-blue-border px-7 md:px-10 py-8 md:py-10 flex flex-col items-center gap-6 hover:shadow-[0px_4px_20px_0px_rgba(10,47,120,0.1)] hover:-translate-y-1 transition-all duration-300">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/icons/virgolette.svg"
-              alt=""
-              className="w-[48px] h-[48px]"
-              aria-hidden="true"
-            />
-            <div className="text-center text-black">
-              <p className="text-[15px] md:text-[16px] leading-relaxed">
-                &ldquo;Dal primo contatto ho capito di essere nelle mani
-                giuste. Stefano mi ha seguito in ogni fase
-                dell&apos;acquisto con affidabilità e disponibilità
-                costante. Lo consiglio a chiunque, soprattutto a chi compra
-                casa per la prima volta.&rdquo;
-              </p>
-              <p className="text-[17px] md:text-[18px] font-bold tracking-[-0.8px] mt-3 lg:mt-4">
-                Francesco L.
-              </p>
-            </div>
-          </div>
-
-          <div className="flex-1 rounded-[18px] md:rounded-[20px] lg:rounded-[24px] border border-blue-border px-7 md:px-10 py-8 md:py-10 flex flex-col items-center gap-6 hover:shadow-[0px_4px_20px_0px_rgba(10,47,120,0.1)] hover:-translate-y-1 transition-all duration-300">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/icons/virgolette.svg"
-              alt=""
-              className="w-[48px] h-[48px]"
-              aria-hidden="true"
-            />
-            <div className="text-center text-black">
-              <p className="text-[15px] md:text-[16px] leading-relaxed">
-                &ldquo;Avevo bisogno di vendere un appartamento in tempi
-                rapidi. Studio Tara ha gestito tutto con professionalità,
-                trovando l&apos;acquirente giusto in meno di un mese.
-                Esperienza eccellente dall&apos;inizio alla fine.&rdquo;
-              </p>
-              <p className="text-[17px] md:text-[18px] font-bold tracking-[-0.8px] mt-3 lg:mt-4">
-                Maria G.
-              </p>
-            </div>
-          </div>
-        </section>
+        <ReviewsCarousel />
 
         {/* ===== NEWSLETTER ===== */}
         <section className="w-full rounded-[20px] md:rounded-[24px] lg:rounded-[28px] bg-gradient-to-b from-blue-primary to-blue-secondary overflow-hidden mt-[80px] md:mt-[120px] lg:mt-[160px] mb-[40px] md:mb-[50px] lg:mb-[60px] shadow-[0px_0px_10px_0px_rgba(0,0,0,0.25)] text-white text-center py-12 md:py-16 px-6">

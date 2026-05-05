@@ -1,4 +1,7 @@
-from rest_framework import generics
+from rest_framework import generics, status
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from django.db.models import F
 from .models import Property
 from .serializers import PropertyListSerializer, PropertyDetailSerializer
 
@@ -41,6 +44,16 @@ class PropertyListView(generics.ListAPIView):
 class PropertyDetailView(generics.RetrieveAPIView):
     queryset = Property.objects.filter(flag_storico=False).prefetch_related('images')
     serializer_class = PropertyDetailSerializer
+
+
+@api_view(['POST'])
+def property_view_increment(request, pk):
+    try:
+        Property.objects.filter(pk=pk, flag_storico=False).update(visualizzazioni=F('visualizzazioni') + 1)
+        views = Property.objects.filter(pk=pk).values_list('visualizzazioni', flat=True).first()
+        return Response({'visualizzazioni': views})
+    except Property.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
 
 
 class PropertyFeaturedView(generics.ListAPIView):

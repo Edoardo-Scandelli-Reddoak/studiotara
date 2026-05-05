@@ -25,6 +25,7 @@ class PropertyAdmin(ModelAdmin):
         'bagni', 'camere', 'locali', 'piano', 'ascensore', 'garage', 'riscaldamento', 'classe_energetica',
         'in_vetrina', 'in_carosello', 'flag_storico',
         'data_creazione', 'data_aggiornamento', 'ultimo_sync',
+        'visualizzazioni',
     ]
     inlines = [PropertyImageInline]
 
@@ -32,7 +33,7 @@ class PropertyAdmin(ModelAdmin):
         return False
 
     def has_change_permission(self, request, obj=None):
-        return False
+        return True
 
     def has_delete_permission(self, request, obj=None):
         return False

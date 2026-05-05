@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     'apps.blog',
     'apps.contacts',
     'apps.sync',
+    'apps.reviews',
 ]
 
 MIDDLEWARE = [
@@ -131,6 +132,10 @@ AGENCY_EMAIL = config('AGENCY_EMAIL', default='info@studiotara.it')
 # Attiva SMTP solo se le credenziali sono configurate
 if EMAIL_HOST and EMAIL_HOST_USER and EMAIL_HOST_PASSWORD:
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+# Google Places API (per recensioni)
+GOOGLE_PLACES_API_KEY = config('GOOGLE_PLACES_API_KEY', default='')
+GOOGLE_PLACE_ID = config('GOOGLE_PLACE_ID', default='ChIJq6qqKJDBhkcRGxNlFl_DyQE')
 
 # django-unfold
 UNFOLD = {

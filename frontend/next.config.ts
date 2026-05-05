@@ -16,6 +16,11 @@ const nextConfig: NextConfig = {
         hostname: '*.up.railway.app',
         pathname: '/media/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'img.youtube.com',
+        pathname: '/vi/**',
+      },
     ],
   },
 };

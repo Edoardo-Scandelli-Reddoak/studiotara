@@ -2,6 +2,8 @@ import Image from "next/image";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import ReviewsCarousel from "@/components/ReviewsCarousel";
+import VideoPlayer from "@/components/VideoPlayer";
 
 const tipologie = [
   "Abitazioni in Stabili Medi",
@@ -157,13 +159,7 @@ export default function Home() {
           <div className="lg:w-1/2 flex items-center justify-center p-5 md:p-8 lg:p-[30px]">
             <div className="w-full max-w-[580px] rounded-[18px] md:rounded-[22px] bg-gradient-to-t from-[#f2f2f2] to-white p-3 md:p-[12px]">
               <div className="w-full aspect-video rounded-[14px] md:rounded-[18px] overflow-hidden bg-black">
-                <iframe
-                  src="https://www.youtube.com/embed/8dO12buHcRA?rel=0"
-                  title="Video Studio Tara"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                  className="w-full h-full"
-                />
+                <VideoPlayer videoId="8dO12buHcRA" />
               </div>
             </div>
           </div>
@@ -335,7 +331,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ===== TESTIMONIALS ===== */}
+        {/* ===== TESTIMONIALS (Google Reviews) ===== */}
         <section className="text-center mt-[80px] md:mt-[120px] lg:mt-[160px] px-4">
           <h2 className="text-[26px] md:text-[30px] lg:text-[32px] tracking-[-1.5px] md:tracking-[-2px] text-black">
             Cosa dicono i nostri <strong>clienti</strong>
@@ -345,50 +341,7 @@ export default function Home() {
           </p>
         </section>
 
-        <section className="flex flex-col md:flex-row gap-5 md:gap-6 mt-8 w-full">
-          <div className="flex-1 rounded-[18px] md:rounded-[20px] border border-blue-border px-7 md:px-10 py-8 md:py-10 flex flex-col items-center gap-6 hover:shadow-[0px_4px_20px_0px_rgba(10,47,120,0.1)] hover:-translate-y-1 transition-all duration-300">
-            <Image
-              src="/icons/virgolette.svg"
-              alt=""
-              width={36}
-              height={36}
-              aria-hidden="true"
-            />
-            <div className="text-center text-black">
-              <p className="text-[15px] md:text-[16px] leading-relaxed">
-                &ldquo;Dal primo contatto ho capito di essere nelle mani
-                giuste. Stefano mi ha seguito in ogni fase
-                dell&apos;acquisto con affidabilità e disponibilità
-                costante. Lo consiglio a chiunque, soprattutto a chi compra
-                casa per la prima volta.&rdquo;
-              </p>
-              <p className="text-[17px] md:text-[18px] font-bold tracking-[-0.8px] mt-3">
-                Francesco L.
-              </p>
-            </div>
-          </div>
-
-          <div className="flex-1 rounded-[18px] md:rounded-[20px] border border-blue-border px-7 md:px-10 py-8 md:py-10 flex flex-col items-center gap-6 hover:shadow-[0px_4px_20px_0px_rgba(10,47,120,0.1)] hover:-translate-y-1 transition-all duration-300">
-            <Image
-              src="/icons/virgolette.svg"
-              alt=""
-              width={36}
-              height={36}
-              aria-hidden="true"
-            />
-            <div className="text-center text-black">
-              <p className="text-[15px] md:text-[16px] leading-relaxed">
-                &ldquo;Avevo bisogno di vendere un appartamento in tempi
-                rapidi. Studio Tara ha gestito tutto con professionalità,
-                trovando l&apos;acquirente giusto in meno di un mese.
-                Esperienza eccellente dall&apos;inizio alla fine.&rdquo;
-              </p>
-              <p className="text-[17px] md:text-[18px] font-bold tracking-[-0.8px] mt-3">
-                Maria G.
-              </p>
-            </div>
-          </div>
-        </section>
+        <ReviewsCarousel />
 
         {/* ===== BLOG SECTION (provisional) ===== */}
         <section className="text-center mt-[80px] md:mt-[120px] lg:mt-[160px] px-4">
