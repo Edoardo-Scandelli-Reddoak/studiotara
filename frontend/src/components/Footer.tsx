@@ -61,7 +61,9 @@ export default function Footer() {
               <p>Email: info@studiotara.it</p>
               <div className="flex gap-4 mt-2">
                 <a
-                  href="#"
+                  href="https://www.facebook.com/profile.php?id=61569249446214"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   aria-label="Facebook"
                   className="hover:text-white hover:scale-110 transition-all duration-200"
                 >
@@ -70,7 +72,9 @@ export default function Footer() {
                   </svg>
                 </a>
                 <a
-                  href="#"
+                  href="https://www.instagram.com/studiotara.immobiliare/"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   aria-label="Instagram"
                   className="hover:text-white hover:scale-110 transition-all duration-200"
                 >
