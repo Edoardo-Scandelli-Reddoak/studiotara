@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
 
 interface Review {
@@ -51,7 +51,7 @@ const REVIEWS: Review[] = [
     rating: 5,
   },
   {
-    quote: 'Cercavo un capannone in zona sud-ovest Milano. Studio Tara conosceva perfettamente il mercato e mi ha proposto esattamente quello che cercavo. Affare concluso in tempi record.',
+    quote: "Cercavo un capannone nell'hinterland di Milano. Studio Tara conosceva perfettamente il mercato e mi ha proposto esattamente quello che cercavo. Affare concluso in tempi record.",
     author: 'Davide C.',
     rating: 5,
   },
@@ -76,48 +76,63 @@ function StarRating({ rating }: { rating: number }) {
   );
 }
 
+function ReviewCard({ review }: { review: Review }) {
+  return (
+    <div className="rounded-[16px] md:rounded-[20px] border border-blue-border px-6 md:px-10 py-7 md:py-10 flex flex-col items-center gap-4 md:gap-5 md:hover:shadow-[0px_4px_20px_0px_rgba(10,47,120,0.1)] md:hover:-translate-y-1 md:transition-all md:duration-300 bg-white h-full">
+      <Image
+        src="/icons/virgolette.svg"
+        alt=""
+        width={36}
+        height={36}
+        aria-hidden="true"
+      />
+      <StarRating rating={review.rating} />
+      <div className="text-center text-black flex-1 flex flex-col justify-between">
+        <p className="text-[14px] md:text-[16px] leading-relaxed">
+          &ldquo;{review.quote}&rdquo;
+        </p>
+        <p className="text-[16px] md:text-[18px] font-bold tracking-[-0.6px] md:tracking-[-0.8px] mt-3">
+          {review.author}
+        </p>
+      </div>
+    </div>
+  );
+}
+
 export default function ReviewsCarousel() {
   const [page, setPage] = useState(0);
-  const perPage = 3;
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
+
+  const perPage = isMobile ? 1 : 3;
   const totalPages = Math.ceil(REVIEWS.length / perPage);
-  const visible = REVIEWS.slice(page * perPage, page * perPage + perPage);
+  const safePage = Math.min(page, totalPages - 1);
+  const visible = REVIEWS.slice(safePage * perPage, safePage * perPage + perPage);
 
   return (
     <div className="w-full">
-      {/* Cards */}
-      <div className="flex flex-col md:flex-row gap-5 md:gap-6 mt-8 w-full min-h-[280px]">
+      {/* Cards: 1 per page on mobile, 3 per page on desktop */}
+      <div className="flex flex-col md:flex-row gap-5 md:gap-6 mt-7 md:mt-8 w-full md:min-h-[280px]">
         {visible.map((review, i) => (
-          <div
-            key={page * perPage + i}
-            className="flex-1 rounded-[18px] md:rounded-[20px] border border-blue-border px-7 md:px-10 py-8 md:py-10 flex flex-col items-center gap-5 hover:shadow-[0px_4px_20px_0px_rgba(10,47,120,0.1)] hover:-translate-y-1 transition-all duration-300"
-          >
-            <Image
-              src="/icons/virgolette.svg"
-              alt=""
-              width={36}
-              height={36}
-              aria-hidden="true"
-            />
-            <StarRating rating={review.rating} />
-            <div className="text-center text-black flex-1 flex flex-col justify-between">
-              <p className="text-[15px] md:text-[16px] leading-relaxed">
-                &ldquo;{review.quote}&rdquo;
-              </p>
-              <p className="text-[17px] md:text-[18px] font-bold tracking-[-0.8px] mt-3">
-                {review.author}
-              </p>
-            </div>
+          <div key={safePage * perPage + i} className="flex-1">
+            <ReviewCard review={review} />
           </div>
         ))}
       </div>
 
-      {/* Carousel controls */}
+      {/* Carousel controls: prev / dots / next */}
       {totalPages > 1 && (
-        <div className="flex items-center justify-center gap-3 mt-8">
+        <div className="flex items-center justify-center gap-3 mt-6 md:mt-8">
           <button
             onClick={() => setPage((p) => Math.max(0, p - 1))}
-            disabled={page === 0}
-            className="w-9 h-9 rounded-full border border-blue-primary flex items-center justify-center text-blue-primary disabled:opacity-30 hover:bg-blue-primary hover:text-white transition-all cursor-pointer disabled:cursor-default"
+            disabled={safePage === 0}
+            className="w-11 h-11 md:w-9 md:h-9 rounded-full border border-blue-primary flex items-center justify-center text-blue-primary disabled:opacity-30 md:hover:bg-blue-primary md:hover:text-white md:transition-all cursor-pointer disabled:cursor-default active:bg-blue-primary/10"
             aria-label="Recensioni precedenti"
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -130,10 +145,10 @@ export default function ReviewsCarousel() {
               <button
                 key={i}
                 onClick={() => setPage(i)}
-                className={`w-2.5 h-2.5 rounded-full transition-all cursor-pointer ${
-                  i === page
+                className={`w-2.5 h-2.5 rounded-full md:transition-all cursor-pointer ${
+                  i === safePage
                     ? 'bg-blue-primary scale-125'
-                    : 'bg-blue-primary/25 hover:bg-blue-primary/50'
+                    : 'bg-blue-primary/25 md:hover:bg-blue-primary/50'
                 }`}
                 aria-label={`Pagina ${i + 1}`}
               />
@@ -142,8 +157,8 @@ export default function ReviewsCarousel() {
 
           <button
             onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
-            disabled={page === totalPages - 1}
-            className="w-9 h-9 rounded-full border border-blue-primary flex items-center justify-center text-blue-primary disabled:opacity-30 hover:bg-blue-primary hover:text-white transition-all cursor-pointer disabled:cursor-default"
+            disabled={safePage === totalPages - 1}
+            className="w-11 h-11 md:w-9 md:h-9 rounded-full border border-blue-primary flex items-center justify-center text-blue-primary disabled:opacity-30 md:hover:bg-blue-primary md:hover:text-white md:transition-all cursor-pointer disabled:cursor-default active:bg-blue-primary/10"
             aria-label="Recensioni successive"
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">

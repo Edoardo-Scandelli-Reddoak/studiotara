@@ -65,7 +65,7 @@ export default function Contatti() {
     <>
       <Navbar />
 
-      <main className="flex flex-col items-center overflow-x-hidden max-w-[1440px] mx-auto w-full px-5 md:px-10 lg:px-[50px]">
+      <main className="flex flex-col items-center overflow-x-hidden max-w-[1440px] mx-auto w-full px-4 md:px-10 lg:px-[50px]">
         {/* ===== HERO SECTION ===== */}
         <div className="relative w-full mt-3">
           {/* Character - outside section for overflow */}
@@ -78,9 +78,9 @@ export default function Contatti() {
             />
           </div>
 
-          <section className="relative w-full rounded-[20px] md:rounded-[24px] lg:rounded-[28px] bg-gradient-to-b from-blue-primary to-blue-secondary overflow-hidden min-h-[320px] md:min-h-[380px] lg:min-h-[430px]">
-            {/* Red decorative swoosh */}
-            <div className="absolute -left-[8%] bottom-[50px] w-[300px] h-[300px] md:w-[360px] md:h-[360px] lg:w-[400px] lg:h-[400px] -rotate-[67deg]">
+          <section className="relative w-full rounded-[16px] md:rounded-[24px] lg:rounded-[28px] bg-gradient-to-b from-blue-primary to-blue-secondary overflow-hidden md:min-h-[380px] lg:min-h-[430px]">
+            {/* Red decorative swoosh - desktop only */}
+            <div className="hidden md:block absolute md:-left-[8%] md:bottom-[50px] md:w-[360px] md:h-[360px] lg:w-[400px] lg:h-[400px] -rotate-[67deg]">
               <Image
                 src="/images/vector-decoration.svg"
                 alt=""
@@ -91,23 +91,37 @@ export default function Contatti() {
             </div>
 
             {/* Text */}
-            <div className="relative px-6 py-8 md:absolute md:left-[320px] lg:left-[500px] md:top-1/2 md:-translate-y-1/2 md:w-[380px] lg:w-[580px]">
-              <h1 className="text-[28px] md:text-[32px] lg:text-[36px] tracking-[-1.5px] md:tracking-[-2px] text-white leading-tight">
+            <div className="relative z-10 px-5 pt-7 pb-6 md:absolute md:left-[320px] md:px-0 md:py-0 lg:left-[500px] md:top-1/2 md:-translate-y-1/2 md:w-[380px] lg:w-[580px]">
+              <h1 className="text-[25px] md:text-[32px] lg:text-[36px] tracking-[-1px] md:tracking-[-2px] text-white leading-[1.15] md:leading-tight">
                 Parlaci del tuo
-                <br />
+                <br className="hidden md:inline" />
+                <span className="md:hidden"> </span>
                 progetto <strong>immobiliare</strong>
               </h1>
-              <p className="text-[15px] md:text-[16px] lg:text-[17px] text-white/90 mt-4 lg:mt-5 leading-relaxed">
+              <p className="text-[14px] md:text-[16px] lg:text-[17px] text-white/90 mt-3 md:mt-4 lg:mt-5 leading-relaxed">
                 Che tu voglia vendere, acquistare o affittare, il primo passo
                 è una chiacchierata. Contattaci senza impegno: ti
                 ricontattiamo noi nel minor tempo possibile.
               </p>
               <Link
                 href="#contatto"
-                className="inline-block mt-6 bg-red-primary text-white text-[16px] md:text-[17px] font-medium px-8 md:px-10 py-[10px] md:py-[11px] rounded-[6px] hover:scale-105 hover:shadow-lg transition-all duration-300"
+                className="block w-full text-center md:inline-block md:w-auto mt-5 md:mt-6 bg-red-primary text-white text-[15px] md:text-[17px] font-medium px-6 md:px-10 py-3 md:py-[11px] rounded-[8px] md:rounded-[6px] md:hover:scale-105 md:hover:shadow-lg md:transition-all md:duration-300 active:scale-[0.99]"
               >
                 Contattaci adesso!
               </Link>
+
+              {/* Mobile character (in flow, oversized + clipped at bottom by section overflow → mezzo busto). Negative top margin lifts it slightly over the button. */}
+              <div className="md:hidden -mt-[10px] flex justify-end -mr-[20px] -mb-[190px] pointer-events-none">
+                <div className="w-[200px] h-[380px] relative">
+                  <Image
+                    src="/images/personaggino-contatti.png"
+                    alt=""
+                    fill
+                    className="object-contain object-top"
+                    aria-hidden="true"
+                  />
+                </div>
+              </div>
             </div>
           </section>
         </div>
@@ -115,42 +129,42 @@ export default function Contatti() {
         {/* ===== TROVACI, CHIAMACI O SCRIVICI ===== */}
         <section
           id="contatto"
-          className="w-full mt-[80px] md:mt-[120px] lg:mt-[160px] flex flex-col lg:flex-row gap-10 lg:gap-[81px] items-start"
+          className="w-full mt-[64px] md:mt-[120px] lg:mt-[160px] flex flex-col lg:flex-row gap-8 md:gap-10 lg:gap-[81px] items-start scroll-mt-[80px]"
         >
           {/* Left - contact info */}
-          <div className="flex flex-col gap-6 lg:gap-[34px] lg:w-[602px] shrink-0">
-            <h2 className="text-[26px] md:text-[30px] lg:text-[32px] tracking-[-1.5px] md:tracking-[-2px] text-black leading-tight">
+          <div className="flex flex-col gap-5 md:gap-6 lg:gap-[34px] lg:w-[602px] shrink-0">
+            <h2 className="text-[24px] md:text-[30px] lg:text-[32px] tracking-[-1px] md:tracking-[-2px] text-black leading-tight">
               Trovaci, chiamaci o <strong>scrivici</strong>
             </h2>
-            <p className="text-[15px] md:text-[16px] text-black leading-relaxed">
+            <p className="text-[14px] md:text-[16px] text-black leading-relaxed">
               Il nostro studio è a Buccinasco, a pochi minuti da Assago e
               Corsico. Puoi venire a trovarci di persona, chiamarci o
               mandarci un messaggio: risponderemo al più presto.
             </p>
 
             {/* Contact details */}
-            <div className="flex flex-col gap-6 lg:gap-[35px]">
-              <div className="flex gap-5 lg:gap-[35px] items-center">
+            <div className="flex flex-col gap-5 md:gap-6 lg:gap-[35px]">
+              <a href="tel:+393342334661" className="flex gap-4 md:gap-5 lg:gap-[35px] items-center -mx-1 px-1 py-1 rounded-[8px] active:bg-black/5">
                 <PhoneIcon />
                 <p className="text-[16px] md:text-[17px] lg:text-[18px] text-black">
-                  339 3333333
+                  334 233 4661
                 </p>
-              </div>
-              <div className="flex gap-5 lg:gap-[35px] items-center">
+              </a>
+              <a href="mailto:info@studiotara.it" className="flex gap-4 md:gap-5 lg:gap-[35px] items-center -mx-1 px-1 py-1 rounded-[8px] active:bg-black/5 break-words min-w-0">
                 <EmailIcon />
-                <p className="text-[16px] md:text-[17px] lg:text-[18px] text-black">
-                  nome@mail.com
+                <p className="text-[15px] md:text-[17px] lg:text-[18px] text-black break-all">
+                  info@studiotara.it
                 </p>
-              </div>
-              <div className="flex gap-5 lg:gap-[35px] items-center">
+              </a>
+              <a href="https://maps.google.com/?q=Viale+Lomellina+23+Buccinasco" target="_blank" rel="noopener noreferrer" className="flex gap-4 md:gap-5 lg:gap-[35px] items-center -mx-1 px-1 py-1 rounded-[8px] active:bg-black/5">
                 <LocationIcon />
-                <p className="text-[16px] md:text-[17px] lg:text-[18px] text-black">
+                <p className="text-[15px] md:text-[17px] lg:text-[18px] text-black">
                   Viale Lomellina, 23 — Buccinasco (MI)
                 </p>
-              </div>
-              <div className="flex gap-5 lg:gap-[35px] items-start">
+              </a>
+              <div className="flex gap-4 md:gap-5 lg:gap-[35px] items-start">
                 <ClockIcon />
-                <div className="text-[16px] md:text-[17px] lg:text-[18px] text-black leading-relaxed">
+                <div className="text-[14px] md:text-[17px] lg:text-[18px] text-black leading-relaxed">
                   <p>Lun - Ven: 9:00 – 13:00 / 14:30 – 18:30</p>
                   <p>Sab: 9:00 – 12:30</p>
                   <p>Dom: Chiuso</p>
@@ -160,56 +174,56 @@ export default function Contatti() {
           </div>
 
           {/* Right - contact form */}
-          <div className="w-full lg:w-[620px] shrink-0 bg-gradient-to-b from-blue-primary to-blue-secondary rounded-[16px] md:rounded-[18px] lg:rounded-[20px] p-6 md:p-10 lg:p-[54px]">
-            <form className="flex flex-col gap-5 lg:gap-[32px]">
-              <div className="flex flex-col md:flex-row gap-5 lg:gap-[28px]">
+          <div className="w-full lg:w-[620px] shrink-0 bg-gradient-to-b from-blue-primary to-blue-secondary rounded-[14px] md:rounded-[18px] lg:rounded-[20px] p-5 md:p-10 lg:p-[54px]">
+            <form className="flex flex-col gap-4 md:gap-5 lg:gap-[32px]">
+              <div className="flex flex-col md:flex-row gap-4 md:gap-5 lg:gap-[28px]">
                 <div className="flex-1 flex flex-col gap-1.5">
-                  <label className="text-[13px] text-white/70 font-medium ml-1">Nome</label>
+                  <label className="text-[13px] text-white/80 md:text-white/70 font-medium ml-1">Nome</label>
                   <input
                     type="text"
                     placeholder="Es. Mario"
-                    className="h-[48px] md:h-[54px] lg:h-[59px] bg-white rounded-[6px] px-4 text-[14px] md:text-[15px] outline-none focus:shadow-[0_0_0_3px_rgba(210,7,42,0.3)] transition-all"
+                    className="h-[48px] md:h-[54px] lg:h-[59px] bg-white rounded-[8px] md:rounded-[6px] px-4 text-[15px] md:text-[15px] outline-none focus:shadow-[0_0_0_3px_rgba(210,7,42,0.3)] transition-all"
                   />
                 </div>
                 <div className="flex-1 flex flex-col gap-1.5">
-                  <label className="text-[13px] text-white/70 font-medium ml-1">Cognome</label>
+                  <label className="text-[13px] text-white/80 md:text-white/70 font-medium ml-1">Cognome</label>
                   <input
                     type="text"
                     placeholder="Es. Rossi"
-                    className="h-[48px] md:h-[54px] lg:h-[59px] bg-white rounded-[6px] px-4 text-[14px] md:text-[15px] outline-none focus:shadow-[0_0_0_3px_rgba(210,7,42,0.3)] transition-all"
+                    className="h-[48px] md:h-[54px] lg:h-[59px] bg-white rounded-[8px] md:rounded-[6px] px-4 text-[15px] md:text-[15px] outline-none focus:shadow-[0_0_0_3px_rgba(210,7,42,0.3)] transition-all"
                   />
                 </div>
               </div>
-              <div className="flex flex-col md:flex-row gap-5 lg:gap-[28px]">
+              <div className="flex flex-col md:flex-row gap-4 md:gap-5 lg:gap-[28px]">
                 <div className="flex-1 flex flex-col gap-1.5">
-                  <label className="text-[13px] text-white/70 font-medium ml-1">Email</label>
+                  <label className="text-[13px] text-white/80 md:text-white/70 font-medium ml-1">Email</label>
                   <input
                     type="email"
                     placeholder="Es. mario.rossi@email.com"
-                    className="h-[48px] md:h-[54px] lg:h-[59px] bg-white rounded-[6px] px-4 text-[14px] md:text-[15px] outline-none focus:shadow-[0_0_0_3px_rgba(210,7,42,0.3)] transition-all"
+                    className="h-[48px] md:h-[54px] lg:h-[59px] bg-white rounded-[8px] md:rounded-[6px] px-4 text-[15px] md:text-[15px] outline-none focus:shadow-[0_0_0_3px_rgba(210,7,42,0.3)] transition-all"
                   />
                 </div>
                 <div className="flex-1 flex flex-col gap-1.5">
-                  <label className="text-[13px] text-white/70 font-medium ml-1">Telefono</label>
+                  <label className="text-[13px] text-white/80 md:text-white/70 font-medium ml-1">Telefono</label>
                   <input
                     type="tel"
-                    placeholder="Es. 339 1234567"
-                    className="h-[48px] md:h-[54px] lg:h-[59px] bg-white rounded-[6px] px-4 text-[14px] md:text-[15px] outline-none focus:shadow-[0_0_0_3px_rgba(210,7,42,0.3)] transition-all"
+                    placeholder="Es. 334 1234567"
+                    className="h-[48px] md:h-[54px] lg:h-[59px] bg-white rounded-[8px] md:rounded-[6px] px-4 text-[15px] md:text-[15px] outline-none focus:shadow-[0_0_0_3px_rgba(210,7,42,0.3)] transition-all"
                   />
                 </div>
               </div>
               <div className="flex flex-col gap-1.5">
-                <label className="text-[13px] text-white/70 font-medium ml-1">Messaggio</label>
+                <label className="text-[13px] text-white/80 md:text-white/70 font-medium ml-1">Messaggio</label>
                 <textarea
                   placeholder="Es. Vorrei vendere il mio appartamento a Buccinasco..."
                   rows={4}
-                  className="w-full min-h-[90px] md:min-h-[100px] lg:min-h-[112px] bg-white rounded-[6px] px-4 py-3 text-[14px] md:text-[15px] outline-none resize-none focus:shadow-[0_0_0_3px_rgba(210,7,42,0.3)] transition-all"
+                  className="w-full min-h-[110px] md:min-h-[100px] lg:min-h-[112px] bg-white rounded-[8px] md:rounded-[6px] px-4 py-3 text-[15px] md:text-[15px] outline-none resize-none focus:shadow-[0_0_0_3px_rgba(210,7,42,0.3)] transition-all"
                 />
               </div>
               <div className="flex justify-center">
                 <button
                   type="submit"
-                  className="bg-red-primary text-white text-[16px] md:text-[17px] font-medium px-8 md:px-10 py-[10px] md:py-[11px] rounded-[6px] hover:scale-105 hover:shadow-lg transition-all duration-300 cursor-pointer"
+                  className="w-full md:w-auto bg-red-primary text-white text-[16px] md:text-[17px] font-medium px-6 md:px-10 py-3 md:py-[11px] rounded-[8px] md:rounded-[6px] md:hover:scale-105 md:hover:shadow-lg md:transition-all md:duration-300 cursor-pointer active:scale-[0.99]"
                 >
                   Contattaci adesso!
                 </button>
@@ -219,17 +233,17 @@ export default function Contatti() {
         </section>
 
         {/* ===== DOVE TROVARCI ===== */}
-        <section className="w-full mt-[80px] md:mt-[120px] lg:mt-[160px] bg-[#f5f3f0] rounded-[20px] md:rounded-[24px] lg:rounded-[28px] shadow-[0px_0px_10px_0px_rgba(0,0,0,0.25)] px-6 md:px-10 lg:px-[47px] py-10 md:py-14 lg:py-[78px]">
+        <section className="w-full mt-[64px] md:mt-[120px] lg:mt-[160px] bg-[#f5f3f0] rounded-[16px] md:rounded-[24px] lg:rounded-[28px] shadow-[0px_2px_8px_0px_rgba(0,0,0,0.15)] md:shadow-[0px_0px_10px_0px_rgba(0,0,0,0.25)] px-5 md:px-10 lg:px-[47px] py-8 md:py-14 lg:py-[78px]">
           <div className="text-center">
-            <h2 className="text-[26px] md:text-[30px] lg:text-[32px] tracking-[-1.5px] md:tracking-[-2px] text-black">
+            <h2 className="text-[24px] md:text-[30px] lg:text-[32px] tracking-[-1px] md:tracking-[-2px] text-black leading-tight">
               Dove <strong>trovarci</strong>
             </h2>
-            <p className="text-[15px] md:text-[16px] text-black mt-3 leading-relaxed">
+            <p className="text-[14px] md:text-[16px] text-black mt-3 leading-relaxed">
               Viale Lomellina, 23 — 20090 Buccinasco (MI)
             </p>
           </div>
 
-          <div className="mt-8 md:mt-10 lg:mt-[51px] rounded-[10px] md:rounded-[12px] lg:rounded-[14px] overflow-hidden border border-black/20 h-[250px] md:h-[300px] lg:h-[321px]">
+          <div className="mt-6 md:mt-10 lg:mt-[51px] rounded-[10px] md:rounded-[12px] lg:rounded-[14px] overflow-hidden border border-black/20 h-[220px] md:h-[300px] lg:h-[321px]">
             <iframe
               src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2801.5!2d9.1!3d45.4!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDXCsDI0JzAwLjAiTiA5wrAwNicwMC4wIkU!5e0!3m2!1sit!2sit!4v1"
               title="Posizione Studio Tara"
@@ -242,25 +256,26 @@ export default function Contatti() {
         </section>
 
         {/* ===== FAQ ===== */}
-        <section className="w-full mt-[80px] md:mt-[120px] lg:mt-[160px]">
+        <section className="w-full mt-[64px] md:mt-[120px] lg:mt-[160px]">
           <div className="text-center">
-            <h2 className="text-[26px] md:text-[30px] lg:text-[32px] tracking-[-1.5px] md:tracking-[-2px] text-black">
+            <h2 className="text-[24px] md:text-[30px] lg:text-[32px] tracking-[-1px] md:tracking-[-2px] text-black leading-tight">
               Hai dei <strong>dubbi?</strong>
             </h2>
-            <p className="text-[15px] md:text-[16px] text-black mt-3 max-w-[506px] mx-auto leading-relaxed tracking-[-0.5px]">
+            <p className="text-[14px] md:text-[16px] text-black mt-3 max-w-[506px] mx-auto leading-relaxed tracking-[-0.3px] md:tracking-[-0.5px]">
               Le domande che ci fanno più spesso. Se non trovi quello che
               cerchi, scrivici direttamente.
             </p>
           </div>
 
-          <div className="flex flex-col gap-3 md:gap-4 mt-8 md:mt-10 max-w-[900px] mx-auto">
+          <div className="flex flex-col gap-2.5 md:gap-4 mt-7 md:mt-10 max-w-[900px] mx-auto">
             {faqs.map((faq, i) => (
               <div key={i} className="bg-[#f0eeeb] rounded-[10px] md:rounded-[12px]">
                 <button
                   onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                  className="w-full flex items-center justify-between px-5 md:px-7 py-4 md:py-5 text-left cursor-pointer"
+                  aria-expanded={openFaq === i}
+                  className="w-full flex items-center justify-between px-4 md:px-7 py-4 md:py-5 text-left cursor-pointer"
                 >
-                  <span className="text-[15px] md:text-[16px] font-medium text-black pr-4">
+                  <span className="text-[14px] md:text-[16px] font-medium text-black pr-3 md:pr-4 leading-snug">
                     {faq.q}
                   </span>
                   <span
@@ -272,9 +287,9 @@ export default function Contatti() {
                   </span>
                 </button>
                 <div
-                  className={`overflow-hidden transition-all duration-300 ${openFaq === i ? "max-h-[300px] pb-5" : "max-h-0"}`}
+                  className={`overflow-hidden transition-all duration-300 ${openFaq === i ? "max-h-[400px] pb-4 md:pb-5" : "max-h-0"}`}
                 >
-                  <p className="text-[14px] md:text-[15px] text-black/70 leading-relaxed px-5 md:px-7">
+                  <p className="text-[14px] md:text-[15px] text-black/70 leading-relaxed px-4 md:px-7">
                     {faq.a}
                   </p>
                 </div>
@@ -284,23 +299,23 @@ export default function Contatti() {
         </section>
 
         {/* ===== NEWSLETTER ===== */}
-        <section className="w-full rounded-[20px] md:rounded-[24px] lg:rounded-[28px] bg-gradient-to-b from-blue-primary to-blue-secondary overflow-hidden mt-[80px] md:mt-[120px] lg:mt-[160px] mb-[40px] md:mb-[50px] lg:mb-[60px] shadow-[0px_0px_10px_0px_rgba(0,0,0,0.15)] text-white text-center py-12 md:py-16 px-6">
-          <h2 className="text-[26px] md:text-[30px] lg:text-[32px] tracking-[-1.5px] md:tracking-[-2px]">
+        <section className="w-full rounded-[16px] md:rounded-[24px] lg:rounded-[28px] bg-gradient-to-b from-blue-primary to-blue-secondary overflow-hidden mt-[64px] md:mt-[120px] lg:mt-[160px] mb-[32px] md:mb-[50px] lg:mb-[60px] shadow-[0px_0px_10px_0px_rgba(0,0,0,0.15)] text-white text-center py-10 md:py-16 px-5 md:px-6">
+          <h2 className="text-[24px] md:text-[30px] lg:text-[32px] tracking-[-1px] md:tracking-[-2px] leading-tight">
             Resta aggiornato sul <strong>mercato immobiliare</strong>
           </h2>
-          <p className="text-[15px] md:text-[16px] mt-4 max-w-[520px] mx-auto leading-relaxed text-white/85">
+          <p className="text-[14px] md:text-[16px] mt-3 md:mt-4 max-w-[520px] mx-auto leading-relaxed text-white/85">
             Iscriviti alla newsletter di Studiotara: notizie, consigli pratici
             e aggiornamenti del settore una volta al mese, senza spam.
           </p>
-          <form className="flex flex-col md:flex-row gap-4 md:gap-5 items-center justify-center mt-8">
+          <form className="flex flex-col md:flex-row gap-3 md:gap-5 items-center justify-center mt-6 md:mt-8">
             <input
               type="email"
               placeholder="La tua email"
-              className="w-full md:w-[400px] lg:w-[460px] h-[44px] rounded-[6px] px-5 text-[15px] md:text-[16px] text-black bg-white outline-none focus:shadow-[0_0_0_3px_rgba(210,7,42,0.3)] transition-all"
+              className="w-full md:w-[400px] lg:w-[460px] h-[48px] md:h-[44px] rounded-[8px] md:rounded-[6px] px-4 md:px-5 text-[15px] md:text-[16px] text-black bg-white outline-none focus:shadow-[0_0_0_3px_rgba(210,7,42,0.3)] transition-all"
             />
             <button
               type="submit"
-              className="w-full md:w-auto bg-red-primary text-white text-[15px] md:text-[16px] font-medium px-8 md:px-10 py-[11px] rounded-[6px] hover:scale-105 hover:shadow-lg transition-all duration-300 cursor-pointer"
+              className="w-full md:w-auto bg-red-primary text-white text-[15px] md:text-[16px] font-medium px-6 md:px-10 py-3 md:py-[11px] rounded-[8px] md:rounded-[6px] md:hover:scale-105 md:hover:shadow-lg md:transition-all md:duration-300 cursor-pointer active:scale-[0.99]"
             >
               Iscriviti
             </button>

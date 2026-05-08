@@ -27,9 +27,9 @@ export default function Pagination({ currentPage, totalPages, baseHref, anchor }
     </svg>
   );
 
-  const btnBase = "flex items-center justify-center w-10 h-10 rounded-[8px] text-[15px] transition-all";
+  const btnBase = "flex items-center justify-center w-11 h-11 md:w-10 md:h-10 rounded-[8px] text-[15px] md:transition-all";
   const btnActive = "bg-blue-primary text-white shadow-sm font-medium";
-  const btnIdle = "border border-blue-border text-blue-primary hover:bg-blue-primary hover:text-white";
+  const btnIdle = "border border-blue-border text-blue-primary md:hover:bg-blue-primary md:hover:text-white active:bg-blue-primary/10";
   const btnDisabled = "border border-black/10 text-black/25 cursor-not-allowed";
 
   // Build visible page list with ellipsis markers
@@ -43,7 +43,7 @@ export default function Pagination({ currentPage, totalPages, baseHref, anchor }
   }
 
   return (
-    <div className="flex items-center justify-center gap-2 mt-12 md:mt-16">
+    <div className="flex items-center justify-center flex-wrap gap-2 mt-8 md:mt-16">
       {/* Previous */}
       {currentPage > 1 ? (
         <Link href={href(currentPage - 1)} className={`${btnBase} ${btnIdle}`} aria-label="Pagina precedente">

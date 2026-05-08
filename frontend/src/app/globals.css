@@ -21,6 +21,53 @@ body {
   background: #ffffff;
   color: #000000;
   font-family: var(--font-sans);
+  -webkit-tap-highlight-color: transparent;
+  -webkit-text-size-adjust: 100%;
+}
+
+/* Mobile: hide native scrollbar on horizontal scrollers (carousel-style) */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Mobile: snap-scroll utility for swipeable galleries */
+.snap-x-mandatory {
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+.snap-center {
+  scroll-snap-align: center;
+}
+.snap-start {
+  scroll-snap-align: start;
+}
+
+/* Mobile: kill blue highlight on form interaction */
+input, select, textarea, button {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Prevent zoom on iOS form focus (font ≥16px) */
+@media (max-width: 767px) {
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="number"],
+  input[type="search"],
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}
+
+/* Body scroll lock when modal/drawer open */
+body.no-scroll {
+  overflow: hidden;
+  touch-action: none;
 }
 
 /* Open Sauce One font - using system fonts as fallback until custom font is loaded */
@@ -68,3 +115,16 @@ body {
 .prose-studiotara p:last-child {
   margin-bottom: 0;
 }
+
+@media (max-width: 767px) {
+  .prose-studiotara h2 {
+    font-size: 20px;
+    letter-spacing: -0.8px;
+    margin-top: 1.5rem;
+  }
+  .prose-studiotara p {
+    font-size: 15px;
+    line-height: 1.7;
+  }
+}
+

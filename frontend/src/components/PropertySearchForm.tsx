@@ -71,7 +71,7 @@ export default function PropertySearchForm({ mode, initial }: Props) {
   }
 
   const inputClass =
-    'h-[42px] md:h-[47px] border-[2.5px] md:border-[3px] border-blue-primary rounded-[6px] px-3 text-[14px] outline-none bg-white focus:border-blue-secondary focus:shadow-[0_0_0_3px_rgba(17,85,218,0.15)] transition-all';
+    'h-[44px] md:h-[47px] border-2 md:border-[3px] border-blue-primary rounded-[8px] md:rounded-[6px] px-3 text-[15px] md:text-[14px] outline-none bg-white focus:border-blue-secondary focus:shadow-[0_0_0_3px_rgba(17,85,218,0.15)] transition-all';
 
   return (
     <>
@@ -90,18 +90,22 @@ export default function PropertySearchForm({ mode, initial }: Props) {
         .price-slider::-webkit-slider-thumb {
           -webkit-appearance: none;
           pointer-events: all;
-          width: 22px; height: 22px;
+          width: 28px; height: 28px;
           border-radius: 50%;
           background: transparent;
           cursor: pointer;
         }
         .price-slider::-moz-range-thumb {
           pointer-events: all;
-          width: 22px; height: 22px;
+          width: 28px; height: 28px;
           border-radius: 50%;
           background: transparent;
           border: none;
           cursor: pointer;
+        }
+        @media (min-width: 768px) {
+          .price-slider::-webkit-slider-thumb { width: 22px; height: 22px; }
+          .price-slider::-moz-range-thumb { width: 22px; height: 22px; }
         }
         .price-slider::-webkit-slider-track { background: transparent; }
         .price-slider::-moz-range-track { background: transparent; }
@@ -226,7 +230,7 @@ export default function PropertySearchForm({ mode, initial }: Props) {
         <div className="flex gap-3">
           <button
             type="submit"
-            className="flex-1 bg-red-primary text-white text-[16px] md:text-[17px] font-medium py-[11px] rounded-[6px] hover:scale-[1.02] hover:shadow-lg transition-all duration-300 cursor-pointer"
+            className="flex-1 bg-red-primary text-white text-[16px] md:text-[17px] font-medium py-3 md:py-[11px] rounded-[8px] md:rounded-[6px] md:hover:scale-[1.02] md:hover:shadow-lg md:transition-all md:duration-300 cursor-pointer active:scale-[0.99]"
           >
             Cerca ora
           </button>
@@ -234,7 +238,7 @@ export default function PropertySearchForm({ mode, initial }: Props) {
             <button
               type="button"
               onClick={handleReset}
-              className="px-5 py-[11px] rounded-[6px] border-[2px] border-blue-primary text-blue-primary text-[14px] font-medium hover:bg-blue-primary/10 transition-all cursor-pointer"
+              className="px-5 py-3 md:py-[11px] rounded-[8px] md:rounded-[6px] border-2 border-blue-primary text-blue-primary text-[14px] font-medium md:hover:bg-blue-primary/10 md:transition-all cursor-pointer active:bg-blue-primary/5"
             >
               Azzera
             </button>

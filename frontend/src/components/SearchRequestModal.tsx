@@ -1,9 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import { useBodyScrollLock } from "@/lib/useBodyScrollLock";
 
 export default function SearchRequestModal() {
   const [open, setOpen] = useState(false);
+
+  useBodyScrollLock(open);
+
   const [formData, setFormData] = useState({
     nome: "",
     cognome: "",
@@ -46,11 +50,11 @@ export default function SearchRequestModal() {
   return (
     <>
       {/* ===== BANNER ===== */}
-      <section className="w-full rounded-[20px] md:rounded-[24px] lg:rounded-[28px] bg-gradient-to-b from-blue-primary to-blue-secondary overflow-hidden mt-[80px] md:mt-[120px] lg:mt-[160px] mb-[40px] md:mb-[50px] lg:mb-[60px] shadow-[0px_0px_10px_0px_rgba(0,0,0,0.15)] text-white text-center py-12 md:py-16 px-6">
-        <h2 className="text-[26px] md:text-[30px] lg:text-[32px] tracking-[-1.5px] md:tracking-[-2px]">
+      <section className="w-full rounded-[16px] md:rounded-[24px] lg:rounded-[28px] bg-gradient-to-b from-blue-primary to-blue-secondary overflow-hidden mt-[64px] md:mt-[120px] lg:mt-[160px] mb-[32px] md:mb-[50px] lg:mb-[60px] shadow-[0px_0px_10px_0px_rgba(0,0,0,0.15)] text-white text-center py-10 md:py-16 px-5 md:px-6">
+        <h2 className="text-[24px] md:text-[30px] lg:text-[32px] tracking-[-1px] md:tracking-[-2px] leading-tight">
           Non hai trovato <strong>l&apos;immobile giusto?</strong>
         </h2>
-        <p className="text-[15px] md:text-[16px] mt-4 max-w-[560px] mx-auto leading-relaxed text-white/85">
+        <p className="text-[14px] md:text-[16px] mt-3 md:mt-4 max-w-[560px] mx-auto leading-relaxed text-white/85">
           Raccontaci cosa stai cercando: tipologia, zona, metratura e budget.
           Ti avviseremo non appena un immobile in linea con le tue esigenze
           sara disponibile.
@@ -58,7 +62,7 @@ export default function SearchRequestModal() {
         <button
           type="button"
           onClick={() => setOpen(true)}
-          className="inline-block mt-8 bg-red-primary text-white text-[15px] md:text-[16px] font-medium px-8 md:px-10 py-[11px] rounded-[6px] hover:scale-105 hover:shadow-lg transition-all duration-300 cursor-pointer"
+          className="block w-full max-w-xs mx-auto md:inline-block md:max-w-none md:w-auto mt-6 md:mt-8 bg-red-primary text-white text-[15px] md:text-[16px] font-medium px-6 md:px-10 py-3 md:py-[11px] rounded-[8px] md:rounded-[6px] md:hover:scale-105 md:hover:shadow-lg md:transition-all md:duration-300 cursor-pointer active:scale-[0.99]"
         >
           Dicci cosa cerchi
         </button>
@@ -67,19 +71,24 @@ export default function SearchRequestModal() {
       {/* ===== MODAL ===== */}
       {open && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60"
+          className="fixed inset-0 z-50 flex items-end md:items-center justify-center p-0 md:p-4 bg-black/60"
           onClick={() => setOpen(false)}
         >
           <div
-            className="relative w-full max-w-[560px] max-h-[90vh] overflow-y-auto bg-white rounded-[14px] shadow-2xl"
+            className="relative w-full max-w-none md:max-w-[560px] max-h-[92vh] md:max-h-[90vh] overflow-y-auto bg-white rounded-t-[20px] rounded-b-none md:rounded-[14px] shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
+            {/* Drag handle for mobile */}
+            <div className="md:hidden sticky top-0 z-30 bg-white pt-2 pb-1 flex justify-center">
+              <div className="w-10 h-1 rounded-full bg-black/15" />
+            </div>
+
             {/* Header */}
-            <div className="sticky top-0 bg-gradient-to-r from-blue-primary to-blue-secondary px-6 py-5 text-white z-10">
-              <h3 className="text-[22px] md:text-[24px] font-semibold tracking-[-1px]">
+            <div className="sticky top-3 md:top-0 bg-gradient-to-r from-blue-primary to-blue-secondary px-5 md:px-6 py-4 md:py-5 text-white z-10">
+              <h3 className="text-[19px] md:text-[24px] font-semibold tracking-[-0.6px] md:tracking-[-1px] pr-9">
                 Descrivici il tuo immobile ideale
               </h3>
-              <p className="text-[14px] text-white/80 mt-1">
+              <p className="text-[13px] md:text-[14px] text-white/80 mt-1">
                 Compila i campi e ti contatteremo quando troveremo la soluzione perfetta per te.
               </p>
             </div>
@@ -88,17 +97,17 @@ export default function SearchRequestModal() {
             <button
               type="button"
               onClick={() => setOpen(false)}
-              className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/30 transition-colors text-white z-20"
+              className="absolute top-[18px] md:top-4 right-3 md:right-4 w-9 h-9 md:w-8 md:h-8 flex items-center justify-center rounded-full bg-white/20 md:hover:bg-white/30 md:transition-colors text-white z-20 active:bg-white/30"
               aria-label="Chiudi"
             >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="20" height="20" className="md:w-[18px] md:h-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <line x1="18" y1="6" x2="6" y2="18" />
                 <line x1="6" y1="6" x2="18" y2="18" />
               </svg>
             </button>
 
             {/* Form */}
-            <form onSubmit={handleSubmit} className="px-6 py-6 flex flex-col gap-4">
+            <form onSubmit={handleSubmit} className="px-5 md:px-6 py-5 md:py-6 flex flex-col gap-4 pb-[max(env(safe-area-inset-bottom),20px)] md:pb-6">
               {/* Dati personali */}
               <p className="text-[13px] font-semibold text-black/50 uppercase tracking-wider">Dati personali</p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -267,7 +276,7 @@ export default function SearchRequestModal() {
 
               <button
                 type="submit"
-                className="w-full bg-red-primary text-white text-[16px] font-medium py-[12px] rounded-[8px] hover:scale-[1.02] hover:shadow-lg transition-all duration-300 mt-1"
+                className="w-full bg-red-primary text-white text-[16px] font-medium py-3.5 md:py-[12px] rounded-[8px] md:hover:scale-[1.02] md:hover:shadow-lg md:transition-all md:duration-300 mt-1 active:scale-[0.99]"
               >
                 Invia la tua richiesta
               </button>
