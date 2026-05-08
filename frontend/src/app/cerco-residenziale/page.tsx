@@ -41,7 +41,7 @@ export default async function CercoResidenziale({
     <>
       <Navbar />
 
-      <main className="flex flex-col items-center overflow-x-hidden max-w-[1440px] mx-auto w-full px-5 md:px-10 lg:px-[50px]">
+      <main className="flex flex-col items-center overflow-x-hidden max-w-[1440px] mx-auto w-full px-4 md:px-10 lg:px-[50px]">
         {/* ===== HERO SECTION ===== */}
         <div className="relative w-full mt-3">
           {/* Character - right side */}
@@ -54,22 +54,23 @@ export default async function CercoResidenziale({
             />
           </div>
 
-          <section className="relative w-full rounded-[20px] md:rounded-[24px] lg:rounded-[28px] bg-gradient-to-b from-blue-primary to-blue-secondary overflow-hidden min-h-[320px] md:min-h-[380px] lg:min-h-[430px]">
+          <section className="relative w-full rounded-[16px] md:rounded-[24px] lg:rounded-[28px] bg-gradient-to-b from-blue-primary to-blue-secondary overflow-hidden md:min-h-[380px] lg:min-h-[430px]">
             {/* Text - left side */}
-            <div className="relative px-6 py-8 md:absolute md:left-[50px] lg:left-[78px] md:top-1/2 md:-translate-y-1/2 md:w-[420px] lg:w-[604px]">
-              <h1 className="text-[28px] md:text-[32px] lg:text-[36px] tracking-[-1.5px] md:tracking-[-2px] text-white leading-tight">
+            <div className="relative px-5 pt-7 pb-[100px] md:absolute md:left-[50px] md:px-0 md:py-0 lg:left-[78px] md:top-1/2 md:-translate-y-1/2 md:w-[420px] lg:w-[604px]">
+              <h1 className="text-[26px] md:text-[32px] lg:text-[36px] tracking-[-1px] md:tracking-[-2px] text-white leading-[1.15] md:leading-tight">
                 <strong>Case</strong> in vendita e affitto
-                <br />
+                <br className="hidden md:inline" />
+                <span className="md:hidden"> </span>
                 nell&apos;hinterland di Milano
               </h1>
-              <p className="text-[15px] md:text-[16px] lg:text-[17px] text-white/90 mt-4 lg:mt-5 leading-relaxed max-w-[524px]">
-                Appartamenti, ville e attici in vendita e affitto a
-                Buccinasco, Corsico, Assago e in tutto l&apos;hinterland
-                sud-ovest di Milano.
+              <p className="text-[14px] md:text-[16px] lg:text-[17px] text-white/90 mt-3 md:mt-4 lg:mt-5 leading-relaxed max-w-[524px]">
+                Appartamenti, ville e attici in vendita e affitto a Milano e
+                in tutto l&apos;hinterland: Buccinasco, Corsico, Assago e
+                comuni limitrofi.
               </p>
               <Link
                 href="#immobili"
-                className="inline-block mt-6 bg-red-primary text-white text-[16px] md:text-[17px] font-medium px-8 md:px-10 py-[10px] md:py-[11px] rounded-[6px] hover:scale-105 hover:shadow-lg transition-all duration-300"
+                className="block w-full text-center md:inline-block md:w-auto mt-5 md:mt-6 bg-red-primary text-white text-[15px] md:text-[17px] font-medium px-6 md:px-10 py-3 md:py-[11px] rounded-[8px] md:rounded-[6px] md:hover:scale-105 md:hover:shadow-lg md:transition-all md:duration-300 active:scale-[0.99]"
               >
                 Scopri i nostri immobili
               </Link>
@@ -78,9 +79,21 @@ export default async function CercoResidenziale({
         </div>
 
         {/* ===== SEARCH FORM ===== */}
-        <section className="relative w-full max-w-[860px] mt-[24px] z-10 bg-white border-[6px] md:border-[8px] lg:border-[10px] border-blue-accent rounded-[12px] md:rounded-[14px] lg:rounded-[16px] shadow-[0px_0px_10.8px_0px_rgba(0,0,0,0.25)] px-5 md:px-12 lg:px-16 py-6 md:py-8 mx-auto">
-          <h2 className="text-[22px] md:text-[26px] lg:text-[30px] tracking-[-1px] md:tracking-[-1.5px] text-black text-center">
-            Cerca subito l&apos;immobile che fa <strong>per te!</strong>
+        <section className="relative w-full max-w-[860px] mt-5 md:mt-[24px] z-10 bg-white border-[3px] md:border-[8px] lg:border-[10px] border-blue-accent rounded-[12px] md:rounded-[14px] lg:rounded-[16px] shadow-[0px_0px_10.8px_0px_rgba(0,0,0,0.25)] px-4 md:px-12 lg:px-16 py-5 md:py-8 mx-auto">
+          {/* Mobile character - lives inside the white form, extends up into the hero. */}
+          <div className="md:hidden absolute right-0 -top-[140px] w-[200px] h-[200px] z-10 pointer-events-none">
+            <Image
+              src="/images/personaggino_resdenziale.png"
+              alt=""
+              fill
+              className="object-contain object-bottom"
+              aria-hidden="true"
+            />
+          </div>
+
+          <h2 className="text-[17px] md:text-[26px] lg:text-[30px] tracking-[-0.5px] md:tracking-[-1.5px] text-black text-left md:text-center leading-snug">
+            Cerca subito<br className="md:hidden" />
+            {' '}l&apos;immobile che fa <strong>per te!</strong>
           </h2>
           <PropertySearchForm
             mode="residenziale"
@@ -89,20 +102,20 @@ export default async function CercoResidenziale({
         </section>
 
         {/* ===== PROPERTY GRID ===== */}
-        <section id="immobili" className="w-full mt-[40px] md:mt-[50px] lg:mt-[60px]">
+        <section id="immobili" className="w-full mt-8 md:mt-[50px] lg:mt-[60px] scroll-mt-[80px]">
           {residenziali.length === 0 ? (
             <p className="text-center text-black/50 py-16">Nessun immobile disponibile al momento.</p>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-[44px]">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-8 lg:gap-[44px]">
               {residenziali.map((property) => (
                 <Link
                   key={property.id}
                   href={`/cerco-residenziale/${property.id}`}
-                  className="group relative bg-[#f5f3f0] rounded-[16px] md:rounded-[18px] lg:rounded-[20px] shadow-[0px_0px_10px_0px_rgba(0,0,0,0.25)] overflow-hidden p-[14px] md:p-[16px] lg:p-[18px] flex flex-col gap-[13px] hover:-translate-y-1 hover:shadow-[0px_8px_30px_0px_rgba(0,0,0,0.2)] transition-all duration-300"
+                  className="group relative bg-[#f5f3f0] rounded-[14px] md:rounded-[18px] lg:rounded-[20px] shadow-[0px_2px_8px_0px_rgba(0,0,0,0.15)] md:shadow-[0px_0px_10px_0px_rgba(0,0,0,0.25)] overflow-hidden p-3 md:p-[16px] lg:p-[18px] flex flex-col gap-3 md:gap-[13px] md:hover:-translate-y-1 md:hover:shadow-[0px_8px_30px_0px_rgba(0,0,0,0.2)] md:transition-all md:duration-300 active:scale-[0.99]"
                 >
                   {/* Badge */}
                   <div
-                    className={`absolute top-[22px] md:top-[24px] lg:top-[26px] left-[22px] md:left-[24px] lg:left-[26px] z-10 px-[10px] py-[5px] rounded-[4px] text-[13px] md:text-[14px] text-white tracking-[-0.5px] ${
+                    className={`absolute top-[18px] md:top-[24px] lg:top-[26px] left-[18px] md:left-[24px] lg:left-[26px] z-10 px-[10px] py-[5px] rounded-[4px] text-[12px] md:text-[14px] text-white tracking-[-0.3px] md:tracking-[-0.5px] ${
                       property.contratto === "vendita"
                         ? "bg-[#1152d2]"
                         : "bg-red-primary"
@@ -119,7 +132,7 @@ export default async function CercoResidenziale({
                         alt={property.titolo}
                         width={405}
                         height={304}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        className="w-full h-full object-cover md:group-hover:scale-105 md:transition-transform md:duration-500"
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center">
@@ -133,19 +146,19 @@ export default async function CercoResidenziale({
                   </div>
 
                   {/* Title & location */}
-                  <div className="flex flex-col gap-[6px]">
-                    <h3 className="text-[18px] md:text-[20px] lg:text-[22px] font-medium text-black tracking-[-0.8px] lg:tracking-[-1.32px] leading-tight">
+                  <div className="flex flex-col gap-[4px] md:gap-[6px]">
+                    <h3 className="text-[17px] md:text-[20px] lg:text-[22px] font-medium text-black tracking-[-0.6px] md:tracking-[-0.8px] lg:tracking-[-1.32px] leading-tight line-clamp-2">
                       {formatTitolo(property.titolo)}
                     </h3>
-                    <p className="text-[14px] md:text-[15px] lg:text-[16px] text-black/70 tracking-[-0.5px] lg:tracking-[-0.96px]">
+                    <p className="text-[13px] md:text-[15px] lg:text-[16px] text-black/70 tracking-[-0.3px] md:tracking-[-0.5px] lg:tracking-[-0.96px]">
                       {property.comune}{property.provincia ? `, ${property.provincia}` : ''}
                     </p>
                   </div>
 
                   {/* Sqm + Price row */}
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2 text-[14px] md:text-[15px] text-black/70">
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-1.5 md:gap-2 text-[13px] md:text-[15px] text-black/70 shrink-0">
+                      <svg width="14" height="14" className="md:w-4 md:h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                         <polyline points="15 3 21 3 21 9" />
                         <polyline points="9 21 3 21 3 15" />
                         <line x1="21" y1="3" x2="14" y2="10" />
@@ -153,13 +166,13 @@ export default async function CercoResidenziale({
                       </svg>
                       {property.mq ? `${property.mq} m²` : '—'}
                     </div>
-                    <p className="text-[18px] md:text-[20px] lg:text-[22px] font-medium text-black tracking-[-0.8px] lg:tracking-[-1.32px]">
+                    <p className="text-[17px] md:text-[20px] lg:text-[22px] font-semibold md:font-medium text-black tracking-[-0.6px] md:tracking-[-0.8px] lg:tracking-[-1.32px] truncate">
                       {formatPrezzo(property.prezzo)}
                     </p>
                   </div>
 
                   {/* Bottom row: features with icons */}
-                  <div className="flex flex-wrap gap-4 sm:gap-5 pt-3 border-t border-black/10">
+                  <div className="flex flex-wrap gap-3 md:gap-4 sm:gap-5 pt-3 border-t border-black/10">
                     {/* Locali */}
                     <div className="flex flex-col items-center gap-[2px]">
                       <div className="flex items-center gap-1.5">
@@ -221,17 +234,17 @@ export default async function CercoResidenziale({
         </section>
 
         {/* ===== CTA VENDI ===== */}
-        <section className="w-full rounded-[20px] md:rounded-[24px] lg:rounded-[28px] bg-gradient-to-b from-blue-primary to-blue-secondary overflow-hidden mt-[80px] md:mt-[120px] lg:mt-[160px] mb-[40px] md:mb-[50px] lg:mb-[60px] shadow-[0px_0px_10px_0px_rgba(0,0,0,0.15)] text-white text-center py-12 md:py-16 px-6">
-          <h2 className="text-[26px] md:text-[30px] lg:text-[32px] tracking-[-1.5px] md:tracking-[-2px]">
+        <section className="w-full rounded-[16px] md:rounded-[24px] lg:rounded-[28px] bg-gradient-to-b from-blue-primary to-blue-secondary overflow-hidden mt-[64px] md:mt-[120px] lg:mt-[160px] mb-[32px] md:mb-[50px] lg:mb-[60px] shadow-[0px_0px_10px_0px_rgba(0,0,0,0.15)] text-white text-center py-10 md:py-16 px-5 md:px-6">
+          <h2 className="text-[24px] md:text-[30px] lg:text-[32px] tracking-[-1px] md:tracking-[-2px] leading-tight">
             Hai un immobile <strong>da vendere?</strong>
           </h2>
-          <p className="text-[15px] md:text-[16px] mt-4 max-w-[520px] mx-auto leading-relaxed text-white/85">
+          <p className="text-[14px] md:text-[16px] mt-3 md:mt-4 max-w-[520px] mx-auto leading-relaxed text-white/85">
             Affidati a Studio Tara: oltre 30 anni di esperienza, valutazione
             gratuita e un piano di vendita su misura per ottenere il massimo dal tuo immobile.
           </p>
           <Link
             href="/vendi-immobile"
-            className="inline-block mt-8 bg-red-primary text-white text-[15px] md:text-[16px] font-medium px-8 md:px-10 py-[11px] rounded-[6px] hover:scale-105 hover:shadow-lg transition-all duration-300"
+            className="block w-full max-w-xs mx-auto md:inline-block md:max-w-none md:w-auto mt-6 md:mt-8 bg-red-primary text-white text-[15px] md:text-[16px] font-medium px-6 md:px-10 py-3 md:py-[11px] rounded-[8px] md:rounded-[6px] md:hover:scale-105 md:hover:shadow-lg md:transition-all md:duration-300 active:scale-[0.99]"
           >
             Scopri come vendere
           </Link>

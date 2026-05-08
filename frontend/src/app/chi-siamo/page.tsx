@@ -46,7 +46,7 @@ const servizi = [
 const timeline = [
   {
     year: "1994 — La fondazione",
-    text: "Alessandro Tarantola apre Studiotara a Buccinasco. Nasce un punto di riferimento per il mercato immobiliare dell'hinterland sud-ovest di Milano.",
+    text: "Alessandro Tarantola apre Studiotara a Buccinasco. Nasce un punto di riferimento per il mercato immobiliare dell'hinterland milanese.",
   },
   {
     year: "Anni 2000 — La crescita",
@@ -67,51 +67,52 @@ export default function ChiSiamo() {
     <>
       <Navbar />
 
-      <main className="flex flex-col items-center overflow-x-hidden max-w-[1440px] mx-auto w-full px-5 md:px-10 lg:px-[50px]">
+      <main className="flex flex-col items-center overflow-x-hidden max-w-[1440px] mx-auto w-full px-4 md:px-10 lg:px-[50px]">
         {/* ===== HERO SECTION ===== */}
-        <section className="relative w-full rounded-[20px] md:rounded-[24px] lg:rounded-[28px] bg-gradient-to-b from-blue-primary to-blue-secondary overflow-visible mt-3 min-h-[320px] md:min-h-[380px] lg:min-h-[430px]">
-          {/* Photo - overflows left edge */}
-          <div className="relative w-full h-[240px] md:absolute md:left-[-40px] lg:left-[-61px] md:top-[40px] lg:top-[98px] md:w-[380px] lg:w-[616px] md:h-[280px] lg:h-[411px] overflow-hidden md:rounded-none rounded-t-[20px]">
-            <Image
-              src="/images/foto_chisiamo.png"
-              alt="Studio Tara sede"
-              fill
-              className="object-cover"
-            />
-          </div>
-
+        <section className="relative w-full rounded-[16px] md:rounded-[24px] lg:rounded-[28px] bg-gradient-to-b from-blue-primary to-blue-secondary overflow-visible mt-3 md:min-h-[380px] lg:min-h-[430px]">
           {/* Text */}
-          <div className="relative px-6 py-8 md:absolute md:left-[420px] lg:left-[592px] md:top-1/2 md:-translate-y-1/2 md:w-[340px] lg:w-[586px]">
-            <h1 className="text-[28px] md:text-[32px] lg:text-[36px] tracking-[-1.5px] md:tracking-[-2px] text-white leading-tight">
+          <div className="relative px-5 pt-7 pb-4 md:absolute md:left-[420px] md:px-0 md:py-0 lg:left-[592px] md:top-1/2 md:-translate-y-1/2 md:w-[340px] lg:w-[586px]">
+            <h1 className="text-[24px] md:text-[32px] lg:text-[36px] tracking-[-1px] md:tracking-[-2px] text-white leading-[1.15] md:leading-tight">
               Trent&apos;anni di storia
-              <br />
+              <br className="hidden md:inline" />
+              <span className="md:hidden"> </span>
               nel mercato <strong>immobiliare</strong>
             </h1>
-            <p className="text-[15px] md:text-[16px] lg:text-[17px] text-white/90 mt-4 lg:mt-5 leading-relaxed max-w-[604px]">
+            <p className="text-[14px] md:text-[16px] lg:text-[17px] text-white/90 mt-3 md:mt-4 lg:mt-5 leading-relaxed max-w-[604px]">
               Studiotara nasce dalla passione di Alessandro Tarantola per il
               settore immobiliare e dalla convinzione che ogni trattativa
               meriti serietà, competenza e un rapporto umano autentico.
             </p>
             <Link
               href="/contatti"
-              className="inline-block mt-6 lg:mt-8 bg-red-primary text-white text-[16px] md:text-[17px] font-medium px-8 md:px-10 py-[10px] md:py-[11px] rounded-[6px] hover:scale-105 hover:shadow-lg transition-all duration-300"
+              className="block w-full text-center md:inline-block md:w-auto mt-5 md:mt-6 lg:mt-8 bg-red-primary text-white text-[15px] md:text-[17px] font-medium px-6 md:px-10 py-3 md:py-[11px] rounded-[8px] md:rounded-[6px] md:hover:scale-105 md:hover:shadow-lg md:transition-all md:duration-300 active:scale-[0.99]"
             >
               Scopri chi siamo
             </Link>
           </div>
+
+          {/* Photo - mobile: at the bottom in flow, slightly smaller, extends below section. Desktop: absolute on left edge (unchanged) */}
+          <div className="relative w-[calc(100%-32px)] mx-4 h-[170px] mb-[-30px] overflow-visible md:absolute md:left-[-40px] lg:left-[-61px] md:top-[40px] lg:top-[98px] md:w-[380px] lg:w-[616px] md:h-[280px] lg:h-[411px] md:mx-0 md:mb-0 md:overflow-hidden md:rounded-none">
+            <Image
+              src="/images/foto_chisiamo.png"
+              alt="Studio Tara sede"
+              fill
+              className="object-contain object-bottom md:object-cover"
+            />
+          </div>
         </section>
 
         {/* ===== CHI C'E DIETRO STUDIOTARA ===== */}
-        <section className="w-full mt-[80px] md:mt-[120px] lg:mt-[160px] flex flex-col lg:flex-row gap-10 lg:gap-[119px] items-center">
-          <div className="flex flex-col gap-6 lg:gap-[34px] lg:w-[645px]">
-            <h2 className="text-[26px] md:text-[30px] lg:text-[32px] tracking-[-1.5px] md:tracking-[-2px] text-black">
+        <section className="w-full mt-[64px] md:mt-[120px] lg:mt-[160px] flex flex-col lg:flex-row gap-8 md:gap-10 lg:gap-[119px] items-center">
+          <div className="flex flex-col gap-5 md:gap-6 lg:gap-[34px] lg:w-[645px]">
+            <h2 className="text-[24px] md:text-[30px] lg:text-[32px] tracking-[-1px] md:tracking-[-2px] text-black leading-tight">
               Chi c&apos;è dietro <strong>Studiotara</strong>
             </h2>
 
             {/* Quote */}
-            <div className="flex gap-5 lg:gap-[26px] items-start">
+            <div className="flex gap-4 md:gap-5 lg:gap-[26px] items-start">
               <div className="w-[3px] bg-blue-primary rounded-full shrink-0 self-stretch" />
-              <p className="text-[16px] md:text-[17px] lg:text-[18px] text-black italic leading-relaxed">
+              <p className="text-[15px] md:text-[17px] lg:text-[18px] text-black italic leading-relaxed">
                 &ldquo;Vendere o comprare casa non è mai solo una questione
                 di numeri. È una delle decisioni più importanti della vita di
                 una persona, e merita di essere trattata come tale.&rdquo;
@@ -119,7 +120,7 @@ export default function ChiSiamo() {
             </div>
 
             {/* Body text */}
-            <div className="text-[15px] md:text-[16px] text-black leading-relaxed flex flex-col gap-5">
+            <div className="text-[15px] md:text-[16px] text-black leading-relaxed flex flex-col gap-4 md:gap-5">
               <p>
                 Studiotara nasce nel 1994 dall&apos;iniziativa di Alessandro
                 Tarantola, professionista del settore immobiliare con una
@@ -135,23 +136,23 @@ export default function ChiSiamo() {
               </p>
               <p>
                 Oggi Studiotara è un punto di riferimento consolidato per chi
-                compra, vende o affitta nell&apos;hinterland sud-ovest di
-                Milano, con una rete di oltre 6.000 contatti attivi e un
-                team di professionisti che fanno di questo lavoro una vera
+                compra, vende o affitta a Milano e nell&apos;hinterland, con
+                una rete di oltre 6.000 contatti attivi e un team di
+                professionisti che fanno di questo lavoro una vera
                 vocazione.
               </p>
             </div>
 
             <Link
               href="/contatti"
-              className="inline-block bg-red-primary text-white text-[16px] md:text-[17px] font-medium px-8 md:px-10 py-[10px] md:py-[11px] rounded-[6px] hover:scale-105 hover:shadow-lg transition-all duration-300 self-start"
+              className="block w-full text-center md:inline-block md:w-auto bg-red-primary text-white text-[15px] md:text-[17px] font-medium px-6 md:px-10 py-3 md:py-[11px] rounded-[8px] md:rounded-[6px] md:hover:scale-105 md:hover:shadow-lg md:transition-all md:duration-300 md:self-start active:scale-[0.99]"
             >
               Richiedi una consulenza
             </Link>
           </div>
 
           {/* Characters illustration */}
-          <div className="w-full max-w-[400px] lg:max-w-[497px] lg:w-[497px] shrink-0">
+          <div className="w-full max-w-[320px] md:max-w-[400px] lg:max-w-[497px] lg:w-[497px] shrink-0">
             <Image
               src="/images/personaggi-chisiamo.png"
               alt="Team Studio Tara"
@@ -163,13 +164,13 @@ export default function ChiSiamo() {
         </section>
 
         {/* ===== TRENT'ANNI VISSUTI SUL CAMPO ===== */}
-        <section className="w-full mt-[80px] md:mt-[120px] lg:mt-[160px] bg-[#f5f3f0] rounded-[20px] md:rounded-[24px] lg:rounded-[28px] shadow-[0px_0px_10px_0px_rgba(0,0,0,0.25)] px-6 md:px-10 lg:px-[84px] py-10 md:py-14 lg:py-[78px]">
+        <section className="w-full mt-[64px] md:mt-[120px] lg:mt-[160px] bg-[#f5f3f0] rounded-[16px] md:rounded-[24px] lg:rounded-[28px] shadow-[0px_2px_8px_0px_rgba(0,0,0,0.15)] md:shadow-[0px_0px_10px_0px_rgba(0,0,0,0.25)] px-5 md:px-10 lg:px-[84px] py-9 md:py-14 lg:py-[78px]">
           {/* Header */}
           <div className="text-center">
-            <h2 className="text-[26px] md:text-[30px] lg:text-[32px] tracking-[-1.5px] md:tracking-[-2px] text-black">
+            <h2 className="text-[24px] md:text-[30px] lg:text-[32px] tracking-[-1px] md:tracking-[-2px] text-black leading-tight">
               Trent&apos;anni vissuti sul <strong>campo</strong>
             </h2>
-            <p className="text-[15px] md:text-[16px] text-black mt-3 lg:mt-4 max-w-[688px] mx-auto leading-relaxed">
+            <p className="text-[14px] md:text-[16px] text-black mt-3 lg:mt-4 max-w-[688px] mx-auto leading-relaxed">
               Non ci siamo costruiti una reputazione a tavolino.
               L&apos;abbiamo guadagnata trattativa dopo trattativa, anno
               dopo anno, zona per zona.
@@ -177,10 +178,10 @@ export default function ChiSiamo() {
           </div>
 
           {/* Content: text + timeline */}
-          <div className="flex flex-col lg:flex-row gap-10 lg:gap-16 mt-10 md:mt-12 lg:mt-[125px]">
+          <div className="flex flex-col lg:flex-row gap-8 md:gap-10 lg:gap-16 mt-8 md:mt-12 lg:mt-[125px]">
             {/* Left text */}
-            <div className="flex flex-col gap-6 lg:gap-[34px] lg:w-[544px]">
-              <div className="text-[15px] md:text-[16px] text-black leading-relaxed flex flex-col gap-5">
+            <div className="flex flex-col gap-5 md:gap-6 lg:gap-[34px] lg:w-[544px]">
+              <div className="text-[15px] md:text-[16px] text-black leading-relaxed flex flex-col gap-4 md:gap-5">
                 <p>
                   Tutto comincia a Buccinasco. Alessandro Tarantola apre lo
                   studio con un obiettivo preciso: offrire a chi vuole
@@ -195,35 +196,35 @@ export default function ChiSiamo() {
                   concreti.
                 </p>
                 <p>
-                  Oggi siamo presenti in tutto il corridoio sud-ovest di
-                  Milano — da Buccinasco ad Assago, da Corsico a Trezzano
-                  sul Naviglio — con una banca dati di oltre 6.000
-                  potenziali acquirenti e un approccio che non smette mai di
-                  mettere la persona al centro.
+                  Oggi siamo presenti a Milano e in tutto l&apos;hinterland
+                  — da Buccinasco ad Assago, da Corsico a Trezzano sul
+                  Naviglio — con una banca dati di oltre 6.000 potenziali
+                  acquirenti e un approccio che non smette mai di mettere la
+                  persona al centro.
                 </p>
               </div>
               <Link
                 href="/contatti"
-                className="inline-block bg-red-primary text-white text-[16px] md:text-[17px] font-medium px-8 md:px-10 py-[10px] md:py-[11px] rounded-[6px] hover:scale-105 hover:shadow-lg transition-all duration-300 self-start"
+                className="block w-full text-center md:inline-block md:w-auto bg-red-primary text-white text-[15px] md:text-[17px] font-medium px-6 md:px-10 py-3 md:py-[11px] rounded-[8px] md:rounded-[6px] md:hover:scale-105 md:hover:shadow-lg md:transition-all md:duration-300 md:self-start active:scale-[0.99]"
               >
                 Richiedi una consulenza
               </Link>
             </div>
 
             {/* Right timeline */}
-            <div className="relative flex-1 flex flex-col gap-8 lg:gap-[47px] pl-10 lg:pl-[80px]">
+            <div className="relative flex-1 flex flex-col gap-7 md:gap-8 lg:gap-[47px] pl-8 md:pl-10 lg:pl-[80px]">
               {/* Vertical line */}
-              <div className="absolute left-[22px] lg:left-[22px] top-[12px] bottom-[12px] w-[3px] bg-blue-primary/30 rounded-full" />
+              <div className="absolute left-[18px] md:left-[22px] lg:left-[22px] top-[12px] bottom-[12px] w-[3px] bg-blue-primary/30 rounded-full" />
 
               {timeline.map((item, i) => (
                 <div key={i} className="relative">
                   {/* Dot */}
-                  <div className="absolute -left-10 lg:-left-[80px] top-[2px] w-[40px] lg:w-[47px] h-[40px] lg:h-[47px] rounded-full bg-blue-primary border-[4px] border-white shadow-md flex items-center justify-center">
-                    <div className="w-[10px] h-[10px] rounded-full bg-white" />
+                  <div className="absolute -left-8 md:-left-10 lg:-left-[80px] top-[2px] w-[36px] md:w-[40px] lg:w-[47px] h-[36px] md:h-[40px] lg:h-[47px] rounded-full bg-blue-primary border-[3px] md:border-[4px] border-white shadow-md flex items-center justify-center">
+                    <div className="w-[8px] md:w-[10px] h-[8px] md:h-[10px] rounded-full bg-white" />
                   </div>
 
-                  <div className="flex flex-col gap-2 lg:gap-[10px]">
-                    <p className="text-[16px] md:text-[17px] lg:text-[18px] font-semibold text-black">
+                  <div className="flex flex-col gap-1.5 md:gap-2 lg:gap-[10px]">
+                    <p className="text-[15px] md:text-[17px] lg:text-[18px] font-semibold text-black">
                       {item.year}
                     </p>
                     <p className="text-[14px] md:text-[15px] lg:text-[16px] text-black leading-relaxed">
@@ -237,37 +238,37 @@ export default function ChiSiamo() {
         </section>
 
         {/* ===== SERVIZI ===== */}
-        <section className="w-full mt-[80px] md:mt-[120px] lg:mt-[160px]">
+        <section className="w-full mt-[64px] md:mt-[120px] lg:mt-[160px]">
           <div className="text-center">
-            <h2 className="text-[26px] md:text-[30px] lg:text-[32px] tracking-[-1.5px] md:tracking-[-2px] text-black">
+            <h2 className="text-[24px] md:text-[30px] lg:text-[32px] tracking-[-1px] md:tracking-[-2px] text-black leading-tight">
               Ogni operazione, <strong>gestita nel dettaglio</strong>
             </h2>
-            <p className="text-[15px] md:text-[16px] text-black mt-3 lg:mt-4 max-w-[682px] mx-auto leading-relaxed tracking-[-0.5px] lg:tracking-[-1.2px]">
+            <p className="text-[14px] md:text-[16px] text-black mt-3 lg:mt-4 max-w-[682px] mx-auto leading-relaxed tracking-[-0.3px] md:tracking-[-0.5px] lg:tracking-[-1.2px]">
               Dalla stima iniziale alla firma del rogito, seguiamo ogni fase
               con la stessa attenzione. Perché le mezze misure non ci
               appartengono.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-10 mt-10 md:mt-12 lg:mt-[86px]">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6 lg:gap-10 mt-8 md:mt-12 lg:mt-[86px]">
             {servizi.map((servizio, i) => (
               <div
                 key={i}
-                className="bg-gradient-to-b from-blue-primary to-blue-secondary rounded-[16px] md:rounded-[18px] lg:rounded-[20px] shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] p-6 md:p-7 lg:p-[30px] min-h-[280px] md:min-h-[310px] lg:min-h-[339px] flex flex-col hover:-translate-y-1 hover:shadow-[0px_8px_30px_0px_rgba(9,45,116,0.3)] transition-all duration-300"
+                className="bg-gradient-to-b from-blue-primary to-blue-secondary rounded-[14px] md:rounded-[18px] lg:rounded-[20px] shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] p-5 md:p-7 lg:p-[30px] min-h-[240px] md:min-h-[310px] lg:min-h-[339px] flex flex-col md:hover:-translate-y-1 md:hover:shadow-[0px_8px_30px_0px_rgba(9,45,116,0.3)] md:transition-all md:duration-300"
               >
-                <div className="bg-white rounded-[6px] w-[68px] md:w-[75px] lg:w-[82px] h-[64px] md:h-[70px] lg:h-[78px] flex items-center justify-center">
+                <div className="bg-white rounded-[6px] w-[60px] md:w-[75px] lg:w-[82px] h-[56px] md:h-[70px] lg:h-[78px] flex items-center justify-center">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={servizio.icon}
                     alt=""
-                    className="w-[44px] md:w-[50px] lg:w-[56px] h-[44px] md:h-[50px] lg:h-[56px]"
+                    className="w-[40px] md:w-[50px] lg:w-[56px] h-[40px] md:h-[50px] lg:h-[56px]"
                     aria-hidden="true"
                   />
                 </div>
-                <h3 className="text-[20px] md:text-[22px] lg:text-[24px] font-medium text-white tracking-[-0.8px] lg:tracking-[-1.2px] mt-auto">
+                <h3 className="text-[18px] md:text-[22px] lg:text-[24px] font-medium text-white tracking-[-0.6px] md:tracking-[-0.8px] lg:tracking-[-1.2px] mt-4 md:mt-auto leading-tight">
                   {servizio.title}
                 </h3>
-                <p className="text-[14px] md:text-[15px] lg:text-[16px] text-white/85 tracking-[-0.5px] mt-2 lg:mt-3 leading-relaxed">
+                <p className="text-[14px] md:text-[15px] lg:text-[16px] text-white/85 tracking-[-0.3px] md:tracking-[-0.5px] mt-2 lg:mt-3 leading-relaxed">
                   {servizio.description}
                 </p>
               </div>
@@ -276,11 +277,11 @@ export default function ChiSiamo() {
         </section>
 
         {/* ===== TESTIMONIALS (Google Reviews) ===== */}
-        <section className="text-center mt-[80px] md:mt-[120px] lg:mt-[160px] px-4">
-          <h2 className="text-[26px] md:text-[30px] lg:text-[32px] tracking-[-1.5px] md:tracking-[-2px] text-black">
+        <section className="text-center mt-[64px] md:mt-[120px] lg:mt-[160px] px-2 md:px-4">
+          <h2 className="text-[24px] md:text-[30px] lg:text-[32px] tracking-[-1px] md:tracking-[-2px] text-black leading-tight">
             Cosa dicono i nostri <strong>clienti</strong>
           </h2>
-          <p className="text-[15px] md:text-[16px] text-black/70 mt-2 tracking-[-0.5px]">
+          <p className="text-[14px] md:text-[16px] text-black/70 mt-2 tracking-[-0.3px] md:tracking-[-0.5px]">
             Trent&apos;anni di fiducia, raccontati da chi ci ha scelto.
           </p>
         </section>
@@ -288,24 +289,24 @@ export default function ChiSiamo() {
         <ReviewsCarousel />
 
         {/* ===== NEWSLETTER ===== */}
-        <section className="w-full rounded-[20px] md:rounded-[24px] lg:rounded-[28px] bg-gradient-to-b from-blue-primary to-blue-secondary overflow-hidden mt-[80px] md:mt-[120px] lg:mt-[160px] mb-[40px] md:mb-[50px] lg:mb-[60px] shadow-[0px_0px_10px_0px_rgba(0,0,0,0.25)] text-white text-center py-12 md:py-16 px-6">
-          <h2 className="text-[26px] md:text-[30px] lg:text-[32px] tracking-[-1.5px] md:tracking-[-2px]">
+        <section className="w-full rounded-[16px] md:rounded-[24px] lg:rounded-[28px] bg-gradient-to-b from-blue-primary to-blue-secondary overflow-hidden mt-[64px] md:mt-[120px] lg:mt-[160px] mb-[32px] md:mb-[50px] lg:mb-[60px] shadow-[0px_0px_10px_0px_rgba(0,0,0,0.25)] text-white text-center py-10 md:py-16 px-5 md:px-6">
+          <h2 className="text-[24px] md:text-[30px] lg:text-[32px] tracking-[-1px] md:tracking-[-2px] leading-tight">
             Resta aggiornato sul <strong>mercato immobiliare</strong>
           </h2>
-          <p className="text-[15px] md:text-[16px] mt-4 max-w-[634px] mx-auto leading-relaxed text-white/85">
+          <p className="text-[14px] md:text-[16px] mt-3 md:mt-4 max-w-[634px] mx-auto leading-relaxed text-white/85">
             Iscriviti alla newsletter di Studiotara: notizie, consigli
             pratici e aggiornamenti del settore una volta al mese, senza
             spam.
           </p>
-          <form className="flex flex-col md:flex-row gap-4 md:gap-[25px] items-center justify-center mt-8 lg:mt-10">
+          <form className="flex flex-col md:flex-row gap-3 md:gap-[25px] items-center justify-center mt-6 md:mt-8 lg:mt-10">
             <input
               type="email"
               placeholder="La tua email"
-              className="w-full md:w-[400px] lg:w-[460px] h-[44px] rounded-[6px] px-5 text-[15px] md:text-[16px] text-black bg-white outline-none focus:shadow-[0_0_0_3px_rgba(210,7,42,0.3)] transition-all"
+              className="w-full md:w-[400px] lg:w-[460px] h-[48px] md:h-[44px] rounded-[8px] md:rounded-[6px] px-4 md:px-5 text-[15px] md:text-[16px] text-black bg-white outline-none focus:shadow-[0_0_0_3px_rgba(210,7,42,0.3)] transition-all"
             />
             <button
               type="submit"
-              className="w-full md:w-auto bg-red-primary text-white text-[15px] md:text-[16px] font-medium px-8 md:px-10 py-[11px] rounded-[6px] hover:scale-105 hover:shadow-lg transition-all duration-300 cursor-pointer"
+              className="w-full md:w-auto bg-red-primary text-white text-[15px] md:text-[16px] font-medium px-6 md:px-10 py-3 md:py-[11px] rounded-[8px] md:rounded-[6px] md:hover:scale-105 md:hover:shadow-lg md:transition-all md:duration-300 cursor-pointer active:scale-[0.99]"
             >
               Iscriviti
             </button>

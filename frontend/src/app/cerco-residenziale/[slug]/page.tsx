@@ -40,9 +40,9 @@ export default async function PropertyPage({
       <ScrollToTop />
       <Navbar />
 
-      <main className="flex flex-col items-center overflow-x-clip max-w-[1440px] mx-auto w-full px-5 md:px-10 lg:px-[50px]">
+      <main className="flex flex-col items-center overflow-x-clip max-w-[1440px] mx-auto w-full px-4 md:px-10 lg:px-[50px]">
         {/* ===== CTA BANNER ===== */}
-        <div className="relative w-full mt-3 bg-gradient-to-b from-blue-primary to-blue-secondary rounded-[10px] md:rounded-[12px] shadow-[0px_0px_10px_0px_rgba(0,0,0,0.25)] px-6 md:px-10 lg:pl-[160px] py-5 md:py-7 flex flex-col sm:flex-row items-center justify-between gap-4 overflow-visible">
+        <div className="relative w-full mt-3 bg-gradient-to-b from-blue-primary to-blue-secondary rounded-[10px] md:rounded-[12px] shadow-[0px_2px_8px_0px_rgba(0,0,0,0.15)] md:shadow-[0px_0px_10px_0px_rgba(0,0,0,0.25)] px-5 md:px-10 lg:pl-[160px] py-4 md:py-7 flex flex-col sm:flex-row items-center justify-between gap-3 md:gap-4 overflow-visible">
           {/* Character */}
           <div className="hidden lg:block absolute left-[15px] bottom-0 w-[120px] h-[120px]">
             <Image
@@ -54,23 +54,23 @@ export default async function PropertyPage({
               aria-hidden="true"
             />
           </div>
-          <p className="text-[18px] md:text-[22px] lg:text-[26px] text-white tracking-[-1px] md:tracking-[-1.5px] text-center sm:text-left">
+          <p className="text-[16px] md:text-[22px] lg:text-[26px] text-white tracking-[-0.6px] md:tracking-[-1.5px] text-center sm:text-left leading-tight">
             Vuoi <strong>vendere</strong> il tuo immobile? Comincia subito!
           </p>
           <SellModal
             triggerText="Vendi adesso!"
-            triggerClassName="shrink-0 bg-red-primary text-white text-[15px] md:text-[16px] font-medium px-8 md:px-10 py-[10px] md:py-[11px] rounded-[6px] hover:scale-105 hover:shadow-lg transition-all duration-300 cursor-pointer"
+            triggerClassName="w-full sm:w-auto shrink-0 bg-red-primary text-white text-[15px] md:text-[16px] font-medium px-6 md:px-10 py-3 md:py-[11px] rounded-[8px] md:rounded-[6px] md:hover:scale-105 md:hover:shadow-lg md:transition-all md:duration-300 cursor-pointer active:scale-[0.99]"
           />
         </div>
 
         {/* ===== TWO COLUMN LAYOUT ===== */}
-        <div className="w-full mt-8 md:mt-10 flex flex-col lg:flex-row gap-8 lg:gap-10">
+        <div className="w-full mt-6 md:mt-10 flex flex-col lg:flex-row gap-7 md:gap-8 lg:gap-10">
           {/* Left column */}
           <div className="flex-1 min-w-0">
             {/* Back link */}
             <Link
               href="/cerco-residenziale"
-              className="inline-flex items-center gap-2 text-[14px] md:text-[15px] text-blue-primary hover:text-blue-secondary transition-colors"
+              className="inline-flex items-center gap-2 text-[14px] md:text-[15px] text-blue-primary md:hover:text-blue-secondary md:transition-colors py-1"
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="m15 18-6-6 6-6" />
@@ -79,16 +79,26 @@ export default async function PropertyPage({
             </Link>
 
             {/* Title + badge row */}
-            <div className="flex items-stretch justify-between gap-4 mt-4">
-              <div>
-                <h1 className="text-[26px] md:text-[28px] lg:text-[30px] tracking-[-1.2px] md:tracking-[-1.5px] text-black leading-tight">
+            <div className="flex flex-col sm:flex-row sm:items-stretch sm:justify-between gap-3 sm:gap-4 mt-3 md:mt-4">
+              <div className="min-w-0">
+                <div className="flex items-center gap-2 sm:hidden mb-2">
+                  <div
+                    className={`px-[10px] py-[5px] rounded-[4px] text-[12px] text-white tracking-[-0.3px] ${
+                      property.contratto === "vendita" ? "bg-[#1152d2]" : "bg-red-primary"
+                    }`}
+                  >
+                    {property.contratto === "vendita" ? "In vendita" : "In affitto"}
+                  </div>
+                  <ViewCounter propertyId={property.id} initialViews={property.visualizzazioni} />
+                </div>
+                <h1 className="text-[22px] md:text-[28px] lg:text-[30px] tracking-[-0.8px] md:tracking-[-1.5px] text-black leading-tight">
                   {formatTitolo(property.titolo)}
                 </h1>
-                <p className="text-[15px] md:text-[16px] text-black/60 mt-1">
+                <p className="text-[14px] md:text-[16px] text-black/60 mt-1">
                   {property.comune}{property.provincia ? `, ${property.provincia}` : ''}
                 </p>
               </div>
-              <div className="shrink-0 flex flex-col items-end justify-between">
+              <div className="shrink-0 hidden sm:flex flex-col items-end justify-between">
                 <div
                   className={`px-[10px] py-[5px] rounded-[4px] text-[14px] text-white tracking-[-0.5px] ${
                     property.contratto === "vendita" ? "bg-[#1152d2]" : "bg-red-primary"
@@ -106,10 +116,10 @@ export default async function PropertyPage({
             {/* Descrizione */}
             {property.descrizione && (
               <>
-                <h2 className="text-[24px] md:text-[28px] lg:text-[30px] tracking-[-1.2px] md:tracking-[-1.5px] text-black mt-10 md:mt-12">
+                <h2 className="text-[20px] md:text-[28px] lg:text-[30px] tracking-[-0.8px] md:tracking-[-1.5px] text-black mt-8 md:mt-12">
                   Descrizione
                 </h2>
-                <div className="text-[15px] md:text-[16px] text-black/80 leading-relaxed mt-4 flex flex-col gap-4">
+                <div className="text-[15px] md:text-[16px] text-black/80 leading-relaxed mt-3 md:mt-4 flex flex-col gap-3 md:gap-4">
                   {property.descrizione.split("\n\n").map((p, i) => (
                     <p key={i}>{p}</p>
                   ))}
@@ -120,7 +130,7 @@ export default async function PropertyPage({
             {/* CTA */}
             <ContactModal
               triggerText="Contattaci subito"
-              triggerClassName="inline-block mt-8 bg-red-primary text-white text-[16px] md:text-[17px] font-medium px-8 md:px-10 py-[10px] md:py-[11px] rounded-[6px] hover:scale-105 hover:shadow-lg transition-all duration-300 cursor-pointer"
+              triggerClassName="block w-full text-center md:inline-block md:w-auto mt-6 md:mt-8 bg-red-primary text-white text-[16px] md:text-[17px] font-medium px-6 md:px-10 py-3 md:py-[11px] rounded-[8px] md:rounded-[6px] md:hover:scale-105 md:hover:shadow-lg md:transition-all md:duration-300 cursor-pointer active:scale-[0.99]"
               propertyRef={ref}
             />
 
@@ -147,16 +157,16 @@ export default async function PropertyPage({
               ];
               return (
                 <>
-                  <h2 className="text-[24px] md:text-[28px] lg:text-[30px] tracking-[-1.2px] md:tracking-[-1.5px] text-black mt-10 md:mt-12">
+                  <h2 className="text-[20px] md:text-[28px] lg:text-[30px] tracking-[-0.8px] md:tracking-[-1.5px] text-black mt-8 md:mt-12">
                     Tutti i dettagli
                   </h2>
-                  <div className="mt-4 rounded-[12px] overflow-hidden border border-black/10">
+                  <div className="mt-3 md:mt-4 rounded-[10px] md:rounded-[12px] overflow-hidden border border-black/10">
                     <table className="w-full text-[14px] md:text-[15px]">
                       <tbody>
                         {rows.map((row, i) => (
                           <tr key={row.label} className={`border-b border-black/8 last:border-b-0 ${i % 2 === 0 ? 'bg-white' : 'bg-[#f5f3f0]'}`}>
-                            <td className="px-4 md:px-5 py-[11px] text-black/50 font-medium w-[42%]">{row.label}</td>
-                            <td className="px-4 md:px-5 py-[11px] text-black">{row.value}</td>
+                            <td className="px-3 md:px-5 py-2.5 md:py-[11px] text-black/50 font-medium w-[40%] md:w-[42%]">{row.label}</td>
+                            <td className="px-3 md:px-5 py-2.5 md:py-[11px] text-black break-words">{row.value}</td>
                           </tr>
                         ))}
                       </tbody>
@@ -167,10 +177,10 @@ export default async function PropertyPage({
             })()}
 
             {/* Map */}
-            <h2 className="text-[24px] md:text-[28px] lg:text-[30px] tracking-[-1.2px] md:tracking-[-1.5px] text-black mt-10 md:mt-12">
+            <h2 className="text-[20px] md:text-[28px] lg:text-[30px] tracking-[-0.8px] md:tracking-[-1.5px] text-black mt-8 md:mt-12">
               Posizione
             </h2>
-            <div className="mt-4 rounded-[12px] md:rounded-[14px] overflow-hidden border border-black/20 h-[250px] md:h-[300px] lg:h-[311px]">
+            <div className="mt-3 md:mt-4 rounded-[10px] md:rounded-[14px] overflow-hidden border border-black/20 h-[220px] md:h-[300px] lg:h-[311px]">
               <iframe
                 src={getMapSrc(property)}
                 title="Posizione immobile"
@@ -184,29 +194,29 @@ export default async function PropertyPage({
 
           {/* Right column - sidebar */}
           <div className="lg:w-[405px] shrink-0">
-            <div className="sticky top-[100px] flex flex-col gap-6">
+            <div className="lg:sticky lg:top-[100px] flex flex-col gap-6">
               {/* In sintesi card */}
               <div className="rounded-[12px] overflow-hidden shadow-[0px_0px_15px_0px_rgba(0,0,0,0.12)]">
                 {/* Header */}
-                <div className="bg-gradient-to-r from-blue-primary to-blue-secondary px-5 md:px-6 py-4 flex items-center justify-between">
-                  <p className="text-[16px] md:text-[17px] text-white font-medium tracking-[-0.5px]">In sintesi</p>
-                  <p className="text-[13px] text-white">Rif. {ref}</p>
+                <div className="bg-gradient-to-r from-blue-primary to-blue-secondary px-4 md:px-6 py-3.5 md:py-4 flex items-center justify-between">
+                  <p className="text-[15px] md:text-[17px] text-white font-medium tracking-[-0.4px] md:tracking-[-0.5px]">In sintesi</p>
+                  <p className="text-[12px] md:text-[13px] text-white">Rif. {ref}</p>
                 </div>
 
                 {/* Body */}
-                <div className="bg-white px-5 md:px-6 py-5 md:py-6">
+                <div className="bg-white px-4 md:px-6 py-5 md:py-6">
                   {/* Price + contratto */}
-                  <div className="flex items-baseline gap-3 flex-wrap">
-                    <p className="text-[28px] md:text-[30px] lg:text-[32px] font-semibold text-blue-primary tracking-[-1.5px]">
+                  <div className="flex items-baseline gap-2 md:gap-3 flex-wrap">
+                    <p className="text-[26px] md:text-[30px] lg:text-[32px] font-semibold text-blue-primary tracking-[-1px] md:tracking-[-1.5px]">
                       {prezzoFormatted}
                     </p>
-                    <span className="text-[14px] text-blue-primary">
+                    <span className="text-[13px] md:text-[14px] text-blue-primary">
                       {property.contratto === 'vendita' ? 'In vendita' : 'In affitto'}
                     </span>
                   </div>
 
                   {/* Stats grid */}
-                  <div className="grid grid-cols-3 sm:grid-cols-5 gap-2 mt-5 pt-5 border-t border-black/8">
+                  <div className="grid grid-cols-3 sm:grid-cols-5 gap-2 mt-4 md:mt-5 pt-4 md:pt-5 border-t border-black/8">
                     <div className="flex flex-col items-center gap-1 bg-[#f5f3f0] rounded-[8px] py-3">
                       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#092d74" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                         <polyline points="15 3 21 3 21 9" />
@@ -276,19 +286,19 @@ export default async function PropertyPage({
               </div>
 
               {/* Contattaci */}
-              <div className="flex flex-col gap-4">
-                <h3 className="text-[24px] md:text-[28px] lg:text-[30px] tracking-[-1.2px] md:tracking-[-1.5px] text-black">
+              <div className="flex flex-col gap-3 md:gap-4">
+                <h3 className="text-[20px] md:text-[28px] lg:text-[30px] tracking-[-0.8px] md:tracking-[-1.5px] text-black">
                   Contattaci subito
                 </h3>
 
                 <AppointmentModal
                   triggerText="Fissa appuntamento"
-                  triggerClassName="block w-full text-center bg-red-primary text-white text-[16px] md:text-[17px] font-semibold py-[13px] rounded-[8px] hover:scale-[1.02] hover:shadow-lg transition-all duration-300 cursor-pointer"
+                  triggerClassName="block w-full text-center bg-red-primary text-white text-[16px] md:text-[17px] font-semibold py-3.5 md:py-[13px] rounded-[8px] md:hover:scale-[1.02] md:hover:shadow-lg md:transition-all md:duration-300 cursor-pointer active:scale-[0.99]"
                   propertyRef={ref}
                 />
                 <ContactModal
                   triggerText="Richiedi informazioni"
-                  triggerClassName="block w-full text-center border-2 border-blue-primary text-blue-primary text-[15px] md:text-[16px] font-medium py-[11px] rounded-[8px] hover:bg-blue-primary/5 transition-all duration-300 cursor-pointer"
+                  triggerClassName="block w-full text-center border-2 border-blue-primary text-blue-primary text-[15px] md:text-[16px] font-medium py-3 md:py-[11px] rounded-[8px] md:hover:bg-blue-primary/5 md:transition-all md:duration-300 cursor-pointer active:bg-blue-primary/5"
                   propertyRef={ref}
                 />
               </div>
