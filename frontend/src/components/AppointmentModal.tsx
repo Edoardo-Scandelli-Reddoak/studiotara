@@ -2,19 +2,23 @@
 
 import { useState } from 'react';
 import { useBodyScrollLock } from "@/lib/useBodyScrollLock";
+import { TIPOLOGIE } from "@/lib/tipologie";
 
 interface Props {
   triggerText: string;
   triggerClassName: string;
   propertyRef?: string;
+  submitUrl?: string;
 }
 
 const STEPS = ['Situazione', 'Dettagli', 'Contatti'];
 
-export default function AppointmentModal({ triggerText, triggerClassName, propertyRef }: Props) {
+export default function AppointmentModal({ triggerText, triggerClassName, propertyRef, submitUrl }: Props) {
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState(0);
   const [sent, setSent] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [data, setData] = useState({
     vuoleVendere: '',
     tipologiaImmobile: '',
@@ -35,9 +39,39 @@ export default function AppointmentModal({ triggerText, triggerClassName, proper
         ? data.tipologiaImmobile !== ''
         : data.nome && data.cognome && data.email && data.telefono;
 
-  const handleSubmit = () => {
-    // TODO: hook up to backend
-    setSent(true);
+  const handleSubmit = async () => {
+    if (!submitUrl) {
+      setSent(true);
+      return;
+    }
+    setSubmitting(true);
+    setError(null);
+    try {
+      const res = await fetch(submitUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          nome: data.nome,
+          cognome: data.cognome,
+          email: data.email,
+          telefono: data.telefono,
+          vuoleVendere: data.vuoleVendere,
+          tipologiaImmobile: data.tipologiaImmobile,
+          tempistiche: data.tempistiche,
+          note: data.note,
+          propertyRef,
+        }),
+      });
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        throw new Error(body?.error || 'Invio non riuscito');
+      }
+      setSent(true);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Errore imprevisto');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const handleClose = () => {
@@ -45,6 +79,8 @@ export default function AppointmentModal({ triggerText, triggerClassName, proper
     setTimeout(() => {
       setStep(0);
       setSent(false);
+      setError(null);
+      setSubmitting(false);
       setData({ vuoleVendere: '', tipologiaImmobile: '', tempistiche: '', nome: '', cognome: '', email: '', telefono: '', note: '' });
     }, 300);
   };
@@ -187,7 +223,7 @@ export default function AppointmentModal({ triggerText, triggerClassName, proper
                     <div className="flex flex-col gap-1.5">
                       <label className="text-[13px] font-medium text-black/70">Tipologia immobile</label>
                       <div className="flex flex-wrap gap-2">
-                        {['Appartamento', 'Villa', 'Negozio', 'Ufficio', 'Capannone', 'Altro'].map((t) => (
+                        {TIPOLOGIE.map((t) => (
                           <button
                             key={t}
                             type="button"
@@ -272,13 +308,18 @@ export default function AppointmentModal({ triggerText, triggerClassName, proper
                   </div>
                 )}
 
+                {error && (
+                  <p className="mt-4 text-[13px] text-red-600">{error}</p>
+                )}
+
                 {/* Navigation */}
                 <div className="flex gap-3 mt-6">
                   {step > 0 && (
                     <button
                       type="button"
                       onClick={() => setStep((s) => s - 1)}
-                      className="px-5 py-3 md:py-[10px] rounded-[8px] border-2 border-blue-primary text-blue-primary text-[14px] font-medium md:hover:bg-blue-primary/5 md:transition-all cursor-pointer active:bg-blue-primary/5"
+                      disabled={submitting}
+                      className="px-5 py-3 md:py-[10px] rounded-[8px] border-2 border-blue-primary text-blue-primary text-[14px] font-medium md:hover:bg-blue-primary/5 md:transition-all cursor-pointer active:bg-blue-primary/5 disabled:opacity-40 disabled:cursor-default"
                     >
                       Indietro
                     </button>
@@ -296,10 +337,10 @@ export default function AppointmentModal({ triggerText, triggerClassName, proper
                     <button
                       type="button"
                       onClick={handleSubmit}
-                      disabled={!canNext}
+                      disabled={!canNext || submitting}
                       className="flex-1 bg-red-primary text-white text-[15px] font-medium py-3.5 md:py-[11px] rounded-[8px] md:hover:scale-[1.02] md:hover:shadow-lg md:transition-all disabled:opacity-40 md:disabled:hover:scale-100 cursor-pointer disabled:cursor-default active:scale-[0.99]"
                     >
-                      Conferma appuntamento
+                      {submitting ? 'Invio in corso...' : 'Conferma appuntamento'}
                     </button>
                   )}
                 </div>

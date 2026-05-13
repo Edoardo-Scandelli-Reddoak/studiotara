@@ -3,6 +3,7 @@ import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ReviewsCarousel from "@/components/ReviewsCarousel";
+import NewsletterForm from "@/components/NewsletterForm";
 
 const servizi = [
   {
@@ -298,19 +299,7 @@ export default function ChiSiamo() {
             pratici e aggiornamenti del settore una volta al mese, senza
             spam.
           </p>
-          <form className="flex flex-col md:flex-row gap-3 md:gap-[25px] items-center justify-center mt-6 md:mt-8 lg:mt-10">
-            <input
-              type="email"
-              placeholder="La tua email"
-              className="w-full md:w-[400px] lg:w-[460px] h-[48px] md:h-[44px] rounded-[8px] md:rounded-[6px] px-4 md:px-5 text-[15px] md:text-[16px] text-black bg-white outline-none focus:shadow-[0_0_0_3px_rgba(210,7,42,0.3)] transition-all"
-            />
-            <button
-              type="submit"
-              className="w-full md:w-auto bg-red-primary text-white text-[15px] md:text-[16px] font-medium px-6 md:px-10 py-3 md:py-[11px] rounded-[8px] md:rounded-[6px] md:hover:scale-105 md:hover:shadow-lg md:transition-all md:duration-300 cursor-pointer active:scale-[0.99]"
-            >
-              Iscriviti
-            </button>
-          </form>
+          <NewsletterForm />
         </section>
 
       </main>

@@ -96,8 +96,7 @@ export default function Footer() {
         {/* Bottom bar */}
         <div className="mt-8 md:mt-10 pt-5 md:pt-6 border-t border-white/20 flex flex-col md:flex-row justify-between items-center gap-3">
           <p className="text-[12px] md:text-[13px] text-white/50 text-center md:text-left">
-            &copy; {new Date().getFullYear()} Studio Tara S.r.l. — P.IVA
-            00000000000 — Tutti i diritti riservati
+            &copy; {new Date().getFullYear()} Studio Tara S.r.l. — Tutti i diritti riservati
           </p>
           <div className="flex gap-4 md:gap-5 text-[13px] md:text-[13px] text-white/60 md:text-white/50">
             <Link href="#" className="py-2 md:py-0 md:hover:text-white md:transition-colors md:duration-200">

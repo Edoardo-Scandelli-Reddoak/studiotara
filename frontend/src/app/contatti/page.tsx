@@ -5,6 +5,8 @@ import Image from "next/image";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import ContactPageForm from "@/components/ContactPageForm";
+import NewsletterForm from "@/components/NewsletterForm";
 
 const faqs = [
   { q: "La valutazione è davvero gratuita e senza impegno?", a: "Sì, la valutazione è completamente gratuita e non comporta nessun obbligo. Ricevi una stima professionale basata sui dati reali del mercato locale, senza dover firmare alcun mandato." },
@@ -175,60 +177,7 @@ export default function Contatti() {
 
           {/* Right - contact form */}
           <div className="w-full lg:w-[620px] shrink-0 bg-gradient-to-b from-blue-primary to-blue-secondary rounded-[14px] md:rounded-[18px] lg:rounded-[20px] p-5 md:p-10 lg:p-[54px]">
-            <form className="flex flex-col gap-4 md:gap-5 lg:gap-[32px]">
-              <div className="flex flex-col md:flex-row gap-4 md:gap-5 lg:gap-[28px]">
-                <div className="flex-1 flex flex-col gap-1.5">
-                  <label className="text-[13px] text-white/80 md:text-white/70 font-medium ml-1">Nome</label>
-                  <input
-                    type="text"
-                    placeholder="Es. Mario"
-                    className="h-[48px] md:h-[54px] lg:h-[59px] bg-white rounded-[8px] md:rounded-[6px] px-4 text-[15px] md:text-[15px] outline-none focus:shadow-[0_0_0_3px_rgba(210,7,42,0.3)] transition-all"
-                  />
-                </div>
-                <div className="flex-1 flex flex-col gap-1.5">
-                  <label className="text-[13px] text-white/80 md:text-white/70 font-medium ml-1">Cognome</label>
-                  <input
-                    type="text"
-                    placeholder="Es. Rossi"
-                    className="h-[48px] md:h-[54px] lg:h-[59px] bg-white rounded-[8px] md:rounded-[6px] px-4 text-[15px] md:text-[15px] outline-none focus:shadow-[0_0_0_3px_rgba(210,7,42,0.3)] transition-all"
-                  />
-                </div>
-              </div>
-              <div className="flex flex-col md:flex-row gap-4 md:gap-5 lg:gap-[28px]">
-                <div className="flex-1 flex flex-col gap-1.5">
-                  <label className="text-[13px] text-white/80 md:text-white/70 font-medium ml-1">Email</label>
-                  <input
-                    type="email"
-                    placeholder="Es. mario.rossi@email.com"
-                    className="h-[48px] md:h-[54px] lg:h-[59px] bg-white rounded-[8px] md:rounded-[6px] px-4 text-[15px] md:text-[15px] outline-none focus:shadow-[0_0_0_3px_rgba(210,7,42,0.3)] transition-all"
-                  />
-                </div>
-                <div className="flex-1 flex flex-col gap-1.5">
-                  <label className="text-[13px] text-white/80 md:text-white/70 font-medium ml-1">Telefono</label>
-                  <input
-                    type="tel"
-                    placeholder="Es. 334 1234567"
-                    className="h-[48px] md:h-[54px] lg:h-[59px] bg-white rounded-[8px] md:rounded-[6px] px-4 text-[15px] md:text-[15px] outline-none focus:shadow-[0_0_0_3px_rgba(210,7,42,0.3)] transition-all"
-                  />
-                </div>
-              </div>
-              <div className="flex flex-col gap-1.5">
-                <label className="text-[13px] text-white/80 md:text-white/70 font-medium ml-1">Messaggio</label>
-                <textarea
-                  placeholder="Es. Vorrei vendere il mio appartamento a Buccinasco..."
-                  rows={4}
-                  className="w-full min-h-[110px] md:min-h-[100px] lg:min-h-[112px] bg-white rounded-[8px] md:rounded-[6px] px-4 py-3 text-[15px] md:text-[15px] outline-none resize-none focus:shadow-[0_0_0_3px_rgba(210,7,42,0.3)] transition-all"
-                />
-              </div>
-              <div className="flex justify-center">
-                <button
-                  type="submit"
-                  className="w-full md:w-auto bg-red-primary text-white text-[16px] md:text-[17px] font-medium px-6 md:px-10 py-3 md:py-[11px] rounded-[8px] md:rounded-[6px] md:hover:scale-105 md:hover:shadow-lg md:transition-all md:duration-300 cursor-pointer active:scale-[0.99]"
-                >
-                  Contattaci adesso!
-                </button>
-              </div>
-            </form>
+            <ContactPageForm />
           </div>
         </section>
 
@@ -245,8 +194,8 @@ export default function Contatti() {
 
           <div className="mt-6 md:mt-10 lg:mt-[51px] rounded-[10px] md:rounded-[12px] lg:rounded-[14px] overflow-hidden border border-black/20 h-[220px] md:h-[300px] lg:h-[321px]">
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2801.5!2d9.1!3d45.4!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDXCsDI0JzAwLjAiTiA5wrAwNicwMC4wIkU!5e0!3m2!1sit!2sit!4v1"
-              title="Posizione Studio Tara"
+              src="https://maps.google.com/maps?q=Viale+Lomellina+23,+20090+Buccinasco+MI&z=16&hl=it&output=embed"
+              title="Posizione Studio Tara — Viale Lomellina 23, Buccinasco"
               className="w-full h-full border-0"
               allowFullScreen
               loading="lazy"
@@ -307,19 +256,7 @@ export default function Contatti() {
             Iscriviti alla newsletter di Studiotara: notizie, consigli pratici
             e aggiornamenti del settore una volta al mese, senza spam.
           </p>
-          <form className="flex flex-col md:flex-row gap-3 md:gap-5 items-center justify-center mt-6 md:mt-8">
-            <input
-              type="email"
-              placeholder="La tua email"
-              className="w-full md:w-[400px] lg:w-[460px] h-[48px] md:h-[44px] rounded-[8px] md:rounded-[6px] px-4 md:px-5 text-[15px] md:text-[16px] text-black bg-white outline-none focus:shadow-[0_0_0_3px_rgba(210,7,42,0.3)] transition-all"
-            />
-            <button
-              type="submit"
-              className="w-full md:w-auto bg-red-primary text-white text-[15px] md:text-[16px] font-medium px-6 md:px-10 py-3 md:py-[11px] rounded-[8px] md:rounded-[6px] md:hover:scale-105 md:hover:shadow-lg md:transition-all md:duration-300 cursor-pointer active:scale-[0.99]"
-            >
-              Iscriviti
-            </button>
-          </form>
+          <NewsletterForm />
         </section>
       </main>
 

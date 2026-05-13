@@ -45,7 +45,7 @@ export default async function CercoResidenziale({
         {/* ===== HERO SECTION ===== */}
         <div className="relative w-full mt-3">
           {/* Character - right side */}
-          <div className="hidden md:block absolute right-[20px] lg:right-[60px] top-[0px] w-[240px] lg:w-[380px] h-[400px] lg:h-[580px] z-10">
+          <div className="hidden md:block absolute right-[20px] lg:right-[60px] top-[0px] w-[240px] lg:w-[380px] h-[400px] lg:h-[580px] z-20">
             <Image
               src="/images/personaggino_resdenziale.png"
               alt="Studio Tara residenziale"

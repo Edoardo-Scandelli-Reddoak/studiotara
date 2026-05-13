@@ -60,6 +60,7 @@ export default async function PropertyPage({
           <SellModal
             triggerText="Vendi adesso!"
             triggerClassName="w-full sm:w-auto shrink-0 bg-red-primary text-white text-[15px] md:text-[16px] font-medium px-6 md:px-10 py-3 md:py-[11px] rounded-[8px] md:rounded-[6px] md:hover:scale-105 md:hover:shadow-lg md:transition-all md:duration-300 cursor-pointer active:scale-[0.99]"
+            submitUrl="/api/lead/vendita-commerciale"
           />
         </div>
 
@@ -128,6 +129,7 @@ export default async function PropertyPage({
               triggerText="Contattaci subito"
               triggerClassName="block w-full text-center md:inline-block md:w-auto mt-6 md:mt-8 bg-red-primary text-white text-[16px] md:text-[17px] font-medium px-6 md:px-10 py-3 md:py-[11px] rounded-[8px] md:rounded-[6px] md:hover:scale-105 md:hover:shadow-lg md:transition-all md:duration-300 cursor-pointer active:scale-[0.99]"
               propertyRef={ref}
+              submitUrl="/api/lead/info-commerciale"
             />
 
             {/* Tutti i dettagli */}
@@ -258,11 +260,13 @@ export default async function PropertyPage({
                   triggerText="Fissa appuntamento"
                   triggerClassName="block w-full text-center bg-red-primary text-white text-[16px] md:text-[17px] font-semibold py-3.5 md:py-[13px] rounded-[8px] md:hover:scale-[1.02] md:hover:shadow-lg md:transition-all md:duration-300 cursor-pointer active:scale-[0.99]"
                   propertyRef={ref}
+                  submitUrl="/api/lead/appuntamento-commerciale"
                 />
                 <ContactModal
                   triggerText="Richiedi informazioni"
                   triggerClassName="block w-full text-center border-2 border-blue-primary text-blue-primary text-[15px] md:text-[16px] font-medium py-3 md:py-[11px] rounded-[8px] md:hover:bg-blue-primary/5 md:transition-all md:duration-300 cursor-pointer active:bg-blue-primary/5"
                   propertyRef={ref}
+                  submitUrl="/api/lead/info-commerciale"
                 />
               </div>
             </div>
@@ -270,7 +274,7 @@ export default async function PropertyPage({
         </div>
 
         {/* ===== CTA RICERCA ===== */}
-        <SearchRequestModal />
+        <SearchRequestModal submitUrl="/api/lead/ricerca-commerciale" />
       </main>
 
       <Footer />

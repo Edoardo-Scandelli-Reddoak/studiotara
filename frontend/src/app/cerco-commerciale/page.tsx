@@ -45,7 +45,7 @@ export default async function CercoCommerciale({
         {/* ===== HERO SECTION ===== */}
         <div className="relative w-full mt-3">
           {/* Character - right side */}
-          <div className="hidden md:block absolute right-[10px] lg:right-[-10px] top-[-20px] w-[280px] lg:w-[600px] h-[360px] lg:h-[520px] z-10">
+          <div className="hidden md:block absolute right-[10px] lg:right-[-10px] top-[-20px] w-[280px] lg:w-[600px] h-[360px] lg:h-[520px] z-20">
             <Image
               src="/images/personaggino_commerciale.png"
               alt="Studio Tara commerciale"

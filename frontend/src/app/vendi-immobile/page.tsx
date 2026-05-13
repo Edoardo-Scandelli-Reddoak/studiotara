@@ -5,22 +5,8 @@ import Image from "next/image";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-
-const tipologie = [
-  "Abitazioni in Stabili Medi",
-  "Abitazioni in Stabili Signorili",
-  "Abitazioni in Stabili Economici",
-  "Ville & Villini",
-  "Uffici",
-  "Negozi",
-  "Box & Autorimesse",
-  "Posti Auto Coperti",
-  "Posti Auto Scoperti",
-  "Laboratori",
-  "Magazzini",
-  "Capannoni Tipici",
-  "Capannoni Industriali",
-];
+import ValuationForm from "@/components/ValuationForm";
+import NewsletterForm from "@/components/NewsletterForm";
 
 const stats = [
   { value: "1.850", label: "Potenziali acquirenti annui nella nostra banca dati" },
@@ -138,61 +124,7 @@ export default function VendiImmobile() {
           <h2 className="text-[19px] md:text-[26px] lg:text-[30px] tracking-[-0.7px] md:tracking-[-1.5px] text-black text-left md:text-center leading-snug max-md:pr-[160px]">
             Richiedi la tua <strong>valutazione gratuita</strong>
           </h2>
-          <form className="flex flex-col gap-3 md:gap-5 mt-4 md:mt-6 max-w-[604px] mx-auto">
-            <div className="flex flex-col md:flex-row gap-3 md:gap-5">
-              <div className="flex-1 flex flex-col gap-1">
-                <label className="text-[13px] text-black/60 font-medium ml-1">Tipologia</label>
-                <div className="relative">
-                  <select
-                    className="w-full h-[44px] md:h-[47px] border-2 md:border-[3px] border-blue-primary rounded-[8px] md:rounded-[6px] px-3 pr-9 text-[15px] md:text-[14px] outline-none bg-white focus:border-blue-secondary focus:shadow-[0_0_0_3px_rgba(17,85,218,0.15)] transition-all appearance-none cursor-pointer"
-                    defaultValue=""
-                  >
-                    <option value="" disabled>Seleziona tipologia...</option>
-                    {tipologie.map((t) => (
-                      <option key={t} value={t}>{t}</option>
-                    ))}
-                  </select>
-                  <div className="pointer-events-none absolute inset-y-0 right-3 flex items-center">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1152d2" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="m6 9 6 6 6-6" />
-                    </svg>
-                  </div>
-                </div>
-              </div>
-              <div className="flex-1 flex flex-col gap-1">
-                <label className="text-[13px] text-black/60 font-medium ml-1">Provincia</label>
-                <input
-                  type="text"
-                  placeholder="Es. Milano"
-                  className="h-[44px] md:h-[47px] border-2 md:border-[3px] border-blue-primary rounded-[8px] md:rounded-[6px] px-3 text-[15px] md:text-[14px] outline-none focus:border-blue-secondary focus:shadow-[0_0_0_3px_rgba(17,85,218,0.15)] transition-all"
-                />
-              </div>
-            </div>
-            <div className="flex flex-col md:flex-row gap-3 md:gap-5">
-              <div className="flex-1 flex flex-col gap-1">
-                <label className="text-[13px] text-black/60 font-medium ml-1">Comune</label>
-                <input
-                  type="text"
-                  placeholder="Es. Buccinasco"
-                  className="h-[44px] md:h-[47px] border-2 md:border-[3px] border-blue-primary rounded-[8px] md:rounded-[6px] px-3 text-[15px] md:text-[14px] outline-none focus:border-blue-secondary focus:shadow-[0_0_0_3px_rgba(17,85,218,0.15)] transition-all"
-                />
-              </div>
-              <div className="flex-1 flex flex-col gap-1">
-                <label className="text-[13px] text-black/60 font-medium ml-1">Indirizzo</label>
-                <input
-                  type="text"
-                  placeholder="Es. Via Roma 2"
-                  className="h-[44px] md:h-[47px] border-2 md:border-[3px] border-blue-primary rounded-[8px] md:rounded-[6px] px-3 text-[15px] md:text-[14px] outline-none focus:border-blue-secondary focus:shadow-[0_0_0_3px_rgba(17,85,218,0.15)] transition-all"
-                />
-              </div>
-            </div>
-            <button
-              type="submit"
-              className="w-full bg-red-primary text-white text-[16px] md:text-[17px] font-medium py-3 md:py-[11px] rounded-[8px] md:rounded-[6px] md:hover:scale-[1.02] md:hover:shadow-lg md:transition-all md:duration-300 cursor-pointer active:scale-[0.99]"
-            >
-              Valuta ora
-            </button>
-          </form>
+          <ValuationForm variant="large" submitUrl="/api/lead/vendi-immobile-valuation" />
         </section>
 
         {/* ===== VALUTAZIONE DA CHI CONOSCE LA ZONA ===== */}
@@ -388,19 +320,7 @@ export default function VendiImmobile() {
             Iscriviti alla newsletter di Studiotara: notizie, consigli pratici
             e aggiornamenti del settore una volta al mese, senza spam.
           </p>
-          <form className="flex flex-col md:flex-row gap-3 md:gap-5 items-center justify-center mt-6 md:mt-8">
-            <input
-              type="email"
-              placeholder="La tua email"
-              className="w-full md:w-[400px] lg:w-[460px] h-[48px] md:h-[44px] rounded-[8px] md:rounded-[6px] px-4 md:px-5 text-[15px] md:text-[16px] text-black bg-white outline-none focus:shadow-[0_0_0_3px_rgba(210,7,42,0.3)] transition-all"
-            />
-            <button
-              type="submit"
-              className="w-full md:w-auto bg-red-primary text-white text-[15px] md:text-[16px] font-medium px-6 md:px-10 py-3 md:py-[11px] rounded-[8px] md:rounded-[6px] md:hover:scale-105 md:hover:shadow-lg md:transition-all md:duration-300 cursor-pointer active:scale-[0.99]"
-            >
-              Iscriviti
-            </button>
-          </form>
+          <NewsletterForm />
         </section>
       </main>
 
