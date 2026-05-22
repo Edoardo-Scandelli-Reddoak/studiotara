@@ -56,3 +56,35 @@ export function pushNumberValue(
   if (!Number.isFinite(num)) return;
   list.push({ custom_field: field, value_number: String(num) });
 }
+
+/**
+ * Attach a free-text note to a contact via the CRM /api/notes/ endpoint.
+ * Notes show up in the standard "Notes" tab of the CRM UI, separately from
+ * custom fields. No-ops if `content` is empty. Errors are logged but do not
+ * fail the request (the lead has already been created at this point).
+ */
+export async function createCrmNote(
+  headers: Record<string, string>,
+  contactId: string,
+  content: string | undefined,
+): Promise<void> {
+  const text = content?.trim();
+  if (!text) return;
+  try {
+    const res = await fetch(`${CRM_BASE}/api/notes/`, {
+      method: "POST",
+      headers,
+      body: JSON.stringify({
+        contact: contactId,
+        content: text,
+        note_type: "general",
+      }),
+    });
+    if (!res.ok) {
+      const errText = await res.text();
+      console.error("CRM note create failed:", res.status, errText);
+    }
+  } catch (err) {
+    console.error("CRM note create exception:", err);
+  }
+}

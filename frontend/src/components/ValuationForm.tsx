@@ -8,10 +8,19 @@ type Data = {
   provincia: string;
   comune: string;
   indirizzo: string;
+  mq: string;
   nome: string;
   cognome: string;
   email: string;
   telefono: string;
+};
+
+type Valutazione = {
+  min: number;
+  max: number;
+  med: number;
+  prezzoMqMed: number;
+  zona?: string;
 };
 
 type Variant = "default" | "large";
@@ -36,11 +45,13 @@ export default function ValuationForm({ variant = "default", submitUrl }: Props)
   const [sent, setSent] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [valutazione, setValutazione] = useState<Valutazione | null>(null);
   const [data, setData] = useState<Data>({
     tipologia: "",
     provincia: "",
     comune: "",
     indirizzo: "",
+    mq: "",
     nome: "",
     cognome: "",
     email: "",
@@ -50,7 +61,13 @@ export default function ValuationForm({ variant = "default", submitUrl }: Props)
   const update = (field: keyof Data, value: string) =>
     setData((prev) => ({ ...prev, [field]: value }));
 
-  const canStep1 = data.tipologia !== "" && data.comune.trim() !== "";
+  const mqNum = Number(data.mq);
+  const canStep1 =
+    data.tipologia !== "" &&
+    data.comune.trim() !== "" &&
+    data.indirizzo.trim() !== "" &&
+    Number.isFinite(mqNum) &&
+    mqNum > 0;
   const canSubmit =
     data.nome.trim() !== "" &&
     data.cognome.trim() !== "" &&
@@ -81,6 +98,8 @@ export default function ValuationForm({ variant = "default", submitUrl }: Props)
         body: JSON.stringify(data),
       });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const json = (await res.json().catch(() => null)) as { valutazione?: Valutazione } | null;
+      if (json?.valutazione) setValutazione(json.valutazione);
       setSent(true);
     } catch (err) {
       console.error("Valuation submit error:", err);
@@ -89,6 +108,13 @@ export default function ValuationForm({ variant = "default", submitUrl }: Props)
       setSubmitting(false);
     }
   };
+
+  const formatEUR = (n: number) =>
+    new Intl.NumberFormat("it-IT", {
+      style: "currency",
+      currency: "EUR",
+      maximumFractionDigits: 0,
+    }).format(n);
 
   if (sent) {
     return (
@@ -101,9 +127,29 @@ export default function ValuationForm({ variant = "default", submitUrl }: Props)
         <p className="text-[18px] md:text-[20px] font-semibold text-black tracking-[-0.5px]">
           Richiesta inviata!
         </p>
-        <p className="text-[14px] md:text-[15px] text-black/60 mt-2">
-          Ti contatteremo al più presto per la valutazione del tuo immobile.
-        </p>
+
+        {valutazione ? (
+          <div className="mt-4 md:mt-5 w-full px-5 py-4 md:py-5 bg-blue-primary/5 border border-blue-primary/20 rounded-[10px] text-left">
+            <p className="text-[12px] md:text-[13px] text-blue-primary font-semibold uppercase tracking-wider">
+              Valutazione orientativa
+            </p>
+            <p className="text-[22px] md:text-[26px] font-bold text-black mt-1 tracking-[-0.5px]">
+              {formatEUR(valutazione.min)} – {formatEUR(valutazione.max)}
+            </p>
+            <p className="text-[12px] md:text-[13px] text-black/60 mt-1">
+              {valutazione.prezzoMqMed.toLocaleString("it-IT")} €/m² medio
+              {valutazione.zona ? ` · ${valutazione.zona}` : ""}
+            </p>
+            <p className="text-[12px] md:text-[13px] text-black/55 mt-3 leading-snug">
+              Stima basata sulle quotazioni OMI della zona.
+              Ti contatteremo per una valutazione personalizzata.
+            </p>
+          </div>
+        ) : (
+          <p className="text-[14px] md:text-[15px] text-black/60 mt-2">
+            Ti contatteremo al più presto per la valutazione del tuo immobile.
+          </p>
+        )}
       </div>
     );
   }
@@ -172,19 +218,37 @@ export default function ValuationForm({ variant = "default", submitUrl }: Props)
               />
             </div>
             <div className="flex-1 flex flex-col gap-1">
-              <label className="text-[13px] text-black/60 font-medium ml-1">Indirizzo</label>
+              <label className="text-[13px] text-black/60 font-medium ml-1">Indirizzo *</label>
               <input
                 type="text"
                 placeholder="Es. Via Roma 2"
+                required
                 value={data.indirizzo}
                 onChange={(e) => update("indirizzo", e.target.value)}
                 className={inputBase}
               />
             </div>
           </div>
+          <div className={`flex flex-col md:flex-row ${formGap}`}>
+            <div className="flex-1 flex flex-col gap-1">
+              <label className="text-[13px] text-black/60 font-medium ml-1">Superficie (m²) *</label>
+              <input
+                type="number"
+                inputMode="numeric"
+                min={1}
+                step={1}
+                placeholder="Es. 80"
+                required
+                value={data.mq}
+                onChange={(e) => update("mq", e.target.value)}
+                className={inputBase}
+              />
+            </div>
+          </div>
           <button
             type="submit"
-            className="w-full bg-red-primary text-white text-[16px] md:text-[17px] font-medium py-3 md:py-[11px] rounded-[8px] md:rounded-[6px] md:hover:scale-[1.02] md:hover:shadow-lg md:transition-all md:duration-300 cursor-pointer active:scale-[0.99]"
+            disabled={!canStep1}
+            className="w-full bg-red-primary text-white text-[16px] md:text-[17px] font-medium py-3 md:py-[11px] rounded-[8px] md:rounded-[6px] md:hover:scale-[1.02] md:hover:shadow-lg md:transition-all md:duration-300 cursor-pointer active:scale-[0.99] disabled:opacity-40 md:disabled:hover:scale-100 disabled:cursor-not-allowed"
           >
             Continua
           </button>

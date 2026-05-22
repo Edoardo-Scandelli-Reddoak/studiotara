@@ -5,6 +5,7 @@ import {
   CRM_TOKEN,
   CustomValue,
   crmAuthHeaders,
+  createCrmNote,
   pushNumberValue,
   pushTextValue,
 } from "@/lib/crmHelpers";
@@ -86,6 +87,8 @@ export async function POST(req: Request) {
   if (!contact.id) {
     return NextResponse.json({ error: "Unexpected CRM response (missing contact id)" }, { status: 502 });
   }
+
+  await createCrmNote(headers, contact.id, note);
 
   const dealRes = await fetch(`${CRM_BASE}/api/deals/`, {
     method: "POST",

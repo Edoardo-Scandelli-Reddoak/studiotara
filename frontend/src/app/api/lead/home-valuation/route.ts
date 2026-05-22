@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { fetchValutazione } from "@/lib/borsino";
 
 const CRM_BASE = process.env.RELATIA_CRM_URL ?? "https://studiotara.relatiacrm.com";
 const CRM_TOKEN = process.env.RELATIA_CRM_TOKEN;
@@ -26,6 +27,7 @@ type Body = {
   provincia?: string;
   comune?: string;
   indirizzo?: string;
+  mq?: string | number;
 };
 
 export async function POST(req: Request) {
@@ -44,7 +46,9 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
 
-  const { nome, cognome, email, telefono, tipologia, provincia, comune, indirizzo } = body;
+  const { nome, cognome, email, telefono, tipologia, provincia, comune, indirizzo, mq } = body;
+  const mqNum = Number(mq);
+  const mqValid = Number.isFinite(mqNum) && mqNum > 0;
 
   if (
     !nome?.trim() ||
@@ -52,20 +56,23 @@ export async function POST(req: Request) {
     !email?.trim() ||
     !telefono?.trim() ||
     !tipologia?.trim() ||
-    !comune?.trim()
+    !comune?.trim() ||
+    !indirizzo?.trim() ||
+    !mqValid
   ) {
     return NextResponse.json(
-      { error: "Missing required fields (nome, cognome, email, telefono, tipologia, comune)" },
+      { error: "Missing required fields (nome, cognome, email, telefono, tipologia, comune, indirizzo, mq)" },
       { status: 400 },
     );
   }
 
+  const indirizzoConMq = `${indirizzo} (${mqNum} m²)`;
   const customValues: CustomValue[] = [
     { custom_field: CUSTOM_FIELDS.tipologia, value_text: tipologia },
+    { custom_field: CUSTOM_FIELDS.indirizzo, value_text: indirizzoConMq },
   ];
   if (provincia?.trim()) customValues.push({ custom_field: CUSTOM_FIELDS.provincia, value_text: provincia });
   if (comune?.trim()) customValues.push({ custom_field: CUSTOM_FIELDS.comune, value_text: comune });
-  if (indirizzo?.trim()) customValues.push({ custom_field: CUSTOM_FIELDS.indirizzo, value_text: indirizzo });
 
   const headers = {
     Authorization: `Token ${CRM_TOKEN}`,
@@ -135,9 +142,19 @@ export async function POST(req: Request) {
 
   const deal = (await dealRes.json()) as { id?: string };
 
+  // 3) Fetch Borsino valuation (best-effort: failures don't break the lead).
+  const valutazione = await fetchValutazione({
+    tipologia,
+    indirizzo,
+    comune,
+    provincia,
+    mq: mqNum,
+  });
+
   return NextResponse.json({
     success: true,
     contactId: contact.id,
     dealId: deal.id,
+    valutazione,
   });
 }

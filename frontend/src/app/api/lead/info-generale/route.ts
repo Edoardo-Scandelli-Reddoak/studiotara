@@ -1,7 +1,5 @@
 import { NextResponse } from "next/server";
-
-const CRM_BASE = process.env.RELATIA_CRM_URL ?? "https://studiotara.relatiacrm.com";
-const CRM_TOKEN = process.env.RELATIA_CRM_TOKEN;
+import { CRM_BASE, CRM_TOKEN, crmAuthHeaders, createCrmNote } from "@/lib/crmHelpers";
 
 // Pipeline & stage for "SITO - richiesta informazioni" (generic contact form)
 const PIPELINE_ID = "71da0b37-32b6-4061-a5d4-b3d2b0f9e1ec";
@@ -17,7 +15,8 @@ type Body = {
 };
 
 export async function POST(req: Request) {
-  if (!CRM_TOKEN) {
+  const headers = crmAuthHeaders();
+  if (!headers || !CRM_TOKEN) {
     console.error("RELATIA_CRM_TOKEN env var missing");
     return NextResponse.json({ error: "CRM token not configured on server" }, { status: 500 });
   }
@@ -37,11 +36,6 @@ export async function POST(req: Request) {
       { status: 400 },
     );
   }
-
-  const headers = {
-    Authorization: `Token ${CRM_TOKEN}`,
-    "Content-Type": "application/json",
-  };
 
   const contactRes = await fetch(`${CRM_BASE}/api/contacts/`, {
     method: "POST",
@@ -68,6 +62,8 @@ export async function POST(req: Request) {
   if (!contact.id) {
     return NextResponse.json({ error: "Unexpected CRM response (missing contact id)" }, { status: 502 });
   }
+
+  await createCrmNote(headers, contact.id, messaggio);
 
   const dealRes = await fetch(`${CRM_BASE}/api/deals/`, {
     method: "POST",

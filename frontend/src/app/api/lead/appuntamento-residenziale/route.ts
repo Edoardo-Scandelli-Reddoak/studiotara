@@ -5,6 +5,7 @@ import {
   CRM_TOKEN,
   CustomValue,
   crmAuthHeaders,
+  createCrmNote,
   pushTextValue,
 } from "@/lib/crmHelpers";
 
@@ -111,6 +112,11 @@ export async function POST(req: Request) {
   if (!contact.id) {
     return NextResponse.json({ error: "Unexpected CRM response (missing contact id)" }, { status: 502 });
   }
+
+  const noteContent = propertyRef
+    ? `Immobile rif. ${propertyRef}${note?.trim() ? ` — ${note.trim()}` : ""}`
+    : note;
+  await createCrmNote(headers, contact.id, noteContent);
 
   // Custom fields that apply to deals only (not contacts-only fields).
   const dealCustomValues = customValues.filter((v) =>
