@@ -10,5 +10,6 @@ urlpatterns = [
     path('api/blog/', include('apps.blog.urls')),
     path('api/contacts/', include('apps.contacts.urls')),
     path('api/reviews/', include('apps.reviews.urls')),
+    path('api/analytics/', include('apps.analytics.urls')),
     re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
 ]

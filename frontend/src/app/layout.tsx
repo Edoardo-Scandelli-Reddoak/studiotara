@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
+import AnalyticsPing from "@/components/AnalyticsPing";
 
 export const metadata: Metadata = {
   title: "Studio Tara — Agenzia Immobiliare Buccinasco",
@@ -21,7 +22,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="it" className="antialiased">
-      <body className="min-h-screen flex flex-col">{children}</body>
+      <body className="min-h-screen flex flex-col">
+        <AnalyticsPing />
+        {children}
+      </body>
     </html>
   );
 }

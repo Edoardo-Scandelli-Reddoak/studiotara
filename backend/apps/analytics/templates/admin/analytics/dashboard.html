@@ -1,0 +1,132 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+
+{% block title %}{{ title }} | {{ site_title }}{% endblock %}
+
+{% block branding %}
+  <h1 id="site-name"><a href="{% url 'admin:index' %}">{{ site_header }}</a></h1>
+{% endblock %}
+
+{% block content %}
+<style>
+  .analytics-wrap { max-width: 1200px; margin: 0 auto; padding: 8px 0 32px; }
+  .analytics-h2 { font-size: 14px; font-weight: 600; text-transform: uppercase;
+                  letter-spacing: 0.06em; color: #6b7280; margin: 28px 0 12px; }
+  .kpi-grid { display: grid; gap: 14px;
+              grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
+  .kpi { background: white; border: 1px solid #e5e7eb; border-radius: 10px;
+         padding: 16px 18px; box-shadow: 0 1px 2px rgba(0,0,0,0.03); }
+  .kpi .label { font-size: 12px; color: #6b7280; text-transform: uppercase;
+                letter-spacing: 0.05em; font-weight: 600; }
+  .kpi .value { font-size: 28px; font-weight: 700; color: #092d74; margin-top: 4px;
+                line-height: 1.1; }
+  .panel { background: white; border: 1px solid #e5e7eb; border-radius: 10px;
+           padding: 18px; box-shadow: 0 1px 2px rgba(0,0,0,0.03); }
+  .panel h3 { margin: 0 0 14px; font-size: 15px; font-weight: 600; color: #111827; }
+  .a-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .a-table th { text-align: left; font-weight: 600; color: #6b7280; padding: 8px 6px;
+                border-bottom: 1px solid #e5e7eb; font-size: 11px; text-transform: uppercase;
+                letter-spacing: 0.05em; }
+  .a-table td { padding: 9px 6px; border-bottom: 1px solid #f3f4f6; color: #111827; }
+  .a-table tr:last-child td { border-bottom: 0; }
+  .a-table td.num { text-align: right; font-weight: 600; color: #092d74;
+                    font-variant-numeric: tabular-nums; }
+  .a-table td.muted { color: #6b7280; font-size: 12px; }
+  .two-col { display: grid; gap: 18px; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); }
+  .chart-wrap { position: relative; height: 280px; }
+  .empty { text-align: center; padding: 24px; color: #9ca3af; font-size: 13px; }
+</style>
+
+<div class="analytics-wrap">
+
+  <div class="analytics-h2">Panoramica</div>
+  <div class="kpi-grid">
+    <div class="kpi"><div class="label">Visite totali</div><div class="value">{{ total_views }}</div></div>
+    <div class="kpi"><div class="label">Oggi</div><div class="value">{{ views_today }}</div></div>
+    <div class="kpi"><div class="label">Ultimi 7 giorni</div><div class="value">{{ views_7d }}</div></div>
+    <div class="kpi"><div class="label">Ultimi 30 giorni</div><div class="value">{{ views_30d }}</div></div>
+    <div class="kpi"><div class="label">Annunci attivi</div><div class="value">{{ total_properties }}</div></div>
+    <div class="kpi"><div class="label">Click totali annunci</div><div class="value">{{ total_property_views }}</div></div>
+  </div>
+
+  <div class="analytics-h2">Andamento ultimi 30 giorni</div>
+  <div class="panel">
+    <div class="chart-wrap"><canvas id="viewsChart"></canvas></div>
+  </div>
+
+  <div class="analytics-h2">Classifiche</div>
+  <div class="two-col">
+    <div class="panel">
+      <h3>Top 10 annunci più visti</h3>
+      {% if top_properties %}
+        <table class="a-table">
+          <thead><tr><th>Titolo</th><th>Tipologia</th><th class="num">Click</th></tr></thead>
+          <tbody>
+            {% for p in top_properties %}
+              <tr>
+                <td>
+                  <a href="{% url 'admin:properties_property_change' p.id %}">{{ p.titolo|truncatechars:55 }}</a>
+                  <div class="muted">{{ p.comune }}</div>
+                </td>
+                <td class="muted">{{ p.tipologia|capfirst }}</td>
+                <td class="num">{{ p.visualizzazioni }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% else %}<div class="empty">Nessun dato ancora.</div>{% endif %}
+    </div>
+
+    <div class="panel">
+      <h3>Top 10 pagine più visitate</h3>
+      {% if top_pages %}
+        <table class="a-table">
+          <thead><tr><th>Percorso</th><th class="num">Visite</th></tr></thead>
+          <tbody>
+            {% for row in top_pages %}
+              <tr><td>{{ row.path }}</td><td class="num">{{ row.c }}</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% else %}<div class="empty">Nessun dato ancora.</div>{% endif %}
+    </div>
+  </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+(function () {
+  const ctx = document.getElementById('viewsChart');
+  if (!ctx) return;
+  const labels = {{ chart_labels_json|safe }};
+  const data = {{ chart_values_json|safe }};
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Visite',
+        data: data,
+        borderColor: '#092d74',
+        backgroundColor: 'rgba(17, 85, 218, 0.10)',
+        borderWidth: 2,
+        tension: 0.25,
+        fill: true,
+        pointRadius: 2,
+        pointBackgroundColor: '#092d74'
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { beginAtZero: true, ticks: { precision: 0 } },
+        x: { grid: { display: false } }
+      }
+    }
+  });
+})();
+</script>
+{% endblock %}

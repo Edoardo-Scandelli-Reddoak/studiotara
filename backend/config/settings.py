@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     'apps.contacts',
     'apps.sync',
     'apps.reviews',
+    'apps.analytics',
 ]
 
 MIDDLEWARE = [
