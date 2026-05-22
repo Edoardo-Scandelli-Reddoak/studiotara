@@ -18,7 +18,7 @@ export default async function CercoResidenziale({
 
   const allProperties = await getProperties();
   const allResidenziali = allProperties.filter((p) => {
-    if (!isResidenziale(p.tipologia)) return false;
+    if (!isResidenziale(p)) return false;
     if (contratto && p.contratto !== contratto) return false;
     if (comune && p.comune.toLowerCase() !== comune.toLowerCase()) return false;
     if (prezzo_min) {

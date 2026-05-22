@@ -17,6 +17,7 @@ export interface ApiPropertyList {
   gestionale_id: string;
   titolo: string;
   tipologia: string;
+  categoria_id: number | null;
   contratto: 'vendita' | 'affitto' | string;
   prezzo: string | null;
   mq: number | null;
@@ -80,14 +81,61 @@ export async function incrementPropertyViews(id: number): Promise<void> {
   }
 }
 
-// Tipologie residenziali (tutto il resto è commerciale)
+// categoria_id residenziali dal feed GestionaleImmobiliare.
+// Mappatura speculare a CATEGORIA_MAP in backend/apps/sync/.../sync_properties.py.
+const CATEGORIA_ID_RESIDENZIALI = new Set<number>([
+  1,  // appartamento
+  2,  // villa
+  3,  // villetta
+  4,  // attico
+  10, // rustico
+  11, // appartamento
+  12, // monolocale
+  13, // bilocale
+  14, // trilocale
+  15, // quadrilocale
+  16, // multilocale
+  18, // villa
+  19, // villetta
+  20, // casale
+]);
+
+// Fallback usato solo quando categoria_id è assente.
 const TIPOLOGIE_RESIDENZIALI = new Set([
   'appartamento', 'villa', 'villetta', 'attico', 'monolocale',
   'bilocale', 'trilocale', 'quadrilocale', 'multilocale', 'casale', 'rustico',
 ]);
 
-export function isResidenziale(tipologia: string): boolean {
-  return TIPOLOGIE_RESIDENZIALI.has(tipologia.toLowerCase());
+// Override: parole nel titolo che identificano in modo inequivocabile un immobile
+// commerciale. Sovrascrive qualunque altra classificazione (titolo scritto a mano
+// dall'agente = segnale più affidabile).
+const TITOLO_KEYWORDS_COMMERCIALI = [
+  'capannone', 'capannoni',
+  'industriale',
+  'spazio commerciale', 'locale commerciale', 'fondo commerciale',
+  'negozio', 'negozi',
+  'ufficio', 'uffici',
+  'magazzino', 'magazzini',
+  'laboratorio',
+  'terreno',
+];
+
+export function isResidenziale(p: {
+  tipologia: string;
+  titolo?: string;
+  categoria_id?: number | null;
+}): boolean {
+  // 1) Override sul titolo — il testo scritto dall'agente vince sempre.
+  const titolo = (p.titolo ?? '').toLowerCase();
+  if (TITOLO_KEYWORDS_COMMERCIALI.some((k) => titolo.includes(k))) return false;
+
+  // 2) categoria_id dal gestionale — segnale autoritativo numerico.
+  if (typeof p.categoria_id === 'number') {
+    return CATEGORIA_ID_RESIDENZIALI.has(p.categoria_id);
+  }
+
+  // 3) Fallback sulla stringa tipologia se categoria_id è mancante.
+  return TIPOLOGIE_RESIDENZIALI.has(p.tipologia.toLowerCase());
 }
 
 export function formatTitolo(titolo: string): string {

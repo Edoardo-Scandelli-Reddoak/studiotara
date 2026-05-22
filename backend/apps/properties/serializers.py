@@ -22,7 +22,7 @@ class PropertyListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Property
         fields = [
-            'id', 'gestionale_id', 'titolo', 'tipologia', 'contratto',
+            'id', 'gestionale_id', 'titolo', 'tipologia', 'categoria_id', 'contratto',
             'prezzo', 'mq', 'comune', 'provincia', 'zona',
             'locali', 'bagni', 'camere', 'piano',
             'ascensore', 'garage', 'classe_energetica',
