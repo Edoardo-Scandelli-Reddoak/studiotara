@@ -60,6 +60,19 @@ export default function PropertyGallery({ property }: { property: ApiPropertyDet
   const prev = () => setCurrentIndex((i) => (i === 0 ? images.length - 1 : i - 1));
   const next = () => setCurrentIndex((i) => (i === images.length - 1 ? 0 : i + 1));
 
+  // Adjacent indices to preload so prev/next navigation feels instant.
+  const preloadIndices =
+    images.length > 1
+      ? Array.from(
+          new Set([
+            (currentIndex + 1) % images.length,
+            (currentIndex - 1 + images.length) % images.length,
+          ]),
+        )
+      : [];
+
+  const GALLERY_SIZES = "(min-width: 1024px) 60vw, 100vw";
+
   const ref = property.codice_agenzia || property.gestionale_id;
   const prezzoFormatted = formatPrezzo(property.prezzo);
 
@@ -108,7 +121,7 @@ export default function PropertyGallery({ property }: { property: ApiPropertyDet
   <div style="margin-top:28px;padding-top:14px;border-top:2px solid #092d74;text-align:center;color:#888;font-size:11px">
     <strong style="color:#092d74">STUDIO TARA</strong> — Agenzia Immobiliare<br>
     Viale Lomellina, 23 — 20090 Buccinasco (MI)<br>
-    Tel: 334 233 4661 — info@studiotara.it — www.studiotara.it
+    Tel: 02 365 5736 — info@studiotara.it — www.studiotara.it
   </div>
 </div>`;
 
@@ -135,7 +148,7 @@ export default function PropertyGallery({ property }: { property: ApiPropertyDet
 <style>@page{margin:40px}*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Helvetica Neue',Arial,sans-serif;color:#1a1a1a;line-height:1.6}.header{background:linear-gradient(135deg,#092d74,#1155da);color:white;padding:40px;border-radius:12px;margin-bottom:30px}.header h1{font-size:28px}.header p{font-size:16px;opacity:.85;margin-top:6px}.header .price{font-size:32px;font-weight:700;margin-top:16px}h2{font-size:22px;margin:28px 0 12px;color:#092d74}.description p{font-size:15px;color:#444;margin-bottom:12px}.footer{margin-top:40px;padding-top:20px;border-top:2px solid #092d74;text-align:center;color:#888;font-size:13px}.footer strong{color:#092d74}@media print{body{print-color-adjust:exact;-webkit-print-color-adjust:exact}}</style></head><body>
 <div class="header"><h1>${property.titolo}</h1><p>${property.indirizzo || property.comune}</p><div class="price">${prezzoFormatted}</div></div>
 <h2>Descrizione</h2><div class="description">${property.descrizione.split('\n\n').map((p: string) => `<p>${p}</p>`).join('')}</div>
-<div class="footer"><strong>STUDIO TARA</strong> — Agenzia Immobiliare<br>Viale Lomellina, 23 — 20090 Buccinasco (MI)<br>Tel: 334 233 4661 — info@studiotara.it</div>
+<div class="footer"><strong>STUDIO TARA</strong> — Agenzia Immobiliare<br>Viale Lomellina, 23 — 20090 Buccinasco (MI)<br>Tel: 02 365 5736 — info@studiotara.it</div>
 <script>window.onload=function(){window.print()}</script></body></html>`;
       const blob = new Blob([fallbackHtml], { type: "text/html" });
       const url = URL.createObjectURL(blob);
@@ -154,10 +167,24 @@ export default function PropertyGallery({ property }: { property: ApiPropertyDet
             src={images[currentIndex]}
             alt={`${property.titolo} - Foto ${currentIndex + 1}`}
             fill
+            sizes={GALLERY_SIZES}
             className="object-cover cursor-pointer"
             onClick={() => setLightboxOpen(true)}
             priority={currentIndex === 0}
           />
+
+          {/* Preload adjacent images: invisible, off pointer-events, but fetched by the browser. */}
+          {preloadIndices.map((idx) => (
+            <Image
+              key={`preload-${idx}-${images[idx]}`}
+              src={images[idx]}
+              alt=""
+              fill
+              sizes={GALLERY_SIZES}
+              className="object-cover opacity-0 pointer-events-none"
+              aria-hidden
+            />
+          ))}
 
           <div className="absolute top-3 right-3 md:top-4 md:right-4 bg-black/55 text-white text-[12px] md:text-[13px] px-2.5 md:px-3 py-1 rounded-full">
             {currentIndex + 1} / {images.length}
