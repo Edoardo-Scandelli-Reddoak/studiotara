@@ -4,6 +4,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ReviewsCarousel from "@/components/ReviewsCarousel";
 import VideoPlayer from "@/components/VideoPlayer";
+import ValuationForm from "@/components/ValuationForm";
 import NewsletterForm from "@/components/NewsletterForm";
 
 export default function Home() {
@@ -75,15 +76,7 @@ export default function Home() {
           <h2 className="text-[19px] md:text-[24px] tracking-[-0.8px] md:tracking-[-1.2px] text-black text-left md:text-center leading-snug max-md:pr-[140px]">
             Scopri subito quanto vale il <strong>tuo immobile!</strong>
           </h2>
-          <iframe
-            id="iFrameStimaOnline"
-            name="iFrameStimaOnline"
-            title="Stima online del valore del tuo immobile"
-            src="https://studiotara.agenziepro.it/widgets/10338/Ykg4aDlpK3QvRlRXckpRMzJMaDFaUT09/"
-            className="block w-full border-0 mt-4 md:mt-5 min-h-[820px] md:min-h-[720px]"
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-          />
+          <ValuationForm submitUrl="/api/lead/home-valuation" />
         </section>
 
         {/* ===== ABOUT SECTION (with video) ===== */}
