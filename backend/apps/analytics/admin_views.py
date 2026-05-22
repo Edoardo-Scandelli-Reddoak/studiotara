@@ -11,11 +11,15 @@ from django.utils import timezone
 from apps.properties.models import Property
 from .models import PageView
 
-# Patterns used to normalize property/blog detail paths so they aggregate as a
-# single row in the "Top pagine" table instead of one row per id/slug.
-PROPERTY_RES_PATH = re.compile(r'^/cerco-residenziale/[^/]+/?$')
-PROPERTY_COM_PATH = re.compile(r'^/cerco-commerciale/[^/]+/?$')
+# Used to normalize property/blog detail paths for the "top pages" table so all
+# `/cerco-residenziale/123` URLs aggregate under a single row.
+PROPERTY_RES_PATH = re.compile(r'^/cerco-residenziale/(\d+)/?$')
+PROPERTY_COM_PATH = re.compile(r'^/cerco-commerciale/(\d+)/?$')
 BLOG_PATH = re.compile(r'^/blog/[^/]+/?$')
+
+# Same intent, used to extract the property id from a path so we can join with
+# the Property table for the "top properties" table.
+PROPERTY_DETAIL_PATH = re.compile(r'^/cerco-(?:residenziale|commerciale)/(\d+)/?$')
 
 
 def _normalize_path(path: str) -> str:
@@ -41,17 +45,35 @@ def dashboard_view(request):
     views_7d = PageView.objects.filter(timestamp__gte=last_7).count()
     views_30d = PageView.objects.filter(timestamp__gte=last_30).count()
     total_properties = Property.objects.filter(flag_storico=False).count()
-    total_property_views = sum(
-        Property.objects.filter(flag_storico=False).values_list('visualizzazioni', flat=True)
-    )
 
-    # Top properties (uses cumulative counter on Property model)
-    top_properties = list(
-        Property.objects
-        .filter(flag_storico=False)
-        .order_by('-visualizzazioni')
-        .values('id', 'titolo', 'tipologia', 'comune', 'visualizzazioni')[:10]
+    # Per-property real view counts derived from PageView entries (path-based).
+    # Starts from 0 at deploy time — independent from `Property.visualizzazioni`
+    # which still carries the seed numbers shown to visitors on the public site.
+    property_path_rows = (
+        PageView.objects
+        .filter(path__regex=r'^/cerco-(residenziale|commerciale)/\d+/?$')
+        .values('path')
+        .annotate(c=Count('id'))
     )
+    property_view_counts: dict[int, int] = {}
+    for row in property_path_rows:
+        m = PROPERTY_DETAIL_PATH.match(row['path'])
+        if not m:
+            continue
+        pid = int(m.group(1))
+        property_view_counts[pid] = property_view_counts.get(pid, 0) + row['c']
+
+    total_property_views = sum(property_view_counts.values())
+
+    top_ids = sorted(property_view_counts, key=property_view_counts.get, reverse=True)[:10]
+    props_by_id = {
+        p['id']: p for p in
+        Property.objects.filter(id__in=top_ids).values('id', 'titolo', 'tipologia', 'comune')
+    }
+    top_properties = [
+        {**props_by_id[pid], 'visualizzazioni': property_view_counts[pid]}
+        for pid in top_ids if pid in props_by_id
+    ]
 
     # Top pages (PageView aggregated, with property/blog detail paths normalized)
     raw_path_counts = (
