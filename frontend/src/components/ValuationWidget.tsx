@@ -9,7 +9,7 @@ const WIDGET_URL =
 // right under the "Procedi" button. AgenzieProm posts inflated resize events,
 // so we deliberately do NOT honour them and pick the size ourselves.
 const DESKTOP_HEIGHT = 480;
-const MOBILE_HEIGHT = 560;
+const MOBILE_HEIGHT = 440;
 
 export default function ValuationWidget() {
   const [isMobile, setIsMobile] = useState(false);
