@@ -12,7 +12,9 @@ class Property(models.Model):
     ]
 
     # Identificatori
-    gestionale_id = models.CharField(max_length=50, unique=True, verbose_name='ID gestionale')
+    gestionale_id = models.CharField(
+        max_length=50, unique=True, blank=True, verbose_name='ID gestionale'
+    )
     codice_agenzia = models.CharField(max_length=50, blank=True, verbose_name='Codice agenzia')
 
     # Dati principali

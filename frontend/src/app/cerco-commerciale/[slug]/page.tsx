@@ -17,7 +17,11 @@ function getMapSrc(property: ApiPropertyDetail): string {
   if (property.latitudine && property.longitudine) {
     return `https://maps.google.com/maps?q=${property.latitudine},${property.longitudine}&z=15&output=embed`;
   }
-  return `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2801.5!2d9.1!3d45.4!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDXCsDI0JzAwLjAiTiA5wrAwNicwMC4wIkU!5e0!3m2!1sit!2sit!4v1`;
+  const parts = [property.indirizzo, property.comune, property.provincia, "Italia"].filter(Boolean);
+  if (parts.length) {
+    return `https://maps.google.com/maps?q=${encodeURIComponent(parts.join(", "))}&z=15&output=embed`;
+  }
+  return `https://maps.google.com/maps?q=Milano,+Italia&z=12&output=embed`;
 }
 
 export default async function PropertyPage({
