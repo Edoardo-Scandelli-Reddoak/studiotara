@@ -85,6 +85,8 @@ export async function POST(req: Request) {
     CRM_CUSTOM_FIELDS.noteAppuntamento,
     propertyRef ? `Immobile rif. ${propertyRef}${note ? ` — ${note}` : ""}` : note,
   );
+  // Riferimento immobile: auto, non modificabile dall'utente.
+  pushTextValue(customValues, CRM_CUSTOM_FIELDS.rifImmobile, propertyRef);
 
   const contactRes = await fetch(`${CRM_BASE}/api/contacts/`, {
     method: "POST",
@@ -126,6 +128,7 @@ export async function POST(req: Request) {
       CRM_CUSTOM_FIELDS.comune,
       CRM_CUSTOM_FIELDS.indirizzo,
       CRM_CUSTOM_FIELDS.immobileDaVendere,
+      CRM_CUSTOM_FIELDS.rifImmobile,
     ].includes(v.custom_field as never),
   );
 

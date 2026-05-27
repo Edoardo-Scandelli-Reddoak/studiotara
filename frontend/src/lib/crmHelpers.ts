@@ -21,6 +21,7 @@ export const CRM_CUSTOM_FIELDS = {
   tempistiche: "5d042b08-cadf-4655-8968-4bd0ae3aa028", // text (contacts only)
   tipologiaAppuntamento: "fb4783de-507b-4eff-8f7c-a4005ea9ecaa", // text (contacts only)
   immobileDaVendere: "cce89bdc-b95f-49ac-acbe-b44c27499b7b", // text
+  rifImmobile: "46986490-cf50-495e-a335-fd24e506a651", // text ("riferimento immobile")
 } as const;
 
 export const crmAuthHeaders = (): Record<string, string> | null => {

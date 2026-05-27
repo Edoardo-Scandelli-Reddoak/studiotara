@@ -1,5 +1,13 @@
 import { NextResponse } from "next/server";
-import { CRM_BASE, CRM_TOKEN, crmAuthHeaders, createCrmNote } from "@/lib/crmHelpers";
+import {
+  CRM_BASE,
+  CRM_CUSTOM_FIELDS,
+  CRM_TOKEN,
+  CustomValue,
+  crmAuthHeaders,
+  createCrmNote,
+  pushTextValue,
+} from "@/lib/crmHelpers";
 
 // Pipeline & stage for "SITO - richiesta info immobile residenziale"
 const PIPELINE_ID = "100b214a-56cd-49da-be1c-f207028f1fc1";
@@ -38,6 +46,10 @@ export async function POST(req: Request) {
     );
   }
 
+  // Riferimento immobile: auto, non modificabile dall'utente.
+  const customValues: CustomValue[] = [];
+  pushTextValue(customValues, CRM_CUSTOM_FIELDS.rifImmobile, propertyRef);
+
   const contactRes = await fetch(`${CRM_BASE}/api/contacts/`, {
     method: "POST",
     headers,
@@ -47,6 +59,7 @@ export async function POST(req: Request) {
       email,
       phone: telefono ?? "",
       source_new_id: SOURCE_ID,
+      custom_values_create: customValues,
     }),
   });
 
@@ -77,6 +90,7 @@ export async function POST(req: Request) {
       pipeline_id: PIPELINE_ID,
       current_stage_id: STAGE_ID,
       custom_name: `${nome} ${cognome}`,
+      custom_values_create: customValues,
     }),
   });
 

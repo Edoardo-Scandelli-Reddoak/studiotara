@@ -97,9 +97,14 @@ export default async function PropertyPage({
                 <h1 className="text-[22px] md:text-[28px] lg:text-[30px] tracking-[-0.8px] md:tracking-[-1.5px] text-black leading-tight">
                   {formatTitolo(property.titolo)}
                 </h1>
-                <p className="text-[14px] md:text-[16px] text-black/60 mt-1">
-                  {property.comune}{property.provincia ? `, ${property.provincia}` : ''}
-                </p>
+                <div className="flex items-center gap-2 mt-1.5">
+                  <span className="inline-flex items-center shrink-0 bg-blue-primary text-white text-[12px] md:text-[13px] font-medium px-2.5 py-1 rounded-[6px] tracking-[-0.2px]">
+                    Rif. {ref}
+                  </span>
+                  <p className="text-[14px] md:text-[16px] text-black/60">
+                    {property.comune}{property.provincia ? `, ${property.provincia}` : ''}
+                  </p>
+                </div>
               </div>
               <div className="shrink-0 hidden sm:flex flex-col items-end justify-between">
                 <div
