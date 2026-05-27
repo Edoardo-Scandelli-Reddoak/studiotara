@@ -1,6 +1,13 @@
 #!/bin/sh
 set -e
 
+# Modalità cron/sync: esegue solo il sync degli immobili dal gestionale e
+# termina (nessun web server). Usata dal servizio Railway schedulato di notte.
+if [ "$RUN_MODE" = "sync" ]; then
+    echo "RUN_MODE=sync — eseguo sync_properties e termino"
+    exec python manage.py sync_properties --force
+fi
+
 # Seed media volume se vuoto (primo deploy)
 if [ -d /app/media_seed ] && [ "$(ls -A /app/media_seed 2>/dev/null)" ]; then
     if [ ! "$(ls -A /app/media/properties 2>/dev/null)" ]; then
