@@ -15,6 +15,22 @@ function formatDate(dateStr: string | null): string {
   return d.toLocaleDateString('it-IT', { day: 'numeric', month: 'long', year: 'numeric' });
 }
 
+/**
+ * If the article body still uses plain newlines (no block-level tags),
+ * split on blank lines to produce real paragraphs. Single newlines inside a
+ * paragraph become <br>. Leaves real HTML (with <p>, <h2>, ...) untouched.
+ */
+function ensureParagraphs(html: string): string {
+  if (!html) return '';
+  if (/<(p|h[1-6]|ul|ol|div|blockquote|pre|table)\b/i.test(html)) return html;
+  return html
+    .split(/\n\s*\n/)
+    .map((chunk) => chunk.trim())
+    .filter(Boolean)
+    .map((chunk) => `<p>${chunk.replace(/\n/g, '<br>')}</p>`)
+    .join('');
+}
+
 export default async function ArticlePage({
   params,
 }: {
@@ -90,7 +106,7 @@ export default async function ArticlePage({
           {/* Body */}
           <div
             className="mt-6 md:mt-8 prose-studiotara"
-            dangerouslySetInnerHTML={{ __html: article.contenuto }}
+            dangerouslySetInnerHTML={{ __html: ensureParagraphs(article.contenuto) }}
           />
 
         </article>

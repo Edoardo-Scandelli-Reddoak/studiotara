@@ -1,10 +1,30 @@
+from django import forms
 from django.contrib import admin
+from tinymce.widgets import TinyMCE
 from unfold.admin import ModelAdmin
+
 from .models import Article
+
+
+class ArticleAdminForm(forms.ModelForm):
+    """Forces the TinyMCE widget on `contenuto`.
+
+    django-unfold's ModelAdmin overrides the widget for every TextField with
+    its own WYSIWYG, which beats both django-tinymce's HTMLField default and
+    the model-level widget. Declaring the widget on the ModelForm wins.
+    """
+
+    class Meta:
+        model = Article
+        fields = "__all__"
+        widgets = {
+            "contenuto": TinyMCE(),
+        }
 
 
 @admin.register(Article)
 class ArticleAdmin(ModelAdmin):
+    form = ArticleAdminForm
     list_display = ['titolo', 'pubblicato', 'data_pubblicazione', 'data_creazione']
     list_filter = ['pubblicato']
     search_fields = ['titolo', 'contenuto']
