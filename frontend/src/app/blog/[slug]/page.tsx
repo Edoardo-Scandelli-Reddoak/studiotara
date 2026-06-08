@@ -4,10 +4,8 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { getBlogArticle, getBlogArticles } from "@/lib/api";
 
-export async function generateStaticParams() {
-  const articles = await getBlogArticles();
-  return articles.map((a) => ({ slug: a.slug }));
-}
+// Blog is edited live in admin — always render fresh, no static caching.
+export const dynamic = 'force-dynamic';
 
 function formatDate(dateStr: string | null): string {
   if (!dateStr) return '';

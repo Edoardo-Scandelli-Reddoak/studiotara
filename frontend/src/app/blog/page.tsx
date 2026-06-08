@@ -6,6 +6,9 @@ import Pagination from "@/components/Pagination";
 import NewsletterForm from "@/components/NewsletterForm";
 import { getBlogArticles, ApiBlogArticleList } from "@/lib/api";
 
+// Blog is edited live in admin — always render fresh.
+export const dynamic = 'force-dynamic';
+
 const ARTICLES_PER_PAGE = 15;
 
 function formatDate(dateStr: string | null): string {

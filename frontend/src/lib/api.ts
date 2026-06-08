@@ -5,6 +5,11 @@ const FETCH_OPTIONS: RequestInit =
     ? { cache: 'no-store' }
     : { next: { revalidate: 3600 } };
 
+// Blog content is edited manually and we need new/deleted articles to be
+// visible immediately. ISR's "revalidate on next request" pattern is too
+// stale for low-traffic sites — we always pull fresh.
+const BLOG_FETCH_OPTIONS: RequestInit = { cache: 'no-store' };
+
 export interface ApiPropertyImage {
   id: number;
   file_url: string | null;
@@ -225,7 +230,7 @@ export async function getBlogArticles(): Promise<ApiBlogArticleList[]> {
 
   try {
     while (url) {
-      const res = await fetch(url, FETCH_OPTIONS);
+      const res = await fetch(url, BLOG_FETCH_OPTIONS);
       if (!res.ok) break;
       const data: PaginatedBlogResponse = await res.json();
       all.push(...data.results);
@@ -259,7 +264,7 @@ export async function getGoogleReviews(): Promise<ApiGoogleReview[]> {
 
 export async function getBlogArticle(slug: string): Promise<ApiBlogArticleDetail | null> {
   try {
-    const res = await fetch(`${API_BASE}/api/blog/articles/${slug}/`, FETCH_OPTIONS);
+    const res = await fetch(`${API_BASE}/api/blog/articles/${slug}/`, BLOG_FETCH_OPTIONS);
     if (!res.ok) return null;
     return res.json();
   } catch {
