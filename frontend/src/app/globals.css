@@ -116,13 +116,62 @@ body.no-scroll {
   margin-bottom: 0;
 }
 
+.prose-studiotara h3 {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.8px;
+  color: #000;
+  margin-top: 1.5rem;
+  margin-bottom: 0.6rem;
+}
+
+.prose-studiotara strong {
+  font-weight: 700;
+  color: #000;
+}
+
+.prose-studiotara em {
+  font-style: italic;
+}
+
+.prose-studiotara a {
+  color: #1155da;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.prose-studiotara a:hover {
+  color: #092d74;
+}
+
+.prose-studiotara ul,
+.prose-studiotara ol {
+  margin: 0 0 1rem 1.25rem;
+  padding: 0;
+  color: rgba(0, 0, 0, 0.8);
+  font-size: 16px;
+  line-height: 1.75;
+}
+
+.prose-studiotara ul { list-style: disc; }
+.prose-studiotara ol { list-style: decimal; }
+
+.prose-studiotara li {
+  margin-bottom: 0.35rem;
+}
+
 @media (max-width: 767px) {
   .prose-studiotara h2 {
     font-size: 20px;
     letter-spacing: -0.8px;
     margin-top: 1.5rem;
   }
-  .prose-studiotara p {
+  .prose-studiotara h3 {
+    font-size: 18px;
+  }
+  .prose-studiotara p,
+  .prose-studiotara ul,
+  .prose-studiotara ol {
     font-size: 15px;
     line-height: 1.7;
   }

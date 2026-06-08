@@ -197,6 +197,7 @@ export interface ApiBlogArticleList {
   slug: string;
   excerpt: string;
   immagine_url: string | null;
+  immagine_card_url: string | null;
   data_pubblicazione: string | null;
 }
 
@@ -207,6 +208,7 @@ export interface ApiBlogArticleDetail {
   contenuto: string;
   excerpt: string;
   immagine_url: string | null;
+  immagine_card_url: string | null;
   data_pubblicazione: string | null;
 }
 

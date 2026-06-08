@@ -24,6 +24,7 @@ INSTALLED_APPS = [
     # Terze parti
     'rest_framework',
     'corsheaders',
+    'tinymce',
     # App locali
     'apps.properties',
     'apps.blog',
@@ -143,4 +144,24 @@ UNFOLD = {
     'SITE_TITLE': 'Studiotara Admin',
     'SITE_HEADER': 'Studiotara',
     'SITE_URL': '/',
+}
+
+# TinyMCE — rich-text editor for blog articles in the admin
+TINYMCE_DEFAULT_CONFIG = {
+    'height': 500,
+    'menubar': False,
+    'plugins': 'lists link autolink paste wordcount',
+    'toolbar': (
+        'undo redo | blocks | bold italic | bullist numlist | link | '
+        'removeformat'
+    ),
+    'block_formats': 'Paragrafo=p; Titolo 2=h2; Titolo 3=h3',
+    'paste_as_text': True,
+    'branding': False,
+    'statusbar': False,
+    'content_style': (
+        'body{font-family:"Inter",-apple-system,Arial,sans-serif;'
+        'font-size:16px;line-height:1.7;color:#1a1a1a;padding:8px}'
+        'p{margin:0 0 1rem 0}'
+    ),
 }

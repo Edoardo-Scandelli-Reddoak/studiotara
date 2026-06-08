@@ -107,9 +107,9 @@ export default async function Blog({
               >
                 {/* Image */}
                 <div className="w-full h-[180px] md:h-[190px] lg:h-[198px] overflow-hidden bg-[#e8e6e3]">
-                  {article.immagine_url ? (
+                  {(article.immagine_card_url ?? article.immagine_url) ? (
                     <img
-                      src={article.immagine_url}
+                      src={article.immagine_card_url ?? article.immagine_url!}
                       alt={article.titolo}
                       className="w-full h-full object-cover md:group-hover:scale-105 md:transition-transform md:duration-500"
                     />

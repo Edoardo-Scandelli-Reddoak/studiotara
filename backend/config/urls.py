@@ -6,6 +6,7 @@ from django.views.static import serve
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('tinymce/', include('tinymce.urls')),
     path('api/properties/', include('apps.properties.urls')),
     path('api/blog/', include('apps.blog.urls')),
     path('api/contacts/', include('apps.contacts.urls')),
