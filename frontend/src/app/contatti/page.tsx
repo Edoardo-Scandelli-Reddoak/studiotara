@@ -146,10 +146,10 @@ export default function Contatti() {
 
             {/* Contact details */}
             <div className="flex flex-col gap-5 md:gap-6 lg:gap-[35px]">
-              <a href="tel:+39023655736" className="flex gap-4 md:gap-5 lg:gap-[35px] items-center -mx-1 px-1 py-1 rounded-[8px] active:bg-black/5">
+              <a href="tel:+390236557365" className="flex gap-4 md:gap-5 lg:gap-[35px] items-center -mx-1 px-1 py-1 rounded-[8px] active:bg-black/5">
                 <PhoneIcon />
                 <p className="text-[16px] md:text-[17px] lg:text-[18px] text-black">
-                  02 365 5736
+                  02 3655 7365
                 </p>
               </a>
               <a href="mailto:info@studiotara.it" className="flex gap-4 md:gap-5 lg:gap-[35px] items-center -mx-1 px-1 py-1 rounded-[8px] active:bg-black/5 break-words min-w-0">

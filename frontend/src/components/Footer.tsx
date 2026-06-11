@@ -59,8 +59,8 @@ export default function Footer() {
               <a href="https://maps.google.com/?q=Viale+Lomellina+23+Buccinasco" target="_blank" rel="noopener noreferrer" className="py-1 underline-offset-2 md:no-underline md:py-0">
                 Viale Lomellina, 23 — 20090 Buccinasco (MI)
               </a>
-              <a href="tel:+39023655736" className="py-1 md:py-0">
-                Tel: 02 365 5736
+              <a href="tel:+390236557365" className="py-1 md:py-0">
+                Tel: 02 3655 7365
               </a>
               <a href="tel:+393342334661" className="py-1 md:py-0">
                 Cell: 334 233 4661
