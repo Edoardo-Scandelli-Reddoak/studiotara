@@ -12,5 +12,6 @@ urlpatterns = [
     path('api/contacts/', include('apps.contacts.urls')),
     path('api/reviews/', include('apps.reviews.urls')),
     path('api/analytics/', include('apps.analytics.urls')),
+    path('api/sync/', include('apps.sync.urls')),
     re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
 ]

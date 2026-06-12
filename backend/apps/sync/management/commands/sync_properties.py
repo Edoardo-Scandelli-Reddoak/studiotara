@@ -309,9 +309,13 @@ class Command(BaseCommand):
         prop_dir = os.path.join(media_root, 'properties', str(property_obj.gestionale_id))
         os.makedirs(prop_dir, exist_ok=True)
 
-        existing_filenames = set(
-            property_obj.images.values_list('filename', flat=True)
-        )
+        # Map filename → existing record so we can detect "record exists but
+        # file missing on disk" (happens if a previous sync wrote to a
+        # different volume) and re-download.
+        existing = {
+            img.filename: img
+            for img in property_obj.images.all()
+        }
 
         # Struttura reale: <file_allegati><allegato planimetria="0"><file_path>URL</file_path></allegato>
         allegati = annuncio.findall('.//file_allegati/allegato')
@@ -327,11 +331,16 @@ class Command(BaseCommand):
                 continue
 
             is_planimetria = allegato.get('planimetria', '0') == '1'
+            file_path = os.path.join(prop_dir, filename)
+            existing_record = existing.get(filename)
+            file_on_disk = os.path.exists(file_path) and os.path.getsize(file_path) > 0
 
-            if filename in existing_filenames:
+            # Already synced AND file present → nothing to do.
+            if existing_record and file_on_disk:
                 ordine += 1
                 continue
 
+            # Either no record, or record exists but file missing → (re-)download.
             try:
                 img_response = requests.get(url, timeout=30)
                 img_response.raise_for_status()
@@ -339,7 +348,6 @@ class Command(BaseCommand):
                 self.stderr.write(f'  Impossibile scaricare immagine: {url}')
                 continue
 
-            file_path = os.path.join(prop_dir, filename)
             with open(file_path, 'wb') as f:
                 f.write(img_response.content)
 
@@ -347,11 +355,17 @@ class Command(BaseCommand):
                 'properties', str(property_obj.gestionale_id), filename
             )
 
-            PropertyImage.objects.create(
-                property=property_obj,
-                filename=filename,
-                file=relative_path,
-                is_planimetria=is_planimetria,
-                ordine=ordine,
-            )
+            if existing_record:
+                existing_record.file = relative_path
+                existing_record.is_planimetria = is_planimetria
+                existing_record.ordine = ordine
+                existing_record.save()
+            else:
+                PropertyImage.objects.create(
+                    property=property_obj,
+                    filename=filename,
+                    file=relative_path,
+                    is_planimetria=is_planimetria,
+                    ordine=ordine,
+                )
             ordine += 1

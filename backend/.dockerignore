@@ -3,6 +3,12 @@ __pycache__/
 *.pyc
 .env
 db.sqlite3
-# media/ temporarily included for volume seeding
+# media is only ever needed once for initial volume seeding; production volume
+# is already populated. Excluding keeps railway up uploads small (a few MB
+# instead of hundreds), so deploys don't time out on slow links.
+media/
 staticfiles/
 .git/
+tests/
+.pytest_cache/
+*.log
