@@ -8,7 +8,7 @@ const WIDGET_URL =
 // Fixed heights tuned to step 1 of the widget — chosen so the iframe ends
 // right under the "Procedi" button. AgenzieProm posts inflated resize events,
 // so we deliberately do NOT honour them and pick the size ourselves.
-const DESKTOP_HEIGHT = 480;
+const DESKTOP_HEIGHT = 420;
 const MOBILE_HEIGHT = 440;
 
 export default function ValuationWidget() {
@@ -29,7 +29,7 @@ export default function ValuationWidget() {
       title="Stima online del valore del tuo immobile"
       src={WIDGET_URL}
       style={{ height: `${isMobile ? MOBILE_HEIGHT : DESKTOP_HEIGHT}px` }}
-      className="block w-full border-0 mt-4 md:mt-5"
+      className="block w-full border-0"
       loading="lazy"
       referrerPolicy="no-referrer-when-downgrade"
     />
