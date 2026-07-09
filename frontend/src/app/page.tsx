@@ -21,8 +21,8 @@ export default function Home() {
             className="absolute inset-0 z-0 bg-gradient-to-b from-blue-primary to-blue-secondary"
             aria-hidden="true"
           />
-          {/* Decorative "peel" badge in the top-left corner */}
-          <div className="absolute top-0 left-0 z-20 w-[92%] sm:w-[62%] lg:w-[46%] max-w-[330px] md:max-w-[370px] pointer-events-none">
+          {/* Decorative "peel" badge in the top-left corner (desktop only) */}
+          <div className="hidden lg:block absolute top-0 left-0 z-20 lg:w-[46%] max-w-[370px] pointer-events-none">
             {/* White shape, extended a few px past the top-left so it fully
                 covers the section's rounded corner (no image sliver) */}
             <svg
@@ -49,6 +49,17 @@ export default function Home() {
           </div>
 
           <div className="relative z-[2] flex flex-col lg:flex-row">
+            {/* ===== MOBILE BANNER — sits above the photo so it doesn't cover it ===== */}
+            <div className="lg:hidden bg-white px-5 pt-5 pb-4">
+              <p className="text-red-primary font-bold text-[22px] leading-tight">
+                Siamo di Casa.
+              </p>
+              <p className="text-blue-primary text-[13px] leading-snug mt-1.5">
+                Soluzioni immobiliari costruite intorno alle persone, non agli
+                immobili.
+              </p>
+            </div>
+
             {/* ===== LEFT COLUMN — agent image =====
                 Fade the image edge to transparent (not to a solid colour) so the
                 section's vertical gradient shows through underneath — the seam
