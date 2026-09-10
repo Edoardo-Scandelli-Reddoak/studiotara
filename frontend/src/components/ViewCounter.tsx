@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { incrementPropertyViews } from '@/lib/api';
 
 interface Props {
-  propertyId: number;
+  propertyId: string;
   initialViews: number;
 }
 
@@ -15,8 +15,8 @@ export default function ViewCounter({ propertyId, initialViews }: Props) {
   useEffect(() => {
     if (called.current) return;
     called.current = true;
-    incrementPropertyViews(propertyId).then(() => {
-      setViews((v) => v + 1);
+    incrementPropertyViews(propertyId).then((count) => {
+      if (count != null) setViews(count);
     });
   }, [propertyId]);
 

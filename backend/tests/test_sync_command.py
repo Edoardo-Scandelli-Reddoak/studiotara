@@ -6,11 +6,11 @@ from django.core.management import call_command
 
 @pytest.mark.django_db
 def test_sync_blocked_during_day():
-    """Sync deve essere bloccato tra le 07:00 e le 21:00."""
+    """Il sync rispetta la fascia oraria italiana, indipendente dal fuso host."""
     out = StringIO()
-    with patch('apps.sync.management.commands.sync_properties.datetime') as mock_dt:
-        from datetime import datetime as real_datetime
-        mock_dt.now.return_value = real_datetime(2024, 1, 15, 12, 0, 0)  # 12:00 → bloccato
+    with patch('apps.sync.management.commands.sync_properties.timezone.now') as mock_now:
+        from datetime import datetime as real_datetime, timezone
+        mock_now.return_value = real_datetime(2024, 1, 15, 12, 0, 0, tzinfo=timezone.utc)  # 12:00 → bloccato
         call_command('sync_properties', stdout=out)
     output = out.getvalue().lower()
     assert 'non consentito' in output or 'orario' in output

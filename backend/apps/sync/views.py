@@ -10,6 +10,7 @@ import os
 import subprocess
 import sys
 
+from django.conf import settings
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
@@ -19,6 +20,8 @@ logger = logging.getLogger(__name__)
 
 @api_view(["POST"])
 def trigger_sync(request):
+    if not settings.PROPERTY_SYNC_ENABLED:
+        return Response({"error": "property sync disabled"}, status=410)
     expected = os.environ.get("SYNC_TRIGGER_TOKEN", "")
     if not expected:
         return Response({"error": "sync trigger not configured"}, status=503)

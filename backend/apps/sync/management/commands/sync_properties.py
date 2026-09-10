@@ -6,7 +6,7 @@ from xml.etree import ElementTree as ET
 import zoneinfo
 from decouple import config as env_config
 
-from django.core.management.base import BaseCommand
+from django.core.management.base import BaseCommand, CommandError
 from django.conf import settings
 from django.utils import timezone
 
@@ -68,6 +68,8 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
+        if not settings.PROPERTY_SYNC_ENABLED:
+            raise CommandError("Property sync disabled after dashboard cutover.")
         if not options['force']:
             italy_tz = zoneinfo.ZoneInfo('Europe/Rome')
             hour = timezone.now().astimezone(italy_tz).hour
@@ -123,6 +125,8 @@ class Command(BaseCommand):
             self._process_xml(xml_file)
 
     def _process_xml(self, xml_file):
+        if not settings.PROPERTY_SYNC_ENABLED:
+            raise CommandError("Property sync disabled after dashboard cutover.")
         try:
             tree = ET.parse(xml_file)
             root = tree.getroot()

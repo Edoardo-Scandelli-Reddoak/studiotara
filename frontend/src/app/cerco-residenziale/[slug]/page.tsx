@@ -1,3 +1,4 @@
+import { getProperty } from "@/lib/property-api";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -10,7 +11,7 @@ import AppointmentModal from "@/components/AppointmentModal";
 import SellModal from "@/components/SellModal";
 import SearchRequestModal from "@/components/SearchRequestModal";
 import ViewCounter from "@/components/ViewCounter";
-import { getProperty, formatPrezzo, formatTitolo } from "@/lib/api";
+import { formatPrezzo, formatTitolo } from "@/lib/api";
 import type { ApiPropertyDetail } from "@/lib/api";
 
 function getMapSrc(property: ApiPropertyDetail): string {
@@ -30,8 +31,8 @@ export default async function PropertyPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const id = parseInt(slug, 10);
-  if (isNaN(id)) notFound();
+  const id = slug;
+  if (!/^[A-Za-z0-9_-]{1,100}$/.test(id)) notFound();
 
   const property = await getProperty(id);
   if (!property) notFound();

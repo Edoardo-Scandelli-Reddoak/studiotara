@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from django import forms
+from django.conf import settings
 from django.contrib import admin
 from unfold.admin import ModelAdmin, TabularInline
 
@@ -171,12 +172,14 @@ class PropertyAdmin(ModelAdmin):
                 "data_creazione", "data_aggiornamento", "ultimo_sync", "visualizzazioni"]
 
     def has_add_permission(self, request):
-        return True
+        return not settings.PROPERTY_ADMIN_READ_ONLY
 
     def has_change_permission(self, request, obj=None):
-        return True
+        return not settings.PROPERTY_ADMIN_READ_ONLY
 
     def has_delete_permission(self, request, obj=None):
+        if settings.PROPERTY_ADMIN_READ_ONLY:
+            return False
         # Only allow deleting properties NOT coming from the gestionale feed.
         if obj is None:
             return True
