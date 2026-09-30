@@ -165,3 +165,9 @@ TINYMCE_DEFAULT_CONFIG = {
         'p{margin:0 0 1rem 0}'
     ),
 }
+
+# Cutover controls: stop all incoming property updates and old-admin edits.
+PROPERTY_SYNC_ENABLED = config('PROPERTY_SYNC_ENABLED', default=True, cast=bool)
+PROPERTY_ADMIN_READ_ONLY = config('PROPERTY_ADMIN_READ_ONLY', default=False, cast=bool)
+# Enable after the website switches to reviewed dashboard publications.
+PROPERTY_ARCHIVE_PRIVATE = config('PROPERTY_ARCHIVE_PRIVATE', default=False, cast=bool)

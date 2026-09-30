@@ -11,18 +11,19 @@ const FETCH_OPTIONS: RequestInit =
 const BLOG_FETCH_OPTIONS: RequestInit = { cache: 'no-store' };
 
 export interface ApiPropertyImage {
-  id: number;
+  id: string;
   file_url: string | null;
   is_planimetria: boolean;
   ordine: number;
 }
 
 export interface ApiPropertyList {
-  id: number;
+  id: string;
   gestionale_id: string;
   titolo: string;
   tipologia: string;
   categoria_id: number | null;
+  website_section?: 'residential' | 'commercial';
   contratto: 'vendita' | 'affitto' | string;
   prezzo: string | null;
   mq: number | null;
@@ -33,8 +34,8 @@ export interface ApiPropertyList {
   bagni: number | null;
   camere: number | null;
   piano: string;
-  ascensore: boolean;
-  garage: boolean;
+  ascensore: boolean | null;
+  garage: boolean | null;
   classe_energetica: string;
   in_vetrina: boolean;
   in_carosello: boolean;
@@ -43,7 +44,7 @@ export interface ApiPropertyList {
 }
 
 export interface ApiPropertyDetail {
-  id: number;
+  id: string;
   gestionale_id: string;
   codice_agenzia: string;
   titolo: string;
@@ -53,6 +54,7 @@ export interface ApiPropertyDetail {
   mq: number | null;
   tipologia: string;
   categoria_id: number | null;
+  website_section?: 'residential' | 'commercial';
   contratto: 'vendita' | 'affitto' | string;
   indirizzo: string;
   comune: string;
@@ -65,8 +67,8 @@ export interface ApiPropertyDetail {
   camere: number | null;
   locali: number | null;
   piano: string;
-  ascensore: boolean;
-  garage: boolean;
+  ascensore: boolean | null;
+  garage: boolean | null;
   riscaldamento: string;
   classe_energetica: string;
   in_vetrina: boolean;
@@ -75,15 +77,17 @@ export interface ApiPropertyDetail {
   data_creazione: string;
   data_aggiornamento: string;
   video_url: string | null;
+  virtual_tour_url?: string | null;
   images: ApiPropertyImage[];
 }
 
-export async function incrementPropertyViews(id: number): Promise<void> {
+export async function incrementPropertyViews(id: string): Promise<number | null> {
   try {
-    await fetch(`${API_BASE}/api/properties/${id}/view/`, { method: 'POST' });
-  } catch {
-    // silent fail
-  }
+    const response = await fetch(`/api/property-views/${encodeURIComponent(id)}`, { method: 'POST' });
+    if (!response.ok) return null;
+    const data = await response.json();
+    return typeof data.visualizzazioni === 'number' ? data.visualizzazioni : null;
+  } catch { return null; }
 }
 
 // categoria_id residenziali dal feed GestionaleImmobiliare.
@@ -129,7 +133,9 @@ export function isResidenziale(p: {
   tipologia: string;
   titolo?: string;
   categoria_id?: number | null;
+  website_section?: "residential" | "commercial";
 }): boolean {
+  if (p.website_section) return p.website_section === "residential";
   // 1) Override sul titolo — il testo scritto dall'agente vince sempre.
   const titolo = (p.titolo ?? '').toLowerCase();
   if (TITOLO_KEYWORDS_COMMERCIALI.some((k) => titolo.includes(k))) return false;
@@ -160,40 +166,8 @@ export function formatPrezzo(prezzo: string | null): string {
   }).format(num);
 }
 
-interface PaginatedResponse {
-  count: number;
-  next: string | null;
-  previous: string | null;
-  results: ApiPropertyList[];
-}
-
-export async function getProperties(): Promise<ApiPropertyList[]> {
-  const all: ApiPropertyList[] = [];
-  let url: string | null = `${API_BASE}/api/properties/`;
-
-  try {
-    while (url) {
-      const res = await fetch(url, FETCH_OPTIONS);
-      if (!res.ok) break;
-      const data: PaginatedResponse = await res.json();
-      all.push(...data.results);
-      url = data.next;
-    }
-  } catch {
-    // return what we collected so far
-  }
-
-  return all;
-}
-
-export async function getProperty(id: number): Promise<ApiPropertyDetail | null> {
-  try {
-    const res = await fetch(`${API_BASE}/api/properties/${id}/`, FETCH_OPTIONS);
-    if (!res.ok) return null;
-    return res.json();
-  } catch {
-    return null;
-  }
+export function formatOptionalBoolean(value: boolean | null | undefined): string {
+  return value == null ? '—' : value ? 'Sì' : 'No';
 }
 
 export interface ApiBlogArticleList {
@@ -270,4 +244,18 @@ export async function getBlogArticle(slug: string): Promise<ApiBlogArticleDetail
   } catch {
     return null;
   }
+}
+
+export function youtubeEmbedUrl(value: string | null): string | null {
+  if (!value) return null;
+  try {
+    const url = new URL(value);
+    if (!['https:', 'http:'].includes(url.protocol)) return null;
+    let id: string | null = null;
+    if (url.hostname === 'youtu.be') id = url.pathname.slice(1);
+    else if (['youtube.com', 'www.youtube.com', 'youtube-nocookie.com', 'www.youtube-nocookie.com'].includes(url.hostname)) {
+      id = url.pathname.startsWith('/embed/') ? url.pathname.slice(7) : url.searchParams.get('v');
+    }
+    return id && /^[A-Za-z0-9_-]{11}$/.test(id) ? `https://www.youtube-nocookie.com/embed/${id}` : null;
+  } catch { return null; }
 }

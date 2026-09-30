@@ -1,10 +1,11 @@
+import { getProperties } from "@/lib/property-api";
 import Image from "next/image";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Pagination from "@/components/Pagination";
 import PropertySearchForm from "@/components/PropertySearchForm";
-import { getProperties, isResidenziale, formatPrezzo, formatTitolo } from "@/lib/api";
+import { isResidenziale, formatPrezzo, formatTitolo } from "@/lib/api";
 
 const PROPERTIES_PER_PAGE = 15;
 

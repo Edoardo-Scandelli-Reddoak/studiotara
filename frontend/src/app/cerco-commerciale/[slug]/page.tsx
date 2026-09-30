@@ -1,3 +1,4 @@
+import { getProperty } from "@/lib/property-api";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -9,8 +10,8 @@ import ContactModal from "@/components/ContactModal";
 import AppointmentModal from "@/components/AppointmentModal";
 import SellModal from "@/components/SellModal";
 import SearchRequestModal from "@/components/SearchRequestModal";
-import ViewCounter from "@/components/ViewCounter";
-import { getProperty, formatPrezzo, formatTitolo } from "@/lib/api";
+import ViewCounter, { ViewCounterProvider } from "@/components/ViewCounter";
+import { formatOptionalBoolean, formatPrezzo, formatTitolo } from "@/lib/api";
 import type { ApiPropertyDetail } from "@/lib/api";
 
 function getMapSrc(property: ApiPropertyDetail): string {
@@ -30,8 +31,8 @@ export default async function PropertyPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const id = parseInt(slug, 10);
-  if (isNaN(id)) notFound();
+  const id = slug;
+  if (!/^[A-Za-z0-9_-]{1,100}$/.test(id)) notFound();
 
   const property = await getProperty(id);
   if (!property) notFound();
@@ -82,6 +83,7 @@ export default async function PropertyPage({
               Torna agli immobili
             </Link>
 
+            <ViewCounterProvider propertyId={property.id} initialViews={property.visualizzazioni}>
             <div className="flex flex-col sm:flex-row sm:items-stretch sm:justify-between gap-3 sm:gap-4 mt-3 md:mt-4">
               <div className="min-w-0">
                 <div className="flex items-center gap-2 sm:hidden mb-2">
@@ -92,7 +94,7 @@ export default async function PropertyPage({
                   >
                     {property.contratto === "vendita" ? "In vendita" : "In affitto"}
                   </div>
-                  <ViewCounter propertyId={property.id} initialViews={property.visualizzazioni} />
+                  <ViewCounter />
                 </div>
                 <h1 className="text-[22px] md:text-[28px] lg:text-[30px] tracking-[-0.8px] md:tracking-[-1.5px] text-black leading-tight">
                   {formatTitolo(property.titolo)}
@@ -114,9 +116,11 @@ export default async function PropertyPage({
                 >
                   {property.contratto === "vendita" ? "In vendita" : "In affitto"}
                 </div>
-                <ViewCounter propertyId={property.id} initialViews={property.visualizzazioni} />
+                <ViewCounter />
               </div>
             </div>
+
+            </ViewCounterProvider>
 
             {/* Gallery + Tabs */}
             <PropertyGallery property={property} />
@@ -152,8 +156,8 @@ export default async function PropertyPage({
                 ...(property.locali    ? [{ label: 'Locali',            value: property.locali }]             : []),
                 ...(property.bagni     ? [{ label: 'Bagni',             value: property.bagni }]              : []),
                 ...(property.piano     ? [{ label: 'Piano',             value: property.piano }]              : []),
-                { label: 'Ascensore',         value: property.ascensore ? 'Sì' : 'No' },
-                { label: 'Garage',            value: property.garage    ? 'Sì' : 'No' },
+                { label: 'Ascensore',         value: formatOptionalBoolean(property.ascensore) },
+                { label: 'Garage',            value: formatOptionalBoolean(property.garage) },
                 ...(property.riscaldamento     ? [{ label: 'Riscaldamento',      value: property.riscaldamento }]     : []),
                 { label: 'Classe energetica', value: property.classe_energetica || 'In fase di definizione' },
                 ...(property.indirizzo ? [{ label: 'Indirizzo',         value: property.indirizzo }]          : []),

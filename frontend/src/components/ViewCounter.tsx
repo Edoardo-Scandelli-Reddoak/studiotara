@@ -1,24 +1,43 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
 import { incrementPropertyViews } from '@/lib/api';
 
 interface Props {
-  propertyId: number;
+  propertyId: string;
   initialViews: number;
+  children?: ReactNode;
 }
 
-export default function ViewCounter({ propertyId, initialViews }: Props) {
+const ViewsContext = createContext<number | null>(null);
+
+function PropertyVisit({ propertyId, initialViews, children }: Props) {
   const [views, setViews] = useState(initialViews);
-  const called = useRef(false);
+  const request = useRef<Promise<number | null> | null>(null);
 
   useEffect(() => {
-    if (called.current) return;
-    called.current = true;
-    incrementPropertyViews(propertyId).then(() => {
-      setViews((v) => v + 1);
+    let active = true;
+    // Both responsive displays share this request. Reuse it when React replays
+    // the effect in Strict Mode, while allowing the replay to receive its result.
+    request.current ??= incrementPropertyViews(propertyId);
+    request.current.then((count) => {
+      if (active && count != null) setViews(count);
     });
+    return () => { active = false; };
   }, [propertyId]);
+
+  return <ViewsContext.Provider value={views}>{children}</ViewsContext.Provider>;
+}
+
+export function ViewCounterProvider(props: Props) {
+  // A property change is a new visit: reset the count and request, and prevent
+  // the previous property's pending response from updating the new display.
+  return <PropertyVisit key={props.propertyId} {...props} />;
+}
+
+export default function ViewCounter() {
+  const views = useContext(ViewsContext);
+  if (views === null) throw new Error('ViewCounter requires a ViewCounterProvider');
 
   return (
     <div className="flex items-center gap-1.5 text-[15px] md:text-[16px] text-black/60">

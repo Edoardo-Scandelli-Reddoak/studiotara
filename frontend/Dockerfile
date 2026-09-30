@@ -9,6 +9,11 @@ COPY . .
 
 ARG NEXT_PUBLIC_API_URL
 ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+# next/image serializes its allowed media origin into the standalone build.
+ARG PROPERTY_MEDIA_URL
+ENV PROPERTY_MEDIA_URL=$PROPERTY_MEDIA_URL
+# PROPERTY_SOURCE / PROPERTY_API_URL / PROPERTY_API_KEY are runtime settings.
+# Keep the server API key out of build arguments and image layers.
 
 RUN npm run build
 
