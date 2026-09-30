@@ -1,33 +1,32 @@
+import os
+
+from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
-ADMIN_USERNAME = 'admin'
-ADMIN_PASSWORD = 'Tara2024!'
-ADMIN_EMAIL = 'admin@studiotara.it'
-
-
 class Command(BaseCommand):
-    help = 'Crea l\'utente admin di test se non esiste ancora'
+    help = "Crea un admin solo con credenziali bootstrap esplicitamente configurate."
 
     def handle(self, *args, **options):
-        if User.objects.filter(username=ADMIN_USERNAME).exists():
-            self.stdout.write(f'Utente "{ADMIN_USERNAME}" già esistente — nessuna modifica.')
+        if settings.PROPERTY_ARCHIVE_PRIVATE:
+            self.stdout.write("Bootstrap admin disabilitato per l'archivio privato.")
+            return
+
+        username = os.environ.get("DEFAULT_ADMIN_USERNAME", "").strip()
+        password = os.environ.get("DEFAULT_ADMIN_PASSWORD", "")
+        if not username or not password.strip():
+            self.stdout.write("Credenziali bootstrap admin non configurate — nessuna modifica.")
+            return
+
+        if User.objects.filter(username=username).exists():
+            self.stdout.write("Utente bootstrap già esistente — nessuna modifica.")
             return
 
         User.objects.create_superuser(
-            username=ADMIN_USERNAME,
-            email=ADMIN_EMAIL,
-            password=ADMIN_PASSWORD,
+            username=username,
+            email=os.environ.get("DEFAULT_ADMIN_EMAIL", "").strip(),
+            password=password,
         )
-
-        self.stdout.write('')
-        self.stdout.write(self.style.SUCCESS('=' * 50))
-        self.stdout.write(self.style.SUCCESS('  UTENTE ADMIN DI TEST CREATO'))
-        self.stdout.write(self.style.SUCCESS('=' * 50))
-        self.stdout.write(f'  Username : {ADMIN_USERNAME}')
-        self.stdout.write(f'  Password : {ADMIN_PASSWORD}')
-        self.stdout.write(f'  URL admin: /admin/')
-        self.stdout.write(self.style.SUCCESS('=' * 50))
-        self.stdout.write('')
+        self.stdout.write(self.style.SUCCESS("Utente bootstrap admin creato."))

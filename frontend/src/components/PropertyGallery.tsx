@@ -3,7 +3,7 @@
 import { useState, useCallback, useMemo } from "react";
 import Image from "next/image";
 import type { ApiPropertyDetail } from "@/lib/api";
-import { formatPrezzo, youtubeEmbedUrl } from "@/lib/api";
+import { formatOptionalBoolean, formatPrezzo, youtubeEmbedUrl } from "@/lib/api";
 
 const escapeHtml = (value: string | number) => String(value).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!));
 
@@ -19,8 +19,8 @@ function buildBrochureRows(property: ApiPropertyDetail, ref: string, prezzoForma
     ...(property.camere         ? [{ label: 'Camere da letto',  value: property.camere }]            : []),
     ...(property.bagni          ? [{ label: 'Bagni',            value: property.bagni }]             : []),
     ...(property.piano          ? [{ label: 'Piano',            value: property.piano }]             : []),
-    { label: 'Ascensore',       value: property.ascensore == null ? '—' : property.ascensore ? 'Sì' : 'No' },
-    { label: 'Garage',          value: property.garage == null ? '—' : property.garage ? 'Sì' : 'No' },
+    { label: 'Ascensore',       value: formatOptionalBoolean(property.ascensore) },
+    { label: 'Garage',          value: formatOptionalBoolean(property.garage) },
     ...(property.riscaldamento  ? [{ label: 'Riscaldamento',    value: property.riscaldamento }]     : []),
     { label: 'Classe energetica', value: property.classe_energetica || 'In fase di definizione' },
     ...(property.indirizzo      ? [{ label: 'Indirizzo',        value: property.indirizzo }]         : []),

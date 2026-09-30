@@ -1,7 +1,7 @@
 import { afterEach, test } from 'node:test';
 import assert from 'node:assert/strict';
 import { fetchProperties, fetchProperty, recordPropertyView, PropertyServiceError, type PropertyConnection } from '../src/lib/property-client';
-import { isResidenziale, youtubeEmbedUrl } from '../src/lib/api';
+import { formatOptionalBoolean, isResidenziale, youtubeEmbedUrl } from '../src/lib/api';
 
 const originalFetch = globalThis.fetch;
 afterEach(() => { globalThis.fetch = originalFetch; });
@@ -66,4 +66,53 @@ test('normalizes supported YouTube links and refuses unrelated iframe hosts', ()
   assert.equal(youtubeEmbedUrl('https://www.youtube.com/watch?v=abcdefghijk'), 'https://www.youtube-nocookie.com/embed/abcdefghijk');
   assert.equal(youtubeEmbedUrl('https://youtube.com.evil.test/embed/abcdefghijk'), null);
   assert.equal(youtubeEmbedUrl('javascript:alert(1)'), null);
+});
+
+test('strips owner identities, documents, source snapshots and extra image data from browser DTOs', async () => {
+  const privateName = 'OWNER-PRIVACY-SENTINEL-MARIA-ROSSI';
+  const property = {
+    id: 'native-cuid', titolo: 'Appartamento luminoso', descrizione: 'Descrizione pubblica approvata',
+    ascensore: null, garage: false, website_section: 'residential',
+    ownerName: privateName, owner_name: privateName, ownerId: 'private-owner-id',
+    owners: [{ name: privateName, email: 'private-owner@example.test' }],
+    internalNotes: privateName, documents: [{ title: privateName }],
+    importSnapshot: { proprietario: privateName },
+    images: [{ id: 'photo-0', file_url: 'https://media.test/public/photo-0.jpg', is_planimetria: false, ordine: 2,
+      ownerName: privateName, original: { name: privateName }, privateStorageKey: privateName }],
+  };
+  for (const source of ['dashboard', 'legacy'] as const) {
+    const selected = { ...connection, source };
+    globalThis.fetch = async () => response({ count: 1, next: null, results: [property] });
+    const list = await fetchProperties(selected);
+    globalThis.fetch = async () => response(property);
+    const detail = await fetchProperty(selected, property.id);
+    const browserData = JSON.stringify({ list, detail });
+    for (const privateValue of [privateName, 'private-owner-id', 'private-owner@example.test', 'ownerName', 'owner_name', 'owners', 'internalNotes', 'documents', 'importSnapshot', 'privateStorageKey']) {
+      assert.equal(browserData.includes(privateValue), false, privateValue);
+    }
+    assert.equal(detail?.descrizione, property.descrizione);
+    assert.equal(detail?.website_section, 'residential');
+    assert.equal(detail?.ascensore, null);
+    assert.equal(detail?.garage, false);
+    assert.deepEqual(detail?.images, [{ id: 'photo-0', file_url: 'https://media.test/public/photo-0.jpg', is_planimetria: false, ordine: 2 }]);
+  }
+});
+
+test('rejects nested private data disguised as a public field instead of serializing it', async () => {
+  for (const extra of [
+    { comune: { ownerName: 'PRIVATE-SENTINEL' } },
+    { prezzo: { ownerName: 'PRIVATE-SENTINEL' } },
+    { garage: { ownerName: 'PRIVATE-SENTINEL' } },
+    { images: [{ id: 'photo-0', file_url: { ownerName: 'PRIVATE-SENTINEL' } }] },
+  ]) {
+    globalThis.fetch = async () => response({ id: 70, titolo: 'Immobile', images: [], ...extra });
+    await assert.rejects(fetchProperty(connection, '70'), PropertyServiceError);
+  }
+});
+
+test('distinguishes unspecified property features from explicit yes and no', () => {
+  assert.equal(formatOptionalBoolean(null), '—');
+  assert.equal(formatOptionalBoolean(undefined), '—');
+  assert.equal(formatOptionalBoolean(false), 'No');
+  assert.equal(formatOptionalBoolean(true), 'Sì');
 });

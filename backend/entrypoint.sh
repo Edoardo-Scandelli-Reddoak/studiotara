@@ -23,7 +23,7 @@ python manage.py migrate --noinput
 echo "Raccogliendo file statici..."
 python manage.py collectstatic --noinput
 
-echo "Creando utente admin di test (se non esiste)..."
+echo "Creando utente admin bootstrap (solo se configurato)..."
 python manage.py create_default_admin
 
 echo "Avviando gunicorn..."

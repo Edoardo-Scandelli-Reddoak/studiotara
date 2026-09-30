@@ -166,6 +166,10 @@ export function formatPrezzo(prezzo: string | null): string {
   }).format(num);
 }
 
+export function formatOptionalBoolean(value: boolean | null | undefined): string {
+  return value == null ? '—' : value ? 'Sì' : 'No';
+}
+
 export interface ApiBlogArticleList {
   id: number;
   titolo: string;

@@ -13,7 +13,7 @@ from django.core import serializers
 from django.core.management.base import BaseCommand, CommandError
 from django.db import connection, transaction
 from django.utils import timezone
-from PIL import Image
+from PIL import Image, ImageSequence
 
 from apps.properties.models import Property, PropertyImage
 
@@ -28,7 +28,8 @@ class Command(BaseCommand):
         output = Path(options["output"]).resolve()
         if output.exists():
             raise CommandError("La destinazione esiste già: usa una nuova directory.")
-        output.mkdir(parents=True)
+        # This bundle includes original, potentially private source content.
+        output.mkdir(parents=True, mode=0o700)
         with transaction.atomic():
             if connection.vendor == "postgresql":
                 with connection.cursor() as cursor:
@@ -65,8 +66,16 @@ class Command(BaseCommand):
                         size += len(chunk)
                 if not size:
                     raise ValueError("File vuoto")
+                # Opening an image only checks its header. Validate the copied
+                # bytes too, so truncated/corrupt originals cannot produce a
+                # manifest marked complete just because their checksum matches.
+                with Image.open(target) as copied:
+                    copied.verify()
+                with Image.open(target) as copied:
+                    for frame in ImageSequence.Iterator(copied):
+                        frame.load()
                 record.update(path=relative.as_posix(), content_type=content_type, bytes=size, sha256=digest.hexdigest())
-            except (OSError, ValueError) as error:
+            except (OSError, ValueError, SyntaxError, Image.DecompressionBombError) as error:
                 record["error"] = str(error)
                 errors.append({"property_id": image.property_id, "image_id": image.pk, "error": str(error)})
             by_property[image.property_id]["images"].append(record)

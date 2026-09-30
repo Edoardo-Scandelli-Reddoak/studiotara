@@ -78,7 +78,21 @@ class PropertyPlanimetriaForm(_PropertyImageForm):
     _is_planimetria_value = True
 
 
-class PropertyPhotoInline(TabularInline):
+class PropertyWritePermissionsMixin:
+    """Apply the cutover lock in addition to Django's normal model permissions."""
+
+    def has_add_permission(self, request, *args, **kwargs):
+        # InlineModelAdmin also passes the parent object here.
+        return not settings.PROPERTY_ADMIN_READ_ONLY and super().has_add_permission(request, *args, **kwargs)
+
+    def has_change_permission(self, request, obj=None):
+        return not settings.PROPERTY_ADMIN_READ_ONLY and super().has_change_permission(request, obj)
+
+    def has_delete_permission(self, request, obj=None):
+        return not settings.PROPERTY_ADMIN_READ_ONLY and super().has_delete_permission(request, obj)
+
+
+class PropertyPhotoInline(PropertyWritePermissionsMixin, TabularInline):
     model = PropertyImage
     form = PropertyPhotoForm
     fields = ["file", "ordine"]
@@ -90,7 +104,7 @@ class PropertyPhotoInline(TabularInline):
         return super().get_queryset(request).filter(is_planimetria=False)
 
 
-class PropertyPlanimetriaInline(TabularInline):
+class PropertyPlanimetriaInline(PropertyWritePermissionsMixin, TabularInline):
     model = PropertyImage
     form = PropertyPlanimetriaForm
     fields = ["file", "ordine"]
@@ -125,7 +139,7 @@ ADD_FIELDSETS = (
 
 
 @admin.register(Property)
-class PropertyAdmin(ModelAdmin):
+class PropertyAdmin(PropertyWritePermissionsMixin, ModelAdmin):
     form = PropertyAdminForm
     # The model still carries `in_vetrina` and `in_carosello` for future use,
     # but the public site does not surface them anywhere — hide them in admin.
@@ -171,14 +185,8 @@ class PropertyAdmin(ModelAdmin):
         return ["gestionale_id", "categoria_id", "latitudine", "longitudine",
                 "data_creazione", "data_aggiornamento", "ultimo_sync", "visualizzazioni"]
 
-    def has_add_permission(self, request):
-        return not settings.PROPERTY_ADMIN_READ_ONLY
-
-    def has_change_permission(self, request, obj=None):
-        return not settings.PROPERTY_ADMIN_READ_ONLY
-
     def has_delete_permission(self, request, obj=None):
-        if settings.PROPERTY_ADMIN_READ_ONLY:
+        if not super().has_delete_permission(request, obj):
             return False
         # Only allow deleting properties NOT coming from the gestionale feed.
         if obj is None:
