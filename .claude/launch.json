@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "studiotara-frontend",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "frontend", "run", "dev", "--", "-p", "3001"],
+      "port": 3001
+    },
+    {
+      "name": "studiotara-backend",
+      "runtimeExecutable": "env",
+      "runtimeArgs": ["CORS_ALLOWED_ORIGINS=http://localhost:3001", "backend/venv/bin/python", "backend/manage.py", "runserver", "8000"],
+      "port": 8000
+    }
+  ]
+}
