@@ -300,3 +300,20 @@ def test_disabled_sync_rejects_direct_processing_without_reading_a_feed(settings
         with pytest.raises(CommandError, match="disabled"):
             SyncCommand()._process_xml("unused-feed.xml")
         parse.assert_not_called()
+
+
+@pytest.mark.django_db(transaction=True)
+def test_iphone_mpo_photos_export_as_jpeg(properties, tmp_path):
+    # iPhone JPEGs often embed a second frame; Pillow reports them as MPO.
+    active, _ = properties
+    buffer = BytesIO()
+    Image.new("RGB", (4, 4), "white").save(buffer, format="MPO", save_all=True, append_images=[Image.new("RGB", (2, 2), "black")])
+    PropertyImage.objects.create(property=active, file=SimpleUploadedFile("iphone.jpg", buffer.getvalue(), content_type="image/jpeg"), filename="iphone.jpg", ordine=4)
+    destination = tmp_path / "bundle"
+    call_command("export_dashboard", output=str(destination))
+    manifest = json.loads((destination / "manifest.json").read_text())
+    assert manifest["complete"] is True
+    media = manifest["properties"][0]["images"][3]
+    assert media["content_type"] == "image/jpeg"
+    assert media["path"].endswith(".jpg")
+    assert (destination / media["path"]).read_bytes() == buffer.getvalue()

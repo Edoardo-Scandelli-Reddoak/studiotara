@@ -50,7 +50,9 @@ class Command(BaseCommand):
                 if not source.is_relative_to(media_root) or not source.is_file():
                     raise ValueError("File mancante o percorso media non valido")
                 with Image.open(source) as original:
-                    content_type = Image.MIME.get(original.format)
+                    # iPhone JPEGs with an embedded second frame are reported
+                    # as MPO; every JPEG decoder reads them as a plain JPEG.
+                    content_type = "image/jpeg" if original.format == "MPO" else Image.MIME.get(original.format)
                 extension = {"image/jpeg": ".jpg", "image/png": ".png", "image/webp": ".webp", "image/gif": ".gif"}.get(content_type)
                 if not extension:
                     raise ValueError("Formato immagine non supportato")
