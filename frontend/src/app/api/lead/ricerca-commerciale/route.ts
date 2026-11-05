@@ -1,4 +1,5 @@
-import { NextResponse } from "next/server";
+import { after, NextResponse } from "next/server";
+import { appendLeadToSheet } from "@/lib/googleSheets";
 import {
   CRM_BASE,
   CRM_CUSTOM_FIELDS,
@@ -51,6 +52,22 @@ export async function POST(req: Request) {
       { status: 400 },
     );
   }
+
+  after(() =>
+    appendLeadToSheet("Ricerca commerciale", {
+      Nome: nome,
+      Cognome: cognome,
+      Email: email,
+      Telefono: telefono,
+      Tipologia: tipologia,
+      Zona: zona,
+      "Mq min": mqMin,
+      "Mq max": mqMax,
+      "Budget massimo": budgetMax,
+      Locali: locali,
+      Note: note,
+    }),
+  );
 
   const customValues: CustomValue[] = [];
   pushTextValue(customValues, CRM_CUSTOM_FIELDS.tipologia, tipologia);

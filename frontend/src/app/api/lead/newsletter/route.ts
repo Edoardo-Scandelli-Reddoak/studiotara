@@ -1,4 +1,5 @@
-import { NextResponse } from "next/server";
+import { after, NextResponse } from "next/server";
+import { appendLeadToSheet } from "@/lib/googleSheets";
 import { CRM_BASE, CRM_TOKEN, crmAuthHeaders } from "@/lib/crmHelpers";
 
 // Pipeline & stage for "SITO - newsletter"
@@ -26,6 +27,12 @@ export async function POST(req: Request) {
   if (!email) {
     return NextResponse.json({ error: "Missing email" }, { status: 400 });
   }
+
+  after(() =>
+    appendLeadToSheet("Newsletter", {
+      Email: email,
+    }),
+  );
 
   // CRM requires first_name and last_name. Use placeholders so the lead is
   // recognizable as a newsletter signup.

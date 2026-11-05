@@ -1,4 +1,5 @@
-import { NextResponse } from "next/server";
+import { after, NextResponse } from "next/server";
+import { appendLeadToSheet, formatVuoleVendere } from "@/lib/googleSheets";
 import {
   CRM_BASE,
   CRM_CUSTOM_FIELDS,
@@ -69,6 +70,20 @@ export async function POST(req: Request) {
       { status: 400 },
     );
   }
+
+  after(() =>
+    appendLeadToSheet("Appuntamento residenziale", {
+      Nome: nome,
+      Cognome: cognome,
+      Email: email,
+      Telefono: telefono,
+      "Vuole vendere": formatVuoleVendere(vuoleVendere),
+      "Tipologia immobile": tipologiaImmobile,
+      Tempistiche: tempistiche,
+      Note: note,
+      "Rif. immobile": propertyRef,
+    }),
+  );
 
   const customValues: CustomValue[] = [];
   // SellModal-style address fields
