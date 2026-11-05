@@ -1,5 +1,6 @@
-import { NextResponse } from "next/server";
-import { fetchValutazione } from "@/lib/borsino";
+import { after, NextResponse } from "next/server";
+import { appendLeadToSheet, formatValutazione } from "@/lib/googleSheets";
+import { fetchValutazione, type Valutazione } from "@/lib/borsino";
 
 const CRM_BASE = process.env.RELATIA_CRM_URL ?? "https://studiotara.relatiacrm.com";
 const CRM_TOKEN = process.env.RELATIA_CRM_TOKEN;
@@ -65,6 +66,22 @@ export async function POST(req: Request) {
       { status: 400 },
     );
   }
+
+  let valutazione: Valutazione | null = null;
+  after(() =>
+    appendLeadToSheet("Valutazione vendi immobile", {
+      Nome: nome,
+      Cognome: cognome,
+      Email: email,
+      Telefono: telefono,
+      Tipologia: tipologia,
+      Provincia: provincia,
+      Comune: comune,
+      Indirizzo: indirizzo,
+      Mq: mqNum,
+      "Valutazione stimata": formatValutazione(valutazione),
+    }),
+  );
 
   const indirizzoConMq = `${indirizzo} (${mqNum} m²)`;
   const customValues: CustomValue[] = [
@@ -142,7 +159,7 @@ export async function POST(req: Request) {
   const deal = (await dealRes.json()) as { id?: string };
 
   // 3) Fetch Borsino valuation (best-effort: failures don't break the lead).
-  const valutazione = await fetchValutazione({
+  valutazione = await fetchValutazione({
     tipologia,
     indirizzo,
     comune,

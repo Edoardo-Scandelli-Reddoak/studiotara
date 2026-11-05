@@ -1,4 +1,5 @@
-import { NextResponse } from "next/server";
+import { after, NextResponse } from "next/server";
+import { appendLeadToSheet } from "@/lib/googleSheets";
 import { CRM_BASE, CRM_TOKEN, crmAuthHeaders, createCrmNote } from "@/lib/crmHelpers";
 
 // Pipeline & stage for "SITO - richiesta informazioni" (generic contact form)
@@ -36,6 +37,16 @@ export async function POST(req: Request) {
       { status: 400 },
     );
   }
+
+  after(() =>
+    appendLeadToSheet("Info generali", {
+      Nome: nome,
+      Cognome: cognome,
+      Email: email,
+      Telefono: telefono,
+      Messaggio: messaggio,
+    }),
+  );
 
   const contactRes = await fetch(`${CRM_BASE}/api/contacts/`, {
     method: "POST",
